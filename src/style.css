@@ -70,10 +70,14 @@ button:focus-visible {
 		color: #213547;
 		background-color: #ffffff;
 	}
+	.app-nav a {
+		background-color: var(--color-primary-600);
+		padding: 0 0.5rem;
+	}
 	a:hover {
-		color: #747bff;
+		color: var(--color-primary-100);
 	}
 	button {
-		background-color: #f9f9f9;
+		background-color: var(--color-neutral-900)
 	}
 }

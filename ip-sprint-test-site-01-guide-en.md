@@ -511,24 +511,23 @@ Create type definitions for FKUI components:
 declare module '@fkui/vue' {
   import { DefineComponent } from 'vue'
   
-  export const FkButton: DefineComponent<any, any, any>
-  export const FkInput: DefineComponent<any, any, any>
-  export const FkCard: DefineComponent<any, any, any>
-  export const FkAlert: DefineComponent<any, any, any>
-  export const FkForm: DefineComponent<any, any, any>
-  export const FkFormGroup: DefineComponent<any, any, any>
-  export const FkLabel: DefineComponent<any, any, any>
-  export const FkSelect: DefineComponent<any, any, any>
-  export const FkTextarea: DefineComponent<any, any, any>
-  export const FkCheckbox: DefineComponent<any, any, any>
-  export const FkCheckboxGroup: DefineComponent<any, any, any>
-  export const FkFieldset: DefineComponent<any, any, any>
-  export const FkErrorMessage: DefineComponent<any, any, any>
-  export const FkTable: DefineComponent<any, any, any>
-  export const FkTableRow: DefineComponent<any, any, any>
-  export const FkTableCell: DefineComponent<any, any, any>
-  export const FkTableHeaderCell: DefineComponent<any, any, any>
-  export const FkBadge: DefineComponent<any, any, any>
+  export const FButton: DefineComponent<any, any, any>
+  export const FTextField: DefineComponent<any, any, any>
+  export const FCard: DefineComponent<any, any, any>
+  export const FMessageBox: DefineComponent<any, any, any>
+  export const FValidationForm: DefineComponent<any, any, any>
+  export const FFieldset: DefineComponent<any, any, any>
+  export const FLabel: DefineComponent<any, any, any>
+  export const FSelectField: DefineComponent<any, any, any>
+  export const FTextareaField: DefineComponent<any, any, any>
+  export const FCheckboxField: DefineComponent<any, any, any>
+  export const FBadge: DefineComponent<any, any, any>
+  export const FDataTable: DefineComponent<any, any, any>
+  export const FTableColumn: DefineComponent<any, any, any>
+  export const FTable: DefineComponent<any, any, any>
+  export const FTableRow: DefineComponent<any, any, any>
+  export const FTableCell: DefineComponent<any, any, any>
+  export const FTableHeaderCell: DefineComponent<any, any, any>
   // Add other FKUI components as needed
 }
 ```
