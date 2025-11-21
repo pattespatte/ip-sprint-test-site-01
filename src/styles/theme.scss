@@ -1,0 +1,18 @@
+// src/styles/theme.scss
+
+// Import FKUI base theme
+@use "@fkui/theme-default";
+
+// Import custom theme files
+@use "variables";
+@use "colors";
+@use "typography";
+@use "branding";
+
+// Import component overrides
+@use "components/buttons";
+@use "components/forms";
+
+// Import FKUI base styles (must come after @use rules)
+@import "@fkui/design/lib/fkui.css";
+@import "@fkui/design/lib/fonts.css";

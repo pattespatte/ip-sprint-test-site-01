@@ -1,0 +1,13 @@
+// src/styles/components/_forms.scss
+
+// Custom form overrides
+.fk-input,
+.fk-select,
+.fk-textarea {
+  border-radius: 4px;
+  
+  &:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(51, 102, 204, 0.1);
+  }
+}

@@ -1,0 +1,36 @@
+// src/styles/_colors.scss
+
+// Define your color palette
+$colors: (
+  primary: (
+    50: #e6f2ff,
+    100: #b3d9ff,
+    500: #3366cc,  // Main primary color
+    600: #2952a3,
+    700: #1a3d7a,  // Darker blue
+    800: #0d1f40,  // Darkest blue
+    900: #0a1426
+  ),
+  secondary: (
+    50: #f0f4ff,
+    100: #d9e3ff,
+    500: #6699ff,  // Main secondary color
+    600: #4d7acc,
+    900: #1a2e66
+  ),
+  neutral: (
+    50: #f8f9fa,
+    100: #e9ecef,
+    500: #6c757d,
+    900: #212529
+  )
+);
+
+// Generate CSS custom properties
+:root {
+  @each $color-name, $color-shades in $colors {
+    @each $shade, $value in $color-shades {
+      --color-#{$color-name}-#{$shade}: #{$value};
+    }
+  }
+}

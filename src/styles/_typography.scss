@@ -1,0 +1,31 @@
+// src/styles/_typography.scss
+
+// Import custom fonts (using Noto Sans as example)
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
+// Define font families
+$font-family-sans-serif: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-monospace: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+// Override FKUI typography variables
+$fk-font-family-base: $font-family-sans-serif;
+$fk-font-family-monospace: $font-family-monospace;
+
+// Custom font sizes (if needed)
+$font-sizes: (
+  xs: 0.75rem,     // 12px
+  sm: 0.875rem,    // 14px
+  base: 1rem,      // 16px
+  lg: 1.125rem,    // 18px
+  xl: 1.25rem,     // 20px
+  '2xl': 1.5rem,   // 24px
+  '3xl': 1.875rem, // 30px
+  '4xl': 2.25rem   // 36px
+);
+
+// Generate CSS custom properties for font sizes
+:root {
+  @each $size-name, $size-value in $font-sizes {
+    --font-size-#{$size-name}: #{$size-value};
+  }
+}

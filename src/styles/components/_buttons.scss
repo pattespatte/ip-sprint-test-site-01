@@ -1,0 +1,29 @@
+// src/styles/components/_buttons.scss
+
+// Custom button overrides - only override specific properties
+// This preserves the default FKUI button styling while modifying specific aspects
+
+// Target primary variant buttons with darker background and borders
+// Using actual FKUI class names (button and button--primary)
+.button.button--primary {
+  // Also target large size buttons specifically
+  &.button--large {
+    // Inherit all the above styles but for large buttons
+  }
+  // Override only the specific properties we want to change
+  background-color: var(--color-primary-700) !important;
+  border: 2px solid var(--color-primary-800) !important;
+  color: white !important;
+  
+  // Keep FKUI hover behavior but with our darker colors
+  &:hover {
+    background-color: var(--color-primary-800) !important;
+    border-color: var(--color-primary-900) !important;
+  }
+  
+  // Ensure focus states are also properly styled
+  &:focus {
+    border-color: var(--color-primary-800) !important;
+    box-shadow: 0 0 0 3px rgba(13, 31, 64, 0.25) !important;
+  }
+}

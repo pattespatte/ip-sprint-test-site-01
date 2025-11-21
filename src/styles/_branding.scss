@@ -1,0 +1,33 @@
+// src/styles/_branding.scss
+
+// Logo and branding elements
+.brand-logo {
+  height: 40px;
+  width: auto;
+  // Your logo-specific styles
+}
+
+// Custom brand components
+.brand-header {
+  background-color: var(--color-primary-500);
+  color: white;
+  padding: 1rem 0;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+}
+
+.brand-footer {
+  background-color: var(--color-neutral-900);
+  color: white;
+  padding: 2rem 0;
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+}
