@@ -18,9 +18,9 @@ const navigateToForm = () => {
         <p class="fk-text-large fk-mb-4">
           This is a demonstration site built with Försäkringskassans Designsystem (FKUI).
         </p>
-        <FkButton variant="primary" size="large" @click="navigateToForm" class="button button--primary button--medium">
+        <FButton variant="primary" size="large" @click="navigateToForm" class="button button--primary button--medium">
           Get Started
-        </FkButton>
+        </FButton>
       </div>
     </section>
 
@@ -29,27 +29,27 @@ const navigateToForm = () => {
       <div class="container">
         <h2 class="fk-heading-2 fk-mb-4">Features</h2>
         <div class="feature-grid">
-          <FkCard class="feature-card">
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">✓</div>
               <h3 class="fk-heading-3">Easy to Use</h3>
               <p>Built with FKUI components for consistency and accessibility.</p>
             </div>
-          </FkCard>
-          <FkCard class="feature-card">
+          </FCard>
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">⚙</div>
               <h3 class="fk-heading-3">Customizable</h3>
               <p>Theme layer allows for easy branding and customization.</p>
             </div>
-          </FkCard>
-          <FkCard class="feature-card">
+          </FCard>
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">🛡</div>
               <h3 class="fk-heading-3">Secure</h3>
               <p>Follows Swedish government security and accessibility standards.</p>
             </div>
-          </FkCard>
+          </FCard>
         </div>
       </div>
     </section>
@@ -58,9 +58,9 @@ const navigateToForm = () => {
     <section class="cta-section">
       <div class="container">
         <h2 class="fk-heading-2">Ready to try our form?</h2>
-        <FkButton variant="secondary" @click="navigateToForm">
+        <FButton variant="secondary" @click="navigateToForm">
           Try the Form Demo
-        </FkButton>
+        </FButton>
       </div>
     </section>
   </div>

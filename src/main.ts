@@ -12,9 +12,6 @@ const app = createApp(App)
 app.use(router)
 app.use(FkuiPlugin)
 
-// Add compiler options to handle custom elements
-app.config.compilerOptions = {
-  isCustomElement: (tag) => tag.startsWith('fk-'),
-}
+console.log('DEBUG: FKUI plugins loaded')
 
 app.mount('#app')

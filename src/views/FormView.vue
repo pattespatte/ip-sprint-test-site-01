@@ -128,62 +128,65 @@ const resetForm = () => {
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personal Information</legend>
           
-          <FkFormGroup>
-            <FkLabel for="firstName">First Name *</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="firstName">First Name *</FLabel>
+            <FTextField
               id="firstName"
               v-model="formData.firstName"
               type="text"
               :class="{ 'error': errors.firstName }"
             />
-            <FkErrorMessage v-if="errors.firstName">
-              {{ errors.firstName }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            <!-- FErrorMessage component -->
+              <div v-if="errors.firstName" class="error-message">
+                {{ errors.firstName }}
+              </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="lastName">Last Name *</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="lastName">Last Name *</FLabel>
+            <FTextField
               id="lastName"
               v-model="formData.lastName"
               type="text"
               :class="{ 'error': errors.lastName }"
             />
-            <FkErrorMessage v-if="errors.lastName">
-              {{ errors.lastName }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            <!-- FErrorMessage component -->
+              <div v-if="errors.lastName" class="error-message">
+                {{ errors.lastName }}
+              </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="email">Email Address *</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="email">Email Address *</FLabel>
+            <FTextField
               id="email"
               v-model="formData.email"
               type="email"
               :class="{ 'error': errors.email }"
             />
-            <FkErrorMessage v-if="errors.email">
-              {{ errors.email }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            <!-- FErrorMessage component -->
+              <div v-if="errors.email" class="error-message">
+                {{ errors.email }}
+              </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="phone">Phone Number</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="phone">Phone Number</FLabel>
+            <FTextField
               id="phone"
               v-model="formData.phone"
               type="tel"
             />
-          </FkFormGroup>
+          </FFieldset>
         </fieldset>
         
         <!-- Preferences Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferences</legend>
           
-          <FkFormGroup>
-            <FkLabel for="contactMethod">Preferred Contact Method *</FkLabel>
-            <FkSelect
+          <FFieldset>
+            <FLabel for="contactMethod">Preferred Contact Method *</FLabel>
+            <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
               :class="{ 'error': errors.contactMethod }"
@@ -192,56 +195,53 @@ const resetForm = () => {
               <option value="email">Email</option>
               <option value="phone">Phone</option>
               <option value="mail">Mail</option>
-            </FkSelect>
-            <FkErrorMessage v-if="errors.contactMethod">
-              {{ errors.contactMethod }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FSelectField>
+            <!-- FErrorMessage component -->
+              <div v-if="errors.contactMethod" class="error-message">
+                {{ errors.contactMethod }}
+              </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel>Notification Preferences</FkLabel>
-            <FkCheckboxGroup v-model="formData.notifications">
-              <FkCheckbox value="updates">Product updates</FkCheckbox>
-              <FkCheckbox value="newsletter">Newsletter</FkCheckbox>
-              <FkCheckbox value="promotions">Promotions</FkCheckbox>
-            </FkCheckboxGroup>
-          </FkFormGroup>
+          <FFieldset>
+            <FLabel>Notification Preferences</FLabel>
+            <FCheckboxField v-model="formData.notifications" value="updates">Product updates</FCheckboxField>
+            <FCheckboxField v-model="formData.notifications" value="newsletter">Newsletter</FCheckboxField>
+            <FCheckboxField v-model="formData.notifications" value="promotions">Promotions</FCheckboxField>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="comments">Additional Comments</FkLabel>
-            <FkTextarea
+          <FFieldset>
+            <FLabel for="comments">Additional Comments</FLabel>
+            <FTextareaField
               id="comments"
               v-model="formData.comments"
               rows="4"
             />
-          </FkFormGroup>
+          </FFieldset>
         </fieldset>
         
         <!-- Agreement Section -->
         <fieldset class="form-section">
-          <FkFormGroup>
-            <FkCheckbox v-model="formData.agreedToTerms">
+          <FFieldset>
+            <FCheckboxField v-model="formData.agreedToTerms">
               I agree to the terms and conditions *
-            </FkCheckbox>
-            <FkErrorMessage v-if="errors.agreedToTerms">
-              {{ errors.agreedToTerms }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FCheckboxField>
+            <!-- FErrorMessage component -->
+          </FFieldset>
         </fieldset>
         
         <!-- Form Actions -->
         <div class="form-actions">
-          <FkButton variant="secondary" type="button" @click="resetForm">
+          <FButton variant="secondary" type="button" @click="resetForm">
             Reset
-          </FkButton>
-          <FkButton variant="primary" type="submit" :disabled="isSubmitting">
+          </FButton>
+          <FButton variant="primary" type="submit" :disabled="isSubmitting">
             {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
-          </FkButton>
+          </FButton>
         </div>
       </form>
       
       <!-- Success Message -->
-      <FkAlert
+      <FMessageBox
         v-if="showSuccessMessage"
         variant="success"
         class="fk-mt-6"
@@ -249,7 +249,7 @@ const resetForm = () => {
         @close="showSuccessMessage = false"
       >
         <strong>Success!</strong> Your application has been submitted successfully.
-      </FkAlert>
+      </FMessageBox>
     </div>
   </div>
 </template>
@@ -307,5 +307,15 @@ const resetForm = () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+.error-message {
+  color: var(--color-error-600);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.error {
+  border-color: var(--color-error-500);
 }
 </style>
