@@ -359,7 +359,15 @@ npm install -D sass-embedded
 ⚠️ **Viktigt**: Använd alltid samma versionsnummer för alla @fkui-paket för att undvika kompatibilitetsproblem. Verifiera med:
 
 ```bash
-npm list @fkui
+# För att lista alla @fkui-paket: Använd
+npm list @fkui/*
+# eller helt enkelt
+npm list
+# för att se alla beroenden
+# För att kontrollera ett specifikt @fkui-paket: Använd det fullständiga namnet som
+npm list @fkui/vue
+# För att se alla @fkui-paket globalt: Använd
+npm list -g | grep @fkui
 ```
 
 ### Steg 5: Projektmappsstruktur
@@ -865,6 +873,10 @@ Skapa huvudtemafil som importerar allt:
 // Importera komponentåsidosättningar
 @use "components/buttons";
 @use "components/forms";
+
+// Importera FKUI grundstilar (måste komma efter @use)
+@import "@fkui/design/lib/fkui.css";
+@import "@fkui/design/lib/fonts.css";
 ```
 
 ### Steg 7: Vilka filer att skapa vs vilka att importera

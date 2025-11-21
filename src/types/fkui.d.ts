@@ -15,10 +15,8 @@ declare module '@fkui/vue' {
   export const FkCheckboxGroup: DefineComponent<any, any, any>
   export const FkFieldset: DefineComponent<any, any, any>
   export const FkErrorMessage: DefineComponent<any, any, any>
-  export const FkTable: DefineComponent<any, any, any>
-  export const FkTableRow: DefineComponent<any, any, any>
-  export const FkTableCell: DefineComponent<any, any, any>
-  export const FkTableHeaderCell: DefineComponent<any, any, any>
-  export const FkBadge: DefineComponent<any, any, any>
+  export const FDataTable: DefineComponent<any, any, any>
+  export const FTableColumn: DefineComponent<any, any, any>
+  export const FBadge: DefineComponent<any, any, any>
   // Add other FKUI components as needed
 }

@@ -149,40 +149,34 @@ onMounted(() => {
         </div>
         
         <div class="table-wrapper">
-          <FkTable>
-            <thead>
-              <tr>
-                <FkTableHeaderCell>ID</FkTableHeaderCell>
-                <FkTableHeaderCell>Name</FkTableHeaderCell>
-                <FkTableHeaderCell>Type</FkTableHeaderCell>
-                <FkTableHeaderCell>Date</FkTableHeaderCell>
-                <FkTableHeaderCell>Status</FkTableHeaderCell>
-                <FkTableHeaderCell>Actions</FkTableHeaderCell>
-              </tr>
-            </thead>
-            <tbody>
-              <FkTableRow v-for="application in applications" :key="application.id">
-                <FkTableCell>{{ application.id }}</FkTableCell>
-                <FkTableCell>{{ application.name }}</FkTableCell>
-                <FkTableCell>{{ application.type }}</FkTableCell>
-                <FkTableCell>{{ formatDate(application.date) }}</FkTableCell>
-                <FkTableCell>
-                  <FkBadge :variant="getStatusVariant(application.status)">
-                    {{ application.status }}
-                  </FkBadge>
-                </FkTableCell>
-                <FkTableCell>
-                  <FkButton
-                    variant="ghost"
-                    size="small"
-                    @click="viewDetails(application.id)"
-                  >
-                    View
-                  </FkButton>
-                </FkTableCell>
-              </FkTableRow>
-            </tbody>
-          </FkTable>
+          <FDataTable :items="applications">
+            <FTableColumn id="id" title="ID" />
+            <FTableColumn id="name" title="Name" />
+            <FTableColumn id="type" title="Type" />
+            <FTableColumn id="date" title="Date">
+              <template #default="item">
+                {{ formatDate(item.date) }}
+              </template>
+            </FTableColumn>
+            <FTableColumn id="status" title="Status">
+              <template #default="{ item }">
+                <FkBadge :variant="getStatusVariant(item.status)">
+                  {{ item.status }}
+                </FkBadge>
+              </template>
+            </FTableColumn>
+            <FTableColumn id="actions" title="Actions">
+              <template #default="{ item }">
+                <FkButton
+                  variant="ghost"
+                  size="small"
+                  @click="viewDetails(item.id)"
+                >
+                  View
+                </FkButton>
+              </template>
+            </FTableColumn>
+          </FDataTable>
         </div>
       </FkCard>
       

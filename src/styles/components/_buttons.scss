@@ -10,6 +10,7 @@
   &.button--large {
     // Inherit all the above styles but for large buttons
   }
+  
   // Override only the specific properties we want to change
   background-color: var(--color-primary-700) !important;
   border: 2px solid var(--color-primary-800) !important;

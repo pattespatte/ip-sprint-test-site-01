@@ -359,7 +359,15 @@ npm install -D sass-embedded
 ⚠️ **Important**: Always use the same version number for all @fkui packages to avoid compatibility issues. Verify with:
 
 ```bash
-npm list @fkui
+# To list all @fkui packages: Use
+npm list @fkui/*
+# or simply
+npm list
+# to see all dependencies
+# To check a specific @fkui package: Use the full name like
+npm list @fkui/vue
+# To see all @fkui packages globally: Use
+npm list -g | grep @fkui
 ```
 
 ### Step 5: Project Folder Structure
@@ -368,7 +376,7 @@ Your project structure should look like this:
 
 ```
 ip-sprint-test-site-01/
-├── public/                 # Static assets
+├── public/                # Static assets
 ├── src/
 │   ├── assets/            # Custom assets (images, fonts)
 │   ├── components/        # Custom Vue components
@@ -865,6 +873,10 @@ Create the main theme file that imports everything:
 // Import component overrides
 @use "components/buttons";
 @use "components/forms";
+
+// Import FKUI base styles (must come after @use rules)
+@import "@fkui/design/lib/fkui.css";
+@import "@fkui/design/lib/fonts.css";
 ```
 
 ### Step 7: Which Files to Create vs. Which to Import
