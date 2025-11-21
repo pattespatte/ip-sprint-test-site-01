@@ -12,22 +12,16 @@
   background-color: var(--color-primary-500);
   color: white;
   padding: 1rem 0;
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
 }
 
 .brand-footer {
   background-color: var(--color-neutral-900);
   color: white;
   padding: 2rem 0;
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }

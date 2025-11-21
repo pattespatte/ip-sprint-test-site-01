@@ -281,6 +281,7 @@ const resetForm = () => {
 
 .application-form {
   max-width: 600px;
+  margin: 0 auto;
 }
 
 .form-section {

@@ -93,7 +93,7 @@ const toggleMobileMenu = () => {
 }
 
 .app-header {
-  background-color: var(--color-primary-500);
+  background-color: var(--color-primary-700);
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -177,7 +177,7 @@ const toggleMobileMenu = () => {
 }
 
 .app-footer {
-  background-color: var(--color-neutral-900);
+  background-color: var(--color-primary-700);
   color: white;
   padding: 1.5rem 0;
   text-align: center;
