@@ -448,8 +448,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // Add FKUI's SCSS variables and mixins
-        additionalData: `@use "@fkui/design/src/core/variables" as *;`,
-        api: 'modern-compiler' // Use modern Sass API
+        additionalData: `@use "@fkui/design/src/core" as *;`
       }
     }
   },
@@ -483,8 +482,8 @@ Update your `package.json` with the necessary scripts:
     "@fkui/date": "^6.26.0",
     "@fkui/design": "^6.26.0",
     "@fkui/logic": "^6.26.0",
-    "@fkui/theme-default": "^6.26.0",
-    "@fkui/vue": "^6.26.0",
+    "@fkui/theme-default": "^6.27.0",
+    "@fkui/vue": "^6.27.0",
     "vue": "^3.5.24",
     "vue-router": "^4.6.3"
   },
@@ -539,56 +538,24 @@ Create a plugin to register FKUI components:
 ```typescript
 // src/plugins/fkui.ts
 import type { App } from 'vue'
-import { 
-  FkButton, 
-  FkInput,
-  FkCard,
-  FkAlert,
-  FkForm,
-  FkFormGroup,
-  FkLabel,
-  FkSelect,
-  FkTextarea,
-  FkCheckbox,
-  FkCheckboxGroup,
-  FkFieldset,
-  FkErrorMessage,
-  FkTable,
-  FkTableRow,
-  FkTableCell,
-  FkTableHeaderCell,
-  FkBadge
-  // Import other FKUI components as needed
-} from '@fkui/vue'
-
-const components = {
-  FkButton,
-  FkInput,
-  FkCard,
-  FkAlert,
-  FkForm,
-  FkFormGroup,
-  FkLabel,
-  FkSelect,
-  FkTextarea,
-  FkCheckbox,
-  FkCheckboxGroup,
-  FkFieldset,
-  FkErrorMessage,
-  FkTable,
-  FkTableRow,
-  FkTableCell,
-  FkTableHeaderCell,
-  FkBadge
-  // Add other components here
-}
+// Import all FKUI components and register them globally
+import * as FKUI from '@fkui/vue'
 
 export default {
   install(app: App) {
-    // Register all FKUI components globally
-    Object.entries(components).forEach(([name, component]) => {
-      app.component(name, component)
+    // DEBUG: Provide basic screen reader context to fix undefined error
+    app.provide('screenReaderContextKey', {
+      screenReaderContextKey: Symbol('screenReaderContext')
     })
+    
+    // Register all FKUI components globally
+    Object.entries(FKUI).forEach(([name, component]) => {
+      if (name.startsWith('F')) {
+        app.component(name, component)
+      }
+    })
+    
+    console.log('DEBUG: FKUI plugin installed with components:', Object.keys(FKUI).filter(name => name.startsWith('F')))
   }
 }
 ```
@@ -971,6 +938,8 @@ const app = createApp(App)
 app.use(router)
 app.use(FkuiPlugin)
 
+console.log('DEBUG: FKUI plugins loaded')
+
 app.mount('#app')
 ```
 
@@ -1004,9 +973,9 @@ const navigateToForm = () => {
         <p class="fk-text-large fk-mb-4">
           This is a demonstration site built with Försäkringskassans Designsystem (FKUI).
         </p>
-        <FkButton variant="primary" size="large" @click="navigateToForm">
+        <FButton variant="primary" size="large" @click="navigateToForm">
           Get Started
-        </FkButton>
+        </FButton>
       </div>
     </section>
 
@@ -1015,27 +984,27 @@ const navigateToForm = () => {
       <div class="container">
         <h2 class="fk-heading-2 fk-mb-4">Features</h2>
         <div class="feature-grid">
-          <FkCard class="feature-card">
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">✓</div>
               <h3 class="fk-heading-3">Easy to Use</h3>
               <p>Built with FKUI components for consistency and accessibility.</p>
             </div>
-          </FkCard>
-          <FkCard class="feature-card">
+          </FCard>
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">⚙</div>
               <h3 class="fk-heading-3">Customizable</h3>
               <p>Theme layer allows for easy branding and customization.</p>
             </div>
-          </FkCard>
-          <FkCard class="feature-card">
+          </FCard>
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">🛡</div>
               <h3 class="fk-heading-3">Secure</h3>
               <p>Follows Swedish government security and accessibility standards.</p>
             </div>
-          </FkCard>
+          </FCard>
         </div>
       </div>
     </section>
@@ -1239,62 +1208,65 @@ const resetForm = () => {
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personal Information</legend>
           
-          <FkFormGroup>
-            <FkLabel for="firstName">First Name *</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="firstName">First Name *</FLabel>
+            <FTextField
               id="firstName"
               v-model="formData.firstName"
               type="text"
               :class="{ 'error': errors.firstName }"
             />
-            <FkErrorMessage v-if="errors.firstName">
+            <!-- FErrorMessage component -->
+            <div v-if="errors.firstName" class="error-message">
               {{ errors.firstName }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="lastName">Last Name *</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="lastName">Last Name *</FLabel>
+            <FTextField
               id="lastName"
               v-model="formData.lastName"
               type="text"
               :class="{ 'error': errors.lastName }"
             />
-            <FkErrorMessage v-if="errors.lastName">
+            <!-- FErrorMessage component -->
+            <div v-if="errors.lastName" class="error-message">
               {{ errors.lastName }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="email">Email Address *</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="email">Email Address *</FLabel>
+            <FTextField
               id="email"
               v-model="formData.email"
               type="email"
               :class="{ 'error': errors.email }"
             />
-            <FkErrorMessage v-if="errors.email">
+            <!-- FErrorMessage component -->
+            <div v-if="errors.email" class="error-message">
               {{ errors.email }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="phone">Phone Number</FkLabel>
-            <FkInput
+          <FFieldset>
+            <FLabel for="phone">Phone Number</FLabel>
+            <FTextField
               id="phone"
               v-model="formData.phone"
               type="tel"
             />
-          </FkFormGroup>
+          </FFieldset>
         </fieldset>
         
         <!-- Preferences Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferences</legend>
           
-          <FkFormGroup>
-            <FkLabel for="contactMethod">Preferred Contact Method *</FkLabel>
-            <FkSelect
+          <FFieldset>
+            <FLabel for="contactMethod">Preferred Contact Method *</FLabel>
+            <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
               :class="{ 'error': errors.contactMethod }"
@@ -1303,56 +1275,53 @@ const resetForm = () => {
               <option value="email">Email</option>
               <option value="phone">Phone</option>
               <option value="mail">Mail</option>
-            </FkSelect>
-            <FkErrorMessage v-if="errors.contactMethod">
+            </FSelectField>
+            <!-- FErrorMessage component -->
+            <div v-if="errors.contactMethod" class="error-message">
               {{ errors.contactMethod }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </div>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel>Notification Preferences</FkLabel>
-            <FkCheckboxGroup v-model="formData.notifications">
-              <FkCheckbox value="updates">Product updates</FkCheckbox>
-              <FkCheckbox value="newsletter">Newsletter</FkCheckbox>
-              <FkCheckbox value="promotions">Promotions</FkCheckbox>
-            </FkCheckboxGroup>
-          </FkFormGroup>
+          <FFieldset>
+            <FLabel>Notification Preferences</FLabel>
+            <FCheckboxField v-model="formData.notifications" value="updates">Product updates</FCheckboxField>
+            <FCheckboxField v-model="formData.notifications" value="newsletter">Newsletter</FCheckboxField>
+            <FCheckboxField v-model="formData.notifications" value="promotions">Promotions</FCheckboxField>
+          </FFieldset>
           
-          <FkFormGroup>
-            <FkLabel for="comments">Additional Comments</FkLabel>
-            <FkTextarea
+          <FFieldset>
+            <FLabel for="comments">Additional Comments</FLabel>
+            <FTextareaField
               id="comments"
               v-model="formData.comments"
               rows="4"
             />
-          </FkFormGroup>
+          </FFieldset>
         </fieldset>
         
         <!-- Agreement Section -->
         <fieldset class="form-section">
-          <FkFormGroup>
-            <FkCheckbox v-model="formData.agreedToTerms">
+          <FFieldset>
+            <FCheckboxField v-model="formData.agreedToTerms">
               I agree to the terms and conditions *
-            </FkCheckbox>
-            <FkErrorMessage v-if="errors.agreedToTerms">
-              {{ errors.agreedToTerms }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FCheckboxField>
+            <!-- FErrorMessage component -->
+          </FFieldset>
         </fieldset>
         
         <!-- Form Actions -->
         <div class="form-actions">
-          <FkButton variant="secondary" type="button" @click="resetForm">
+          <FButton variant="secondary" type="button" @click="resetForm">
             Reset
-          </FkButton>
-          <FkButton variant="primary" type="submit" :disabled="isSubmitting">
+          </FButton>
+          <FButton variant="primary" type="submit" :disabled="isSubmitting">
             {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
-          </FkButton>
+          </FButton>
         </div>
       </form>
       
       <!-- Success Message -->
-      <FkAlert
+      <FMessageBox
         v-if="showSuccessMessage"
         variant="success"
         class="fk-mt-6"
@@ -1360,7 +1329,7 @@ const resetForm = () => {
         @close="showSuccessMessage = false"
       >
         <strong>Success!</strong> Your application has been submitted successfully.
-      </FkAlert>
+      </FMessageBox>
     </div>
   </div>
 </template>
@@ -1543,93 +1512,93 @@ onMounted(() => {
       
       <!-- Status Cards -->
       <div class="stats-grid fk-mb-6">
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">📄</div>
             <h3 class="fk-heading-4">Applications</h3>
             <p class="fk-text-large">{{ stats.applications }}</p>
           </div>
-        </FkCard>
+        </FCard>
         
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">🕐</div>
             <h3 class="fk-heading-4">Pending</h3>
             <p class="fk-text-large">{{ stats.pending }}</p>
           </div>
-        </FkCard>
+        </FCard>
         
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">✓</div>
             <h3 class="fk-heading-4">Approved</h3>
             <p class="fk-text-large">{{ stats.approved }}</p>
           </div>
-        </FkCard>
+        </FCard>
         
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">⚠</div>
             <h3 class="fk-heading-4">Need Action</h3>
             <p class="fk-text-large">{{ stats.needsAction }}</p>
           </div>
-        </FkCard>
+        </FCard>
       </div>
       
       <!-- Recent Applications Table -->
-      <FkCard class="fk-mb-6">
+      <FCard class="fk-mb-6">
         <div class="card-header">
           <h2 class="fk-heading-2">Recent Applications</h2>
         </div>
         
         <div class="table-wrapper">
-          <FkTable>
+          <table class="applications-table">
             <thead>
               <tr>
-                <FkTableHeaderCell>ID</FkTableHeaderCell>
-                <FkTableHeaderCell>Name</FkTableHeaderCell>
-                <FkTableHeaderCell>Type</FkTableHeaderCell>
-                <FkTableHeaderCell>Date</FkTableHeaderCell>
-                <FkTableHeaderCell>Status</FkTableHeaderCell>
-                <FkTableHeaderCell>Actions</FkTableHeaderCell>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <FkTableRow v-for="application in applications" :key="application.id">
-                <FkTableCell>{{ application.id }}</FkTableCell>
-                <FkTableCell>{{ application.name }}</FkTableCell>
-                <FkTableCell>{{ application.type }}</FkTableCell>
-                <FkTableCell>{{ formatDate(application.date) }}</FkTableCell>
-                <FkTableCell>
-                  <FkBadge :variant="getStatusVariant(application.status)">
+              <tr v-for="application in applications" :key="application.id">
+                <td>{{ application.id }}</td>
+                <td>{{ application.name }}</td>
+                <td>{{ application.type }}</td>
+                <td>{{ formatDate(application.date) }}</td>
+                <td>
+                  <span :class="['status-badge', getStatusVariant(application.status)]">
                     {{ application.status }}
-                  </FkBadge>
-                </FkTableCell>
-                <FkTableCell>
-                  <FkButton 
-                    variant="ghost" 
-                    size="small" 
+                  </span>
+                </td>
+                <td>
+                  <FButton
+                    variant="secondary"
+                    size="small"
                     @click="viewDetails(application.id)"
                   >
                     View
-                  </FkButton>
-                </FkTableCell>
-              </FkTableRow>
+                  </FButton>
+                </td>
+              </tr>
             </tbody>
-          </FkTable>
+          </table>
         </div>
-      </FkCard>
+      </FCard>
       
       <!-- Activity Timeline -->
-      <FkCard class="fk-mb-6">
+      <FCard class="fk-mb-6">
         <div class="card-header">
           <h2 class="fk-heading-2">Recent Activity</h2>
         </div>
         
         <div class="activity-list">
-          <div 
-            v-for="activity in activities" 
-            :key="activity.id" 
+          <div
+            v-for="activity in activities"
+            :key="activity.id"
             class="activity-item"
           >
             <div class="activity-icon" :class="`activity-${activity.type}`">
@@ -1642,12 +1611,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </FkCard>
+      </FCard>
       
       <!-- System Notification -->
-      <FkAlert variant="info" class="fk-mb-4">
+      <FMessageBox type="info" variant="info" class="fk-mb-4">
         <strong>System Update:</strong> Scheduled maintenance will occur this weekend from 2 AM to 6 AM.
-      </FkAlert>
+      </FMessageBox>
     </div>
   </div>
 </template>
