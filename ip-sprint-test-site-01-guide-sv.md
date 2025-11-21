@@ -208,10 +208,10 @@ Om du behöver friska upp några koncept:
 ```
 ┌─────────────────────────────────────┐
 │         ip-sprint-test-site-01      │  ← Ditt anpassade temalager
-│  (färger, typsnitt, varumärke, sidor)   │
+│ (färger, typsnitt, varumärke, sidor) │
 ├─────────────────────────────────────┤
 │             FKUI Core               │  ← Basdesignsystem
-│    (komponenter, mönster, verktyg)    │
+│   (komponenter, mönster, verktyg)   │
 ├─────────────────────────────────────┤
 │            Vue.js Framework         │  ← Underliggande ramverk
 └─────────────────────────────────────┘
@@ -348,7 +348,7 @@ Baserat på FKUI-dokumentationen, installera nödvändiga paket:
 
 ```bash
 # Installera FKUI-paket (se till att alla använder samma version)
-npm install @fkui/theme-default@^6.26.0 @fkui/design@^6.26.0 @fkui/date@^6.26.0 @fkui/logic@^6.26.0 @fkui/vue@^6.26.0
+npm install @fkui/theme-default@^6.27.0 @fkui/design@^6.27.0 @fkui/date@6.27.0 @fkui/logic@^6.27.0 @fkui/vue@^6.27.0
 
 # Installera SCSS-stöd för Vite
 npm install -D sass-embedded
@@ -376,7 +376,7 @@ Din projektstruktur bör se ut så här:
 
 ```
 ip-sprint-test-site-01/
-├── public/                 # Statiska tillgångar
+├── public/                # Statiska tillgångar
 ├── src/
 │   ├── assets/            # Anpassade tillgångar (bilder, typsnitt)
 │   ├── components/        # Anpassade Vue-komponenter
@@ -448,8 +448,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // Lägg till FKUI:s SCSS-variabler och mixins
-        additionalData: `@use "@fkui/design/src/core/variables" as *;`,
-        api: 'modern-compiler' // Använd modern Sass API
+        additionalData: `@use "@fkui/design/src/core/variables" as *;`
       }
     }
   },
@@ -480,11 +479,11 @@ Uppdatera din `package.json` med nödvändiga skript:
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@fkui/date": "^6.26.0",
-    "@fkui/design": "^6.26.0",
-    "@fkui/logic": "^6.26.0",
-    "@fkui/theme-default": "^6.26.0",
-    "@fkui/vue": "^6.26.0",
+    "@fkui/date": "^6.27.0",
+    "@fkui/design": "^6.27.0",
+    "@fkui/logic": "^6.27.0",
+    "@fkui/theme-default": "^6.27.0",
+    "@fkui/vue": "^6.27.0",
     "vue": "^3.5.24",
     "vue-router": "^4.6.3"
   },
@@ -539,56 +538,28 @@ Skapa ett plugin för att registrera FKUI-komponenter:
 ```typescript
 // src/plugins/fkui.ts
 import type { App } from 'vue'
-import { 
-  FkButton, 
-  FkInput,
-  FkCard,
-  FkAlert,
-  FkForm,
-  FkFormGroup,
-  FkLabel,
-  FkSelect,
-  FkTextarea,
-  FkCheckbox,
-  FkCheckboxGroup,
-  FkFieldset,
-  FkErrorMessage,
-  FkTable,
-  FkTableRow,
-  FkTableCell,
-  FkTableHeaderCell,
-  FkBadge
-  // Importera andra FKUI-komponenter vid behov
-} from '@fkui/vue'
+import * as FKUI from '@fkui/vue'
 
-const components = {
-  FkButton,
-  FkInput,
-  FkCard,
-  FkAlert,
-  FkForm,
-  FkFormGroup,
-  FkLabel,
-  FkSelect,
-  FkTextarea,
-  FkCheckbox,
-  FkCheckboxGroup,
-  FkFieldset,
-  FkErrorMessage,
-  FkTable,
-  FkTableRow,
-  FkTableCell,
-  FkTableHeaderCell,
-  FkBadge
-  // Lägg till andra komponenter här
+// Skapa en grundläggande screen reader context för att undvika undefined-fel
+const screenReaderContext = {
+  screenReaderContextKey: Symbol('screen-reader-context'),
+  provide: () => ({
+    announce: (message: string) => {
+      // Implementera grundläggande screen reader-funktionalitet
+      console.log('Screen reader announcement:', message)
+    }
+  })
 }
 
 export default {
   install(app: App) {
     // Registrera alla FKUI-komponenter globalt
-    Object.entries(components).forEach(([name, component]) => {
+    Object.entries(FKUI).forEach(([name, component]) => {
       app.component(name, component)
     })
+    
+    // Tillhandahåll screen reader context
+    app.provide(screenReaderContext.screenReaderContextKey, screenReaderContext.provide())
   }
 }
 ```
@@ -1004,9 +975,9 @@ const navigateToForm = () => {
         <p class="fk-text-large fk-mb-4">
           Detta är en demonstrationswebbplats byggd med Försäkringskassans Designsystem (FKUI).
         </p>
-        <FkButton variant="primary" size="large" @click="navigateToForm">
+        <FButton variant="primary" size="large" @click="navigateToForm">
           Kom igång
-        </FkButton>
+        </FButton>
       </div>
     </section>
 
@@ -1015,21 +986,21 @@ const navigateToForm = () => {
       <div class="container">
         <h2 class="fk-heading-2 fk-mb-4">Funktioner</h2>
         <div class="feature-grid">
-          <FkCard class="feature-card">
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">✓</div>
               <h3 class="fk-heading-3">Lätt att använda</h3>
               <p>Byggd med FKUI-komponenter för konsekvens och tillgänglighet.</p>
             </div>
           </FkCard>
-          <FkCard class="feature-card">
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">⚙</div>
               <h3 class="fk-heading-3">Anpassningsbar</h3>
               <p>Temalager möjliggör enkel varumärkesanpassning och anpassning.</p>
             </div>
           </FkCard>
-          <FkCard class="feature-card">
+          <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">🛡</div>
               <h3 class="fk-heading-3">Säker</h3>
@@ -1044,9 +1015,9 @@ const navigateToForm = () => {
     <section class="cta-section">
       <div class="container">
         <h2 class="fk-heading-2">Redo att prova vårt formulär?</h2>
-        <FkButton variant="secondary" @click="navigateToForm">
+        <FButton variant="secondary" @click="navigateToForm">
           Prova formulärdemo
-        </FkButton>
+        </FButton>
       </div>
     </section>
   </div>
@@ -1239,62 +1210,62 @@ const resetForm = () => {
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personinformation</legend>
           
-          <FkFormGroup>
-            <FkLabel for="firstName">Förnamn *</FkLabel>
-            <FkInput
+          <FFormGroup>
+            <FLabel for="firstName">Förnamn *</FLabel>
+            <FTextField
               id="firstName"
               v-model="formData.firstName"
               type="text"
               :class="{ 'error': errors.firstName }"
             />
-            <FkErrorMessage v-if="errors.firstName">
+            <FErrorMessage v-if="errors.firstName">
               {{ errors.firstName }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FErrorMessage>
+          </FFormGroup>
           
-          <FkFormGroup>
-            <FkLabel for="lastName">Efternamn *</FkLabel>
-            <FkInput
+          <FFormGroup>
+            <FLabel for="lastName">Efternamn *</FLabel>
+            <FTextField
               id="lastName"
               v-model="formData.lastName"
               type="text"
               :class="{ 'error': errors.lastName }"
             />
-            <FkErrorMessage v-if="errors.lastName">
+            <FErrorMessage v-if="errors.lastName">
               {{ errors.lastName }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FErrorMessage>
+          </FFormGroup>
           
-          <FkFormGroup>
-            <FkLabel for="email">E-postadress *</FkLabel>
-            <FkInput
+          <FFormGroup>
+            <FLabel for="email">E-postadress *</FLabel>
+            <FTextField
               id="email"
               v-model="formData.email"
               type="email"
               :class="{ 'error': errors.email }"
             />
-            <FkErrorMessage v-if="errors.email">
+            <FErrorMessage v-if="errors.email">
               {{ errors.email }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FErrorMessage>
+          </FFormGroup>
           
-          <FkFormGroup>
-            <FkLabel for="phone">Telefonnummer</FkLabel>
-            <FkInput
+          <FFormGroup>
+            <FLabel for="phone">Telefonnummer</FLabel>
+            <FTextField
               id="phone"
               v-model="formData.phone"
               type="tel"
             />
-          </FkFormGroup>
+          </FFormGroup>
         </fieldset>
         
         <!-- Preferenser-sektion -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferenser</legend>
           
-          <FkFormGroup>
-            <FkLabel for="contactMethod">Önskad kontaktmetod *</FkLabel>
-            <FkSelect
+          <FFormGroup>
+            <FLabel for="contactMethod">Önskad kontaktmetod *</FLabel>
+            <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
               :class="{ 'error': errors.contactMethod }"
@@ -1303,64 +1274,65 @@ const resetForm = () => {
               <option value="email">E-post</option>
               <option value="phone">Telefon</option>
               <option value="mail">Post</option>
-            </FkSelect>
-            <FkErrorMessage v-if="errors.contactMethod">
+            </FSelectField>
+            <FErrorMessage v-if="errors.contactMethod">
               {{ errors.contactMethod }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FErrorMessage>
+          </FFormGroup>
           
-          <FkFormGroup>
-            <FkLabel>Aviseringspreferenser</FkLabel>
-            <FkCheckboxGroup v-model="formData.notifications">
-              <FkCheckbox value="updates">Produktuppdateringar</FkCheckbox>
-              <FkCheckbox value="newsletter">Nyhetsbrev</FkCheckbox>
-              <FkCheckbox value="promotions">Erbjudanden</FkCheckbox>
-            </FkCheckboxGroup>
-          </FkFormGroup>
+          <FFormGroup>
+            <FLabel>Aviseringspreferenser</FLabel>
+            <FCheckboxGroup v-model="formData.notifications">
+              <FCheckbox value="updates">Produktuppdateringar</FCheckbox>
+              <FCheckbox value="newsletter">Nyhetsbrev</FCheckbox>
+              <FCheckbox value="promotions">Erbjudanden</FCheckbox>
+            </FCheckboxGroup>
+          </FFormGroup>
           
-          <FkFormGroup>
-            <FkLabel for="comments">Ytterligare kommentarer</FkLabel>
-            <FkTextarea
+          <FFormGroup>
+            <FLabel for="comments">Ytterligare kommentarer</FLabel>
+            <FTextareaField
               id="comments"
               v-model="formData.comments"
               rows="4"
             />
-          </FkFormGroup>
+          </FFormGroup>
         </fieldset>
         
         <!-- Avtalsektion -->
         <fieldset class="form-section">
-          <FkFormGroup>
-            <FkCheckbox v-model="formData.agreedToTerms">
+          <FFormGroup>
+            <FCheckbox v-model="formData.agreedToTerms">
               Jag godkänner villkoren och bestämmelserna *
-            </FkCheckbox>
-            <FkErrorMessage v-if="errors.agreedToTerms">
+            </FCheckbox>
+            <FErrorMessage v-if="errors.agreedToTerms">
               {{ errors.agreedToTerms }}
-            </FkErrorMessage>
-          </FkFormGroup>
+            </FErrorMessage>
+          </FFormGroup>
         </fieldset>
         
         <!-- Formuläråtgärder -->
         <div class="form-actions">
-          <FkButton variant="secondary" type="button" @click="resetForm">
+          <FButton variant="secondary" type="button" @click="resetForm">
             Återställ
-          </FkButton>
-          <FkButton variant="primary" type="submit" :disabled="isSubmitting">
+          </FButton>
+          <FButton variant="primary" type="submit" :disabled="isSubmitting">
             {{ isSubmitting ? 'Skickar...' : 'Skicka ansökan' }}
-          </FkButton>
+          </FButton>
         </div>
       </form>
       
       <!-- Framgångsmeddelande -->
-      <FkAlert
+      <FMessageBox
         v-if="showSuccessMessage"
         variant="success"
-        class="fk-mt-6"
+        type="success"
+        class="fk-mb-6"
         dismissible
         @close="showSuccessMessage = false"
       >
         <strong>Lyckades!</strong> Din ansökan har skickats framgångsrikt.
-      </FkAlert>
+      </FMessageBox>
     </div>
   </div>
 </template>
@@ -1543,93 +1515,93 @@ onMounted(() => {
       
       <!-- Statuskort -->
       <div class="stats-grid fk-mb-6">
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">📄</div>
             <h3 class="fk-heading-4">Ansökningar</h3>
             <p class="fk-text-large">{{ stats.applications }}</p>
           </div>
-        </FkCard>
+        </FCard>
         
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">🕐</div>
             <h3 class="fk-heading-4">Väntande</h3>
             <p class="fk-text-large">{{ stats.pending }}</p>
           </div>
-        </FkCard>
+        </FCard>
         
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">✓</div>
             <h3 class="fk-heading-4">Godkända</h3>
             <p class="fk-text-large">{{ stats.approved }}</p>
           </div>
-        </FkCard>
+        </FCard>
         
-        <FkCard class="status-card">
+        <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">⚠</div>
             <h3 class="fk-heading-4">Behöver åtgärd</h3>
             <p class="fk-text-large">{{ stats.needsAction }}</p>
           </div>
-        </FkCard>
+        </FCard>
       </div>
       
       <!-- Senaste ansökningstabell -->
-      <FkCard class="fk-mb-6">
+      <FCard class="fk-mb-6">
         <div class="card-header">
           <h2 class="fk-heading-2">Senaste ansökningar</h2>
         </div>
         
         <div class="table-wrapper">
-          <FkTable>
+          <table class="simple-table">
             <thead>
               <tr>
-                <FkTableHeaderCell>ID</FkTableHeaderCell>
-                <FkTableHeaderCell>Namn</FkTableHeaderCell>
-                <FkTableHeaderCell>Typ</FkTableHeaderCell>
-                <FkTableHeaderCell>Datum</FkTableHeaderCell>
-                <FkTableHeaderCell>Status</FkTableHeaderCell>
-                <FkTableHeaderCell>Åtgärder</FkTableHeaderCell>
+                <th>ID</th>
+                <th>Namn</th>
+                <th>Typ</th>
+                <th>Datum</th>
+                <th>Status</th>
+                <th>Åtgärder</th>
               </tr>
             </thead>
             <tbody>
-              <FkTableRow v-for="application in applications" :key="application.id">
-                <FkTableCell>{{ application.id }}</FkTableCell>
-                <FkTableCell>{{ application.name }}</FkTableCell>
-                <FkTableCell>{{ application.type }}</FkTableCell>
-                <FkTableCell>{{ formatDate(application.date) }}</FkTableCell>
-                <FkTableCell>
-                  <FkBadge :variant="getStatusVariant(application.status)">
+              <tr v-for="application in applications" :key="application.id">
+                <td>{{ application.id }}</td>
+                <td>{{ application.name }}</td>
+                <td>{{ application.type }}</td>
+                <td>{{ formatDate(application.date) }}</td>
+                <td>
+                  <FBadge :variant="getStatusVariant(application.status)">
                     {{ application.status }}
-                  </FkBadge>
-                </FkTableCell>
-                <FkTableCell>
-                  <FkButton 
-                    variant="ghost" 
-                    size="small" 
+                  </FBadge>
+                </td>
+                <td>
+                  <FButton
+                    variant="secondary"
+                    size="small"
                     @click="viewDetails(application.id)"
                   >
                     Visa
-                  </FkButton>
-                </FkTableCell>
-              </FkTableRow>
+                  </FButton>
+                </td>
+              </tr>
             </tbody>
-          </FkTable>
+          </table>
         </div>
-      </FkCard>
+      </FCard>
       
       <!-- Aktivitetstidslinje -->
-      <FkCard class="fk-mb-6">
+      <FCard class="fk-mb-6">
         <div class="card-header">
           <h2 class="fk-heading-2">Senaste aktivitet</h2>
         </div>
         
         <div class="activity-list">
-          <div 
-            v-for="activity in activities" 
-            :key="activity.id" 
+          <div
+            v-for="activity in activities"
+            :key="activity.id"
             class="activity-item"
           >
             <div class="activity-icon" :class="`activity-${activity.type}`">
@@ -1642,12 +1614,12 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </FkCard>
+      </FCard>
       
       <!-- Systemavisering -->
-      <FkAlert variant="info" class="fk-mb-4">
+      <FMessageBox variant="info" type="info" class="fk-mb-4">
         <strong>Systemuppdatering:</strong> Planerat underhåll kommer att ske denna helg från 02:00 till 06:00.
-      </FkAlert>
+      </FMessageBox>
     </div>
   </div>
 </template>
@@ -1891,6 +1863,7 @@ const toggleMobileMenu = () => {
 
 .app-logo a {
   color: white;
+  display: block;
   text-decoration: none;
 }
 
@@ -2127,7 +2100,7 @@ Använd detta beslutsträd när du överväger anpassningar:
 
 ```vue
 <template>
-  <FkButton>Klicka på mig</FkButton> <!-- Misslyckas om inte registrerad -->
+  <FButton>Klicka på mig</FButton> <!-- Misslyckas om inte registrerad -->
 </template>
 ```
 
@@ -2135,8 +2108,8 @@ Använd detta beslutsträd när du överväger anpassningar:
 
 ```typescript
 // I src/plugins/fkui.ts eller komponentfil
-import { FkButton } from '@fkui/vue'
-app.component('FkButton', FkButton)
+import { FButton } from '@fkui/vue'
+app.component('FButton', FButton)
 ```
 
 ❌ **Gör inte: Använd inlinestilar för tematisering**
@@ -2332,24 +2305,24 @@ const colorPalette = reactive({
         <h2 class="fk-heading-2">Komponentvariationer</h2>
         <div class="component-test-group">
           <h3>Knappar</h3>
-          <FkButton variant="primary" class="fk-mr-2">Primär</FkButton>
-          <FkButton variant="secondary" class="fk-mr-2">Sekundär</FkButton>
-          <FkButton variant="ghost" class="fk-mr-2">Ghost</FkButton>
+          <FButton variant="primary" class="fk-mr-2">Primär</FButton>
+          <FButton variant="secondary" class="fk-mr-2">Sekundär</FButton>
+          <FButton variant="tertiary" class="fk-mr-2">Tertiär</FButton>
         </div>
         
         <div class="component-test-group">
           <h3>Badges</h3>
-          <FkBadge variant="success" class="fk-mr-2">Framgång</FkBadge>
-          <FkBadge variant="warning" class="fk-mr-2">Varning</FkBadge>
-          <FkBadge variant="error" class="fk-mr-2">Fel</FkBadge>
+          <FBadge variant="success" class="fk-mr-2">Framgång</FBadge>
+          <FBadge variant="warning" class="fk-mr-2">Varning</FBadge>
+          <FBadge variant="error" class="fk-mr-2">Fel</FBadge>
         </div>
         
         <div class="component-test-group">
           <h3>Aviseringar</h3>
-          <FkAlert variant="info" class="fk-mb-2">Infoavisering</FkAlert>
-          <FkAlert variant="success" class="fk-mb-2">Framgångsavisering</FkAlert>
-          <FkAlert variant="warning" class="fk-mb-2">Varningsavisering</FkAlert>
-          <FkAlert variant="error" class="fk-mb-2">Felavisering</FkAlert>
+          <FMessageBox variant="info" type="info" class="fk-mb-2">Infoavisering</FMessageBox>
+          <FMessageBox variant="success" type="success" class="fk-mb-2">Framgångsavisering</FMessageBox>
+          <FMessageBox variant="warning" type="warning" class="fk-mb-2">Varningsavisering</FMessageBox>
+          <FMessageBox variant="error" type="error" class="fk-mb-2">Felavisering</FMessageBox>
         </div>
       </section>
     </div>
@@ -3241,7 +3214,7 @@ htop     # CPU och processer (installera med: sudo apt install htop)
 npm list @fkui
 
 # Uppdatera alla till samma version
-npm install @fkui/vue@6.26.0 @fkui/design@6.26.0 @fkui/date@6.26.0 @fkui/logic@6.26.0 @fkui/theme-default@6.26.0
+npm install @fkui/vue@6.27.0 @fkui/design@6.27.0 @fkui/date@6.27.0 @fkui/logic@6.27.0 @fkui/theme-default@6.27.0
 ```
 
 #### Problem: TypeScript-fel i FKUI-importer

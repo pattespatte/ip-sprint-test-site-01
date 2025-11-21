@@ -479,9 +479,9 @@ Update your `package.json` with the necessary scripts:
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@fkui/date": "^6.26.0",
+    "@fkui/date": "^6.27.0",
     "@fkui/design": "^6.26.0",
-    "@fkui/logic": "^6.26.0",
+    "@fkui/logic": "^6.27.0",
     "@fkui/theme-default": "^6.27.0",
     "@fkui/vue": "^6.27.0",
     "vue": "^3.5.24",
@@ -1860,6 +1860,7 @@ const toggleMobileMenu = () => {
 
 .app-logo a {
   color: white;
+  display: block;
   text-decoration: none;
 }
 

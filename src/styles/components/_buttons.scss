@@ -12,19 +12,19 @@
   }
   
   // Override only the specific properties we want to change
-  background-color: var(--color-primary-700) !important;
-  border: 2px solid var(--color-primary-800) !important;
-  color: white !important;
+  background-color: var(--color-primary-700);
+  border: 2px solid var(--color-primary-800);
+  color: white;
   
   // Keep FKUI hover behavior but with our darker colors
   &:hover {
-    background-color: var(--color-primary-800) !important;
-    border-color: var(--color-primary-900) !important;
+    background-color: var(--color-primary-800);
+    border-color: var(--color-primary-900);
   }
   
   // Ensure focus states are also properly styled
   &:focus {
-    border-color: var(--color-primary-800) !important;
-    box-shadow: 0 0 0 3px rgba(13, 31, 64, 0.25) !important;
+    border-color: var(--color-primary-800);
+    box-shadow: 0 0 0 3px rgba(13, 31, 64, 0.25);
   }
 }

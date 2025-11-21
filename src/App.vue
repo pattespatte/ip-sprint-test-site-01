@@ -110,6 +110,7 @@ const toggleMobileMenu = () => {
 
 .app-logo a {
   color: white;
+  display: block;
   text-decoration: none;
 }
 
