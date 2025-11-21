@@ -153,37 +153,43 @@ onMounted(() => {
 				</div>
 
 				<div class="table-wrapper">
-					<FDataTable :rows="applications">
-						<FTableColumn id="id" title="ID" />
-						<FTableColumn id="name" title="Name" />
-						<FTableColumn id="type" title="Type" />
-						<FTableColumn id="date" title="Date">
-							<template #default="item">
-								{{ formatDate(item.date) }}
-							</template>
-						</FTableColumn>
-						<FTableColumn id="status" title="Status">
-							<template #default="item">
-								<FBadge
-									:variant="getStatusVariant(item.status)"
-								>
-									{{ item.status }}
-								</FBadge>
-							</template>
-						</FTableColumn>
-						<FTableColumn id="actions" title="Actions">
-							<template #default="item">
-								<!-- DEBUG: Changing variant from ghost to secondary to fix invalid prop error -->
-								<FButton
-									variant="secondary"
-									size="small"
-									@click="viewDetails(item.id)"
-								>
-									View
-								</FButton>
-							</template>
-						</FTableColumn>
-					</FDataTable>
+					<!-- DEBUG: Use simple HTML table instead of FDataTable for now -->
+					<table class="applications-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Type</th>
+								<th>Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="item in applications" :key="item.id">
+								<td>{{ item.id }}</td>
+								<td>{{ item.name }}</td>
+								<td>{{ item.type }}</td>
+								<td>{{ formatDate(item.date) }}</td>
+								<td>
+									<FBadge
+										:variant="getStatusVariant(item.status)"
+									>
+										{{ item.status }}
+									</FBadge>
+								</td>
+								<td>
+									<FButton
+										variant="secondary"
+										size="small"
+										@click="viewDetails(item.id)"
+									>
+										View
+									</FButton>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</FCard>
 
@@ -285,6 +291,29 @@ onMounted(() => {
 
 .table-wrapper {
 	overflow-x: auto;
+}
+
+.applications-table {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.applications-table th,
+.applications-table td {
+	padding: 0.75rem;
+	text-align: left;
+	border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.applications-table th {
+	background-color: var(--color-neutral-50);
+	font-weight: 600;
+	color: var(--color-neutral-700);
+}
+
+.applications-table tbody tr:hover {
+	background-color: var(--color-neutral-50);
 }
 
 .activity-list {
