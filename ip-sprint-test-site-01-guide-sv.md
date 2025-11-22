@@ -456,7 +456,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // Lägg till FKUI:s SCSS-variabler och mixins
-        additionalData: `@use "@fkui/design/src/core/variables" as *;`
+        additionalData: `@use "@fkui/design" as *;`
       }
     }
   },
@@ -631,6 +631,29 @@ VITE_API_URL=http://localhost:3000/api
 VITE_DEBUG=true
 ```
 
+⚠️ **Viktigt**: `.env.local`-filen bör innehålla känslig eller miljöspecifik data som inte ska committas till versionshantering. Denna fil är redan inkluderad i `.gitignore`-filen för att förhindra oavsiktliga commits.
+
+**Skapa .env.local-fil:**
+
+1. Skapa fil i projektroten:
+   ```bash
+   touch .env.local
+   ```
+
+2. Lägg till dina lokala miljövariabler:
+   ```bash
+   # .env.local
+   VITE_API_URL=http://localhost:3000/api
+   VITE_DEBUG=true
+   VITE_APP_ENV=development
+   ```
+
+3. Verifiera att den är i .gitignore:
+   ```bash
+   cat .gitignore | grep .env.local
+   # Should output: .env.local
+   ```
+
 ---
 
 ## Skapa temalagret
@@ -653,7 +676,7 @@ touch src/styles/_branding.scss
 // src/styles/_variables.scss
 
 // Importera först FKUI-variabler
-@use "@fkui/design/src/core/variables" as fkui;
+@use "@fkui/design/src/core" as fkui;
 
 // Definera sedan dina åsidosättningar
 $primary-color: #3366cc;    // Ditt varumärkesprimär
