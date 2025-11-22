@@ -648,9 +648,9 @@ touch src/styles/_branding.scss
 @use "@fkui/design/src/core/variables" as fkui;
 
 // Then define your overrides
-$primary-color: #3366cc;  // Your brand primary
-$secondary-color: #6699ff; // Your brand secondary
-$text-color: #333333;     // Your text color
+$primary-color: #3366cc;    // Your brand primary
+$secondary-color: #6699ff;  // Your brand secondary
+$text-color: #333333;       // Your text color
 $background-color: #ffffff; // Your background color
 
 // Override FKUI variables with your values

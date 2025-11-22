@@ -12,6 +12,7 @@ declare module '@fkui/vue' {
   export const FSelectField: DefineComponent<any, any, any>
   export const FTextareaField: DefineComponent<any, any, any>
   export const FCheckboxField: DefineComponent<any, any, any>
+  export const FErrorMessage: DefineComponent<any, any, any>
   export const FBadge: DefineComponent<any, any, any>
   export const FDataTable: DefineComponent<any, any, any>
   export const FTableColumn: DefineComponent<any, any, any>

@@ -538,28 +538,24 @@ Skapa ett plugin för att registrera FKUI-komponenter:
 ```typescript
 // src/plugins/fkui.ts
 import type { App } from 'vue'
+// Importera alla FKUI-komponenter och registerera dem globalt
 import * as FKUI from '@fkui/vue'
-
-// Skapa en grundläggande screen reader context för att undvika undefined-fel
-const screenReaderContext = {
-  screenReaderContextKey: Symbol('screen-reader-context'),
-  provide: () => ({
-    announce: (message: string) => {
-      // Implementera grundläggande screen reader-funktionalitet
-      console.log('Screen reader announcement:', message)
-    }
-  })
-}
 
 export default {
   install(app: App) {
-    // Registrera alla FKUI-komponenter globalt
-    Object.entries(FKUI).forEach(([name, component]) => {
-      app.component(name, component)
+    // DEBUG: Tillhandahåll screen reader context
+    app.provide('screenReaderContextKey', {
+      screenReaderContextKey: Symbol('screenReaderContext')
     })
     
-    // Tillhandahåll screen reader context
-    app.provide(screenReaderContext.screenReaderContextKey, screenReaderContext.provide())
+    // Registrera alla FKUI-komponenter globalt
+    Object.entries(FKUI).forEach(([name, component]) => {
+      if (name.startsWith('F')) {
+        app.component(name, component)
+      }
+    })
+    
+    console.log('DEBUG: FKUI plugin installed with components:', Object.keys(FKUI).filter(name => name.startsWith('F')))
   }
 }
 ```
@@ -652,9 +648,9 @@ touch src/styles/_branding.scss
 @use "@fkui/design/src/core/variables" as fkui;
 
 // Definera sedan dina åsidosättningar
-$primary-color: #3366cc;  // Ditt varumärkesprimär
-$secondary-color: #6699ff; // Ditt varumärkessekundär
-$text-color: #333333;     // Din textfärg
+$primary-color: #3366cc;    // Ditt varumärkesprimär
+$secondary-color: #6699ff;  // Ditt varumärkessekundär
+$text-color: #333333;       // Din textfärg
 $background-color: #ffffff; // Din bakgrundsfärg
 
 // Åsidosätt FKUI-variabler med dina värden
@@ -942,6 +938,8 @@ const app = createApp(App)
 app.use(router)
 app.use(FkuiPlugin)
 
+console.log('DEBUG: FKUI-plugins har laddats')
+
 app.mount('#app')
 ```
 
@@ -1218,6 +1216,7 @@ const resetForm = () => {
               type="text"
               :class="{ 'error': errors.firstName }"
             />
+            <!-- FErrorMessage-komponent -->
             <FErrorMessage v-if="errors.firstName">
               {{ errors.firstName }}
             </FErrorMessage>

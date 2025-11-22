@@ -134,12 +134,11 @@ const resetForm = () => {
               id="firstName"
               v-model="formData.firstName"
               type="text"
-              :class="{ 'error': errors.firstName }"
+              required
             />
-            <!-- FErrorMessage component -->
-              <div v-if="errors.firstName" class="error-message">
-                {{ errors.firstName }}
-              </div>
+            <div v-if="errors.firstName" class="error-message">
+              {{ errors.firstName }}
+            </div>
           </FFieldset>
           
           <FFieldset>
@@ -148,12 +147,11 @@ const resetForm = () => {
               id="lastName"
               v-model="formData.lastName"
               type="text"
-              :class="{ 'error': errors.lastName }"
+              required
             />
-            <!-- FErrorMessage component -->
-              <div v-if="errors.lastName" class="error-message">
-                {{ errors.lastName }}
-              </div>
+            <div v-if="errors.lastName" class="error-message">
+              {{ errors.lastName }}
+            </div>
           </FFieldset>
           
           <FFieldset>
@@ -162,12 +160,11 @@ const resetForm = () => {
               id="email"
               v-model="formData.email"
               type="email"
-              :class="{ 'error': errors.email }"
+              required
             />
-            <!-- FErrorMessage component -->
-              <div v-if="errors.email" class="error-message">
-                {{ errors.email }}
-              </div>
+            <div v-if="errors.email" class="error-message">
+              {{ errors.email }}
+            </div>
           </FFieldset>
           
           <FFieldset>
@@ -189,17 +186,16 @@ const resetForm = () => {
             <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
-              :class="{ 'error': errors.contactMethod }"
+              required
             >
               <option value="">Please select</option>
               <option value="email">Email</option>
               <option value="phone">Phone</option>
               <option value="mail">Mail</option>
             </FSelectField>
-            <!-- FErrorMessage component -->
-              <div v-if="errors.contactMethod" class="error-message">
-                {{ errors.contactMethod }}
-              </div>
+            <div v-if="errors.contactMethod" class="error-message">
+              {{ errors.contactMethod }}
+            </div>
           </FFieldset>
           
           <FFieldset>
@@ -222,10 +218,12 @@ const resetForm = () => {
         <!-- Agreement Section -->
         <fieldset class="form-section">
           <FFieldset>
-            <FCheckboxField v-model="formData.agreedToTerms">
+            <FCheckboxField v-model="formData.agreedToTerms" value="terms">
               I agree to the terms and conditions *
             </FCheckboxField>
-            <!-- FErrorMessage component -->
+            <div v-if="errors.agreedToTerms" class="error-message">
+              {{ errors.agreedToTerms }}
+            </div>
           </FFieldset>
         </fieldset>
         

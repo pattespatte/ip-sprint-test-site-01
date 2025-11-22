@@ -17,6 +17,8 @@ export default {
       }
     })
     
+    // DEBUG: Check if validation directives are available
     console.log('DEBUG: FKUI plugin installed with components:', Object.keys(FKUI).filter(name => name.startsWith('F')))
+    console.log('DEBUG: Available validation components:', Object.keys(FKUI).filter(name => name.includes('Valid')))
   }
 }
