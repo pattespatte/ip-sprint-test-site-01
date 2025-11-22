@@ -22,10 +22,10 @@ const toggleMobileMenu = () => {
             </router-link>
           </div>
           
-          <button 
-            class="mobile-menu-toggle" 
+          <button
+            class="mobile-menu-toggle"
             @click="toggleMobileMenu"
-            aria-label="Toggle navigation menu"
+            aria-label="Växla navigeringsmeny"
           >
             ☰
           </button>
@@ -33,12 +33,12 @@ const toggleMobileMenu = () => {
           <ul class="nav-links" :class="{ 'mobile-open': mobileMenuOpen }">
             <li>
               <router-link to="/" class="nav-link" @click="mobileMenuOpen = false">
-                Home
+                Hem
               </router-link>
             </li>
             <li>
               <router-link to="/form" class="nav-link" @click="mobileMenuOpen = false">
-                Form
+                Formulär
               </router-link>
             </li>
             <li>
@@ -59,7 +59,7 @@ const toggleMobileMenu = () => {
         <template #fallback>
           <div class="loading-container">
             <div class="loading-spinner"></div>
-            <p>Loading...</p>
+            <p>Laddar...</p>
           </div>
         </template>
       </Suspense>
@@ -67,7 +67,7 @@ const toggleMobileMenu = () => {
     
     <footer class="app-footer">
       <div class="container">
-        <p>&copy; 2025 IP Sprint Test Site. Built with Försäkringskassans Designsystem.</p>
+        <p>&copy; 2025 IP Sprint Test Site. Byggd med Försäkringskassans Designsystem.</p>
         <p class="version">Version {{ appVersion }}</p>
       </div>
     </footer>

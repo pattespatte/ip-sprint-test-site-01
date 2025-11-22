@@ -36,30 +36,30 @@ const validateForm = () => {
   
   
   if (!formData.firstName.trim()) {
-    errors.firstName = 'First name is required'
+    errors.firstName = 'Förnamn är obligatoriskt'
     isValid = false
   }
   
   if (!formData.lastName.trim()) {
-    errors.lastName = 'Last name is required'
+    errors.lastName = 'Efternamn är obligatoriskt'
     isValid = false
   }
   
   if (!formData.email.trim()) {
-    errors.email = 'Email is required'
+    errors.email = 'E-post är obligatoriskt'
     isValid = false
   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = 'Email is invalid'
+    errors.email = 'E-post är ogiltig'
     isValid = false
   }
   
   if (!formData.contactMethod) {
-    errors.contactMethod = 'Please select a contact method'
+    errors.contactMethod = 'Välj en kontaktmetod'
     isValid = false
   }
   
   if (!formData.agreedToTerms) {
-    errors.agreedToTerms = 'You must agree to the terms'
+    errors.agreedToTerms = 'Du måste godkänna villkoren'
     isValid = false
   }
   
@@ -139,23 +139,23 @@ const resetForm = () => {
   <div class="form-view">
     <div class="container">
       <nav class="breadcrumb fk-mb-4">
-        <router-link to="/">Home</router-link>
+        <router-link to="/">Hem</router-link>
         <span class="separator">/</span>
-        <span>Form</span>
+        <span>Formulär</span>
       </nav>
       
-      <h1 class="fk-heading-1 fk-mb-4">Application Form</h1>
+      <h1 class="fk-heading-1 fk-mb-4">Ansökningsformulär</h1>
       <p class="fk-text-large fk-mb-6">
-        Please fill out this form to demonstrate FKUI form components.
+        Fyll i detta formulär för att demonstrera FKUI-formulärskomponenter.
       </p>
       
       <form @submit="handleSubmit" class="application-form" novalidate>
         <!-- Personal Information Section -->
         <fieldset class="form-section">
-          <legend class="fk-heading-2">Personal Information</legend>
+          <legend class="fk-heading-2">Personinformation</legend>
           
           <FFieldset>
-            <FLabel for="firstName">First Name *</FLabel>
+            <FLabel for="firstName">Förnamn *</FLabel>
             <FTextField
               id="firstName"
               v-model="formData.firstName"
@@ -169,7 +169,7 @@ const resetForm = () => {
           </FFieldset>
           
           <FFieldset>
-            <FLabel for="lastName">Last Name *</FLabel>
+            <FLabel for="lastName">Efternamn *</FLabel>
             <FTextField
               id="lastName"
               v-model="formData.lastName"
@@ -183,7 +183,7 @@ const resetForm = () => {
           </FFieldset>
           
           <FFieldset>
-            <FLabel for="email">Email Address *</FLabel>
+            <FLabel for="email">E-postadress *</FLabel>
             <FTextField
               id="email"
               v-model="formData.email"
@@ -197,7 +197,7 @@ const resetForm = () => {
           </FFieldset>
           
           <FFieldset>
-            <FLabel for="phone">Phone Number</FLabel>
+            <FLabel for="phone">Telefonnummer</FLabel>
             <FTextField
               id="phone"
               v-model="formData.phone"
@@ -208,20 +208,20 @@ const resetForm = () => {
         
         <!-- Preferences Section -->
         <fieldset class="form-section">
-          <legend class="fk-heading-2">Preferences</legend>
+          <legend class="fk-heading-2">Preferenser</legend>
           
           <FFieldset>
-            <FLabel for="contactMethod">Preferred Contact Method *</FLabel>
+            <FLabel for="contactMethod">Önskad kontaktmetod *</FLabel>
             <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
               :class="{ 'error': errors.contactMethod }"
               required
             >
-              <option value="">Please select</option>
-              <option value="email">Email</option>
-              <option value="phone">Phone</option>
-              <option value="mail">Mail</option>
+              <option value="">Välj</option>
+              <option value="email">E-post</option>
+              <option value="phone">Telefon</option>
+              <option value="mail">Post</option>
             </FSelectField>
             <div v-if="errors.contactMethod" class="error-message" role="alert">
               {{ errors.contactMethod }}
@@ -229,14 +229,14 @@ const resetForm = () => {
           </FFieldset>
           
           <FFieldset>
-            <FLabel>Notification Preferences</FLabel>
-            <FCheckboxField v-model="formData.notifications" value="updates">Product updates</FCheckboxField>
-            <FCheckboxField v-model="formData.notifications" value="newsletter">Newsletter</FCheckboxField>
-            <FCheckboxField v-model="formData.notifications" value="promotions">Promotions</FCheckboxField>
+            <FLabel>Aviseringspreferenser</FLabel>
+            <FCheckboxField v-model="formData.notifications" value="updates">Produktuppdateringar</FCheckboxField>
+            <FCheckboxField v-model="formData.notifications" value="newsletter">Nyhetsbrev</FCheckboxField>
+            <FCheckboxField v-model="formData.notifications" value="promotions">Erbjudanden</FCheckboxField>
           </FFieldset>
           
           <FFieldset>
-            <FLabel for="comments">Additional Comments</FLabel>
+            <FLabel for="comments">Ytterligare kommentarer</FLabel>
             <FTextareaField
               id="comments"
               v-model="formData.comments"
@@ -254,7 +254,7 @@ const resetForm = () => {
               :class="{ 'error': errors.agreedToTerms }"
               required
             >
-              I agree to the terms and conditions *
+              Jag godkänner villkoren och bestämmelserna *
             </FCheckboxField>
             <div v-if="errors.agreedToTerms" class="error-message" role="alert">
               {{ errors.agreedToTerms }}
@@ -265,10 +265,10 @@ const resetForm = () => {
         <!-- Form Actions -->
         <div class="form-actions">
           <FButton variant="secondary" type="button" @click="resetForm">
-            Reset
+            Återställ
           </FButton>
           <FButton variant="primary" type="submit" :disabled="isSubmitting">
-            {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
+            {{ isSubmitting ? 'Skickar...' : 'Skicka ansökan' }}
           </FButton>
         </div>
       </form>
@@ -281,7 +281,7 @@ const resetForm = () => {
         dismissible
         @close="showSuccessMessage = false"
       >
-        <strong>Success!</strong> Your application has been submitted successfully.
+        <strong>Lyckades!</strong> Din ansökan har skickats framgångsrikt.
       </FMessageBox>
     </div>
   </div>

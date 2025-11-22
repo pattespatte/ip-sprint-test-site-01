@@ -14,12 +14,12 @@ const navigateToForm = () => {
     <!-- Hero Section -->
     <section class="hero-section">
       <div class="container">
-        <h1 class="fk-heading-1">Welcome to IP Sprint Test Site</h1>
+        <h1 class="fk-heading-1">Välkommen till IP Sprint Test Site</h1>
         <p class="fk-text-large fk-mb-4">
-          This is a demonstration site built with Försäkringskassans Designsystem (FKUI).
+          Detta är en demonstrationswebbplats byggd med Försäkringskassans Designsystem (FKUI).
         </p>
         <FButton variant="primary" size="large" @click="navigateToForm" class="button button--primary button--medium">
-          Get Started
+          Kom igång
         </FButton>
       </div>
     </section>
@@ -27,27 +27,27 @@ const navigateToForm = () => {
     <!-- Features Section -->
     <section class="features-section">
       <div class="container">
-        <h2 class="fk-heading-2 fk-mb-4">Features</h2>
+        <h2 class="fk-heading-2 fk-mb-4">Funktioner</h2>
         <div class="feature-grid">
           <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">✓</div>
-              <h3 class="fk-heading-3">Easy to Use</h3>
-              <p>Built with FKUI components for consistency and accessibility.</p>
+              <h3 class="fk-heading-3">Lätt att använda</h3>
+              <p>Byggd med FKUI-komponenter för konsekvens och tillgänglighet.</p>
             </div>
           </FCard>
           <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">⚙</div>
-              <h3 class="fk-heading-3">Customizable</h3>
-              <p>Theme layer allows for easy branding and customization.</p>
+              <h3 class="fk-heading-3">Anpassningsbar</h3>
+              <p>Temalager möjliggör enkel varumärkesanpassning och anpassning.</p>
             </div>
           </FCard>
           <FCard class="feature-card">
             <div class="feature-content">
               <div class="feature-icon">🛡</div>
-              <h3 class="fk-heading-3">Secure</h3>
-              <p>Follows Swedish government security and accessibility standards.</p>
+              <h3 class="fk-heading-3">Säker</h3>
+              <p>Följer svenska statliga säkerhets- och tillgänglighetsstandarder.</p>
             </div>
           </FCard>
         </div>
@@ -57,9 +57,9 @@ const navigateToForm = () => {
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
-        <h2 class="fk-heading-2">Ready to try our form?</h2>
+        <h2 class="fk-heading-2">Redo att prova vårt formulär?</h2>
         <FButton variant="secondary" @click="navigateToForm">
-          Try the Form Demo
+          Prova formulärdemo
         </FButton>
       </div>
     </section>

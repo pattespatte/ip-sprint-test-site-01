@@ -13,52 +13,52 @@ const applications = ref([
 	{
 		id: "APP-001",
 		name: "John Doe",
-		type: "Benefits",
+		type: "Förmåner",
 		date: "2025-11-15",
-		status: "Approved",
+		status: "Godkänd",
 	},
 	{
 		id: "APP-002",
 		name: "Jane Smith",
-		type: "Healthcare",
+		type: "Sjukvård",
 		date: "2025-11-14",
-		status: "Pending",
+		status: "Väntande",
 	},
 	{
 		id: "APP-003",
 		name: "Bob Johnson",
-		type: "Benefits",
+		type: "Förmåner",
 		date: "2025-11-13",
-		status: "Needs Action",
+		status: "Behöver åtgärd",
 	},
 	{
 		id: "APP-004",
 		name: "Alice Brown",
 		type: "Pension",
 		date: "2025-11-12",
-		status: "Approved",
+		status: "Godkänd",
 	},
 ]);
 
 const activities = ref([
 	{
 		id: 1,
-		title: "Application Approved",
-		description: "Application APP-001 has been approved.",
+		title: "Ansökan godkänd",
+		description: "Ansökan APP-001 har godkänts.",
 		timestamp: "2025-11-15T14:30:00Z",
 		type: "success",
 	},
 	{
 		id: 2,
-		title: "Document Uploaded",
-		description: "New document uploaded for application APP-002.",
+		title: "Dokument uppladdat",
+		description: "Nytt dokument uppladdat för ansökan APP-002.",
 		timestamp: "2025-11-15T10:15:00Z",
 		type: "info",
 	},
 	{
 		id: 3,
-		title: "Action Required",
-		description: "Additional information needed for application APP-003.",
+		title: "Åtgärd krävs",
+		description: "Ytterligare information behövs för ansökan APP-003.",
 		timestamp: "2025-11-14T16:45:00Z",
 		type: "warning",
 	},
@@ -75,11 +75,11 @@ const formatDate = (dateString) => {
 
 const getStatusVariant = (status) => {
 	switch (status) {
-		case "Approved":
+		case "Godkänd":
 			return "success";
-		case "Pending":
+		case "Väntande":
 			return "info";
-		case "Needs Action":
+		case "Behöver åtgärd":
 			return "warning";
 		default:
 			return "neutral";
@@ -101,14 +101,14 @@ onMounted(() => {
 	<div class="dashboard-view">
 		<div class="container">
 			<nav class="breadcrumb fk-mb-4">
-				<router-link to="/">Home</router-link>
+				<router-link to="/">Hem</router-link>
 				<span class="separator">/</span>
 				<span>Dashboard</span>
 			</nav>
 
 			<h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
 			<p class="fk-text-large fk-mb-6">
-				Overview of your application status and recent activity.
+				Översikt av din ansökningsstatus och senaste aktivitet.
 			</p>
 
 			<!-- Status Cards -->
@@ -116,7 +116,7 @@ onMounted(() => {
 				<FCard class="status-card">
 					<div class="status-card-content">
 						<div class="status-icon">📄</div>
-						<h3 class="fk-heading-4">Applications</h3>
+						<h3 class="fk-heading-4">Ansökningar</h3>
 						<p class="fk-text-large">{{ stats.applications }}</p>
 					</div>
 				</FCard>
@@ -124,7 +124,7 @@ onMounted(() => {
 				<FCard class="status-card">
 					<div class="status-card-content">
 						<div class="status-icon">🕐</div>
-						<h3 class="fk-heading-4">Pending</h3>
+						<h3 class="fk-heading-4">Väntande</h3>
 						<p class="fk-text-large">{{ stats.pending }}</p>
 					</div>
 				</FCard>
@@ -132,7 +132,7 @@ onMounted(() => {
 				<FCard class="status-card">
 					<div class="status-card-content">
 						<div class="status-icon">✓</div>
-						<h3 class="fk-heading-4">Approved</h3>
+						<h3 class="fk-heading-4">Godkända</h3>
 						<p class="fk-text-large">{{ stats.approved }}</p>
 					</div>
 				</FCard>
@@ -140,7 +140,7 @@ onMounted(() => {
 				<FCard class="status-card">
 					<div class="status-card-content">
 						<div class="status-icon">⚠</div>
-						<h3 class="fk-heading-4">Need Action</h3>
+						<h3 class="fk-heading-4">Behöver åtgärd</h3>
 						<p class="fk-text-large">{{ stats.needsAction }}</p>
 					</div>
 				</FCard>
@@ -149,7 +149,7 @@ onMounted(() => {
 			<!-- Recent Applications Table -->
 			<FCard class="fk-mb-6">
 				<div class="card-header">
-					<h2 class="fk-heading-2">Recent Applications</h2>
+					<h2 class="fk-heading-2">Senaste ansökningar</h2>
 				</div>
 
 				<div class="table-wrapper">
@@ -158,11 +158,11 @@ onMounted(() => {
 						<thead>
 							<tr>
 								<th>ID</th>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Date</th>
+								<th>Namn</th>
+								<th>Typ</th>
+								<th>Datum</th>
 								<th>Status</th>
-								<th>Actions</th>
+								<th>Åtgärder</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -184,7 +184,7 @@ onMounted(() => {
 										size="small"
 										@click="viewDetails(item.id)"
 									>
-										View
+										Visa
 									</FButton>
 								</td>
 							</tr>
@@ -196,7 +196,7 @@ onMounted(() => {
 			<!-- Activity Timeline -->
 			<FCard class="fk-mb-6">
 				<div class="card-header">
-					<h2 class="fk-heading-2">Recent Activity</h2>
+					<h2 class="fk-heading-2">Senaste aktivitet</h2>
 				</div>
 
 				<div class="activity-list">
@@ -233,8 +233,8 @@ onMounted(() => {
 			<!-- System Notification -->
 			<!-- DEBUG: Adding type prop to fix missing required prop error -->
 			<FMessageBox type="info" variant="info" class="fk-mb-4">
-				<strong>System Update:</strong> Scheduled maintenance will occur
-				this weekend from 2 AM to 6 AM.
+				<strong>Systemuppdatering:</strong> Planerat underhåll kommer att ske
+				denna helg från 02:00 till 06:00.
 			</FMessageBox>
 		</div>
 	</div>
