@@ -23,5 +23,7 @@ export default {
       console.log('ValidationPlugin found, installing...')
       app.use(validationPlugin)
     }
+    
+    console.log('DEBUG: FKUI plugin installed with components:', Object.keys(FKUI).filter(name => name.startsWith('F')))
   }
 }

@@ -356,7 +356,7 @@ Based on the FKUI documentation, install the required packages:
 
 ```bash
 # Install FKUI packages (ensure all use the same version)
-npm install @fkui/theme-default@^6.26.0 @fkui/design@^6.26.0 @fkui/date@^6.26.0 @fkui/logic@^6.26.0 @fkui/vue@^6.26.0
+npm install @fkui/theme-default@^6.27.0 @fkui/design@^6.27.0 @fkui/date@^6.27.0 @fkui/logic@^6.27.0 @fkui/vue@^6.27.0
 
 # Install SCSS support for Vite
 npm install -D sass-embedded
@@ -456,7 +456,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // Add FKUI's SCSS variables and mixins
-        additionalData: `@use "@fkui/design/src/core" as *;`
+        additionalData: `@use "@fkui/design" as *;`
       }
     }
   },
@@ -488,7 +488,7 @@ Update your `package.json` with the necessary scripts:
   },
   "dependencies": {
     "@fkui/date": "^6.27.0",
-    "@fkui/design": "^6.26.0",
+    "@fkui/design": "^6.27.0",
     "@fkui/logic": "^6.27.0",
     "@fkui/theme-default": "^6.27.0",
     "@fkui/vue": "^6.27.0",
@@ -621,6 +621,29 @@ VITE_FKUI_THEME=default
 VITE_API_URL=http://localhost:3000/api
 VITE_DEBUG=true
 ```
+
+⚠️ **Important**: The `.env.local` file should contain sensitive or environment-specific data that should not be committed to version control. This file is already included in the `.gitignore` file to prevent accidental commits.
+
+**Creating the .env.local file:**
+
+1. Create the file in your project root:
+   ```bash
+   touch .env.local
+   ```
+
+2. Add your local environment variables:
+   ```bash
+   # .env.local
+   VITE_API_URL=http://localhost:3000/api
+   VITE_DEBUG=true
+   VITE_APP_ENV=development
+   ```
+
+3. Verify it's in .gitignore:
+   ```bash
+   cat .gitignore | grep .env.local
+   # Should output: .env.local
+   ```
 
 ---
 
@@ -1083,7 +1106,7 @@ touch src/views/FormView.vue
 ```vue
 <!-- src/views/FormView.vue -->
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -1114,57 +1137,106 @@ const validateForm = () => {
   Object.keys(errors).forEach(key => {
     errors[key] = ''
   })
-
+  
   let isValid = true
-
-  if (!formData.firstName) {
+  
+  if (!formData.firstName.trim()) {
     errors.firstName = 'First name is required'
     isValid = false
   }
-
-  if (!formData.lastName) {
+  
+  if (!formData.lastName.trim()) {
     errors.lastName = 'Last name is required'
     isValid = false
   }
-
-  if (!formData.email) {
+  
+  if (!formData.email.trim()) {
     errors.email = 'Email is required'
     isValid = false
   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
     errors.email = 'Email is invalid'
     isValid = false
   }
-
+  
   if (!formData.contactMethod) {
     errors.contactMethod = 'Please select a contact method'
     isValid = false
   }
-
+  
   if (!formData.agreedToTerms) {
-    errors.agreedToTerms = 'You must agree to the terms'
+    errors.agreedToTerms = 'You must agree to terms'
     isValid = false
   }
-
+  
   return isValid;
+}
+
+const focusFirstErrorField = async () => {
+  // Find first field with an error
+  const firstErrorField = Object.keys(errors).find(key => errors[key])
+  
+  if (firstErrorField) {
+    // For checkbox fields, we need to handle differently
+    let element
+    if (firstErrorField === 'agreedToTerms') {
+      // Find the checkbox input within the fieldset
+      element = document.querySelector(`input[name="${firstErrorField}"]`)
+    } else {
+      // Find the input/select element by ID
+      element = document.querySelector(`#${firstErrorField}`)
+    }
+    
+    if (element) {
+      // Wait for DOM to update
+      await nextTick()
+      
+      // Focus element
+      element.focus()
+      
+      // Scroll to element with smooth behavior
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+      
+      // Announce error to screen readers
+      const errorElement = document.querySelector(`#${firstErrorField}-error`)
+      if (errorElement) {
+        errorElement.setAttribute('aria-live', 'polite')
+        errorElement.setAttribute('role', 'alert')
+      }
+      
+      console.log(`Focused and scrolled to first error field: ${firstErrorField}`)
+    }
+  }
 }
 
 const handleSubmit = async (event) => {
   event.preventDefault()
-
-  if (!validateForm()) return
-
+  
+  console.log('Form submit triggered')
+  
+  if (!validateForm()) {
+    console.log('Validation failed, submission prevented')
+    
+    // Focus first error field with enhanced accessibility
+    await focusFirstErrorField()
+    
+    return
+  }
+  
   isSubmitting.value = true
-
+  
   try {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500))
-
+    
     // Show success message
     showSuccessMessage.value = true
-
+    
     // Reset form
     resetForm()
-
+    
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
@@ -1195,10 +1267,10 @@ const resetForm = () => {
 <template>
   <div class="form-view">
     <div class="container">
-      <nav class="breadcrumb fk-mb-4">
+      <nav class="breadcrumb fk-mb-4" aria-label="Breadcrumb navigation">
         <router-link to="/">Home</router-link>
-        <span class="separator">/</span>
-        <span>Form</span>
+        <span class="separator" aria-hidden="true">/</span>
+        <span aria-current="page">Form</span>
       </nav>
 
       <h1 class="fk-heading-1 fk-mb-4">Application Form</h1>
@@ -1206,69 +1278,96 @@ const resetForm = () => {
         Please fill out this form to demonstrate FKUI form components.
       </p>
 
-      <form @submit="handleSubmit" class="application-form">
+      <!-- Form submission status for screen readers -->
+      <div
+        v-if="Object.values(errors).some(error => error)"
+        class="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        Form has validation errors. Please review and correct the highlighted fields.
+      </div>
+
+      <form @submit="handleSubmit" class="application-form" novalidate>
         <!-- Personal Information Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personal Information</legend>
-
+          
           <FFieldset>
             <FLabel for="firstName">First Name *</FLabel>
             <FTextField
               id="firstName"
               v-model="formData.firstName"
               type="text"
+              :class="{ 'error': errors.firstName }"
+              :aria-invalid="!!errors.firstName"
+              :aria-describedby="errors.firstName ? 'firstName-error' : null"
               required
+              autocomplete="given-name"
             />
-            <div v-if="errors.firstName" class="error-message">
+            <div v-if="errors.firstName" id="firstName-error" class="error-message" role="alert">
               {{ errors.firstName }}
             </div>
           </FFieldset>
-
+          
           <FFieldset>
             <FLabel for="lastName">Last Name *</FLabel>
             <FTextField
               id="lastName"
               v-model="formData.lastName"
               type="text"
+              :class="{ 'error': errors.lastName }"
+              :aria-invalid="!!errors.lastName"
+              :aria-describedby="errors.lastName ? 'lastName-error' : null"
               required
+              autocomplete="family-name"
             />
-            <div v-if="errors.lastName" class="error-message">
+            <div v-if="errors.lastName" id="lastName-error" class="error-message" role="alert">
               {{ errors.lastName }}
             </div>
           </FFieldset>
-
+          
           <FFieldset>
             <FLabel for="email">Email Address *</FLabel>
             <FTextField
               id="email"
               v-model="formData.email"
               type="email"
+              :class="{ 'error': errors.email }"
+              :aria-invalid="!!errors.email"
+              :aria-describedby="errors.email ? 'email-error' : null"
               required
+              autocomplete="email"
             />
-            <div v-if="errors.email" class="error-message">
+            <div v-if="errors.email" id="email-error" class="error-message" role="alert">
               {{ errors.email }}
             </div>
           </FFieldset>
-
+          
           <FFieldset>
             <FLabel for="phone">Phone Number</FLabel>
             <FTextField
               id="phone"
               v-model="formData.phone"
               type="tel"
+              autocomplete="tel"
             />
           </FFieldset>
         </fieldset>
-
+        
         <!-- Preferences Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferences</legend>
-
+          
           <FFieldset>
             <FLabel for="contactMethod">Preferred Contact Method *</FLabel>
             <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
+              :class="{ 'error': errors.contactMethod }"
+              :aria-invalid="!!errors.contactMethod"
+              :aria-describedby="errors.contactMethod ? 'contactMethod-error' : null"
               required
             >
               <option value="">Please select</option>
@@ -1276,48 +1375,94 @@ const resetForm = () => {
               <option value="phone">Phone</option>
               <option value="mail">Mail</option>
             </FSelectField>
-            <div v-if="errors.contactMethod" class="error-message">
+            <div v-if="errors.contactMethod" id="contactMethod-error" class="error-message" role="alert">
               {{ errors.contactMethod }}
             </div>
           </FFieldset>
-
+          
           <FFieldset>
-            <FLabel>Notification Preferences</FLabel>
-            <FCheckboxField v-model="formData.notifications" value="updates">Product updates</FCheckboxField>
-            <FCheckboxField v-model="formData.notifications" value="newsletter">Newsletter</FCheckboxField>
-            <FCheckboxField v-model="formData.notifications" value="promotions">Promotions</FCheckboxField>
+            <fieldset class="checkbox-group">
+              <legend class="group-legend">Notification Preferences</legend>
+              <FCheckboxField
+                v-model="formData.notifications"
+                value="updates"
+                aria-describedby="notifications-help"
+              >
+                Product updates
+              </FCheckboxField>
+              <FCheckboxField
+                v-model="formData.notifications"
+                value="newsletter"
+                aria-describedby="notifications-help"
+              >
+                Newsletter
+              </FCheckboxField>
+              <FCheckboxField
+                v-model="formData.notifications"
+                value="promotions"
+                aria-describedby="notifications-help"
+              >
+                Promotions
+              </FCheckboxField>
+              <div id="notifications-help" class="sr-only">
+                Select all notification preferences you wish to receive
+              </div>
+            </fieldset>
           </FFieldset>
-
+          
           <FFieldset>
             <FLabel for="comments">Additional Comments</FLabel>
             <FTextareaField
               id="comments"
               v-model="formData.comments"
               rows="4"
+              aria-describedby="comments-help"
             />
+            <div id="comments-help" class="sr-only">
+              Optional field for any additional information you'd like to provide
+            </div>
           </FFieldset>
         </fieldset>
-
+        
         <!-- Agreement Section -->
         <fieldset class="form-section">
           <FFieldset>
-            <FCheckboxField v-model="formData.agreedToTerms" value="terms">
+            <FCheckboxField
+              v-model="formData.agreedToTerms"
+              value="terms"
+              name="agreedToTerms"
+              :class="{ 'error': errors.agreedToTerms }"
+              :aria-invalid="!!errors.agreedToTerms"
+              :aria-describedby="errors.agreedToTerms ? 'agreedToTerms-error' : 'terms-help'"
+              required
+            >
               I agree to the terms and conditions *
             </FCheckboxField>
-            <div v-if="errors.agreedToTerms" class="error-message">
+            <div v-if="errors.agreedToTerms" id="agreedToTerms-error" class="error-message" role="alert">
               {{ errors.agreedToTerms }}
+            </div>
+            <div id="terms-help" class="sr-only">
+              You must agree to the terms and conditions to submit this form
             </div>
           </FFieldset>
         </fieldset>
 
         <!-- Form Actions -->
-        <div class="form-actions">
+        <div class="form-actions" role="group" aria-label="Form actions">
           <FButton variant="secondary" type="button" @click="resetForm">
             Reset
           </FButton>
-          <FButton variant="primary" type="submit" :disabled="isSubmitting">
+          <FButton
+            variant="primary"
+            type="submit"
+            :disabled="isSubmitting"
+            aria-describedby="isSubmitting ? 'submit-status' : null"
+          >
             {{ isSubmitting ? 'Submitting...' : 'Submit Application' }}
           </FButton>
+          <div v-if="isSubmitting" id="submit-status" class="sr-only" role="status" aria-live="polite">
+            Form submission in progress, please wait
+          </div>
         </div>
       </form>
 
@@ -1327,6 +1472,8 @@ const resetForm = () => {
         variant="success"
         class="fk-mt-6"
         dismissible
+        role="alert"
+        aria-live="polite"
         @close="showSuccessMessage = false"
       >
         <strong>Success!</strong> Your application has been submitted successfully.
@@ -1378,6 +1525,19 @@ const resetForm = () => {
   width: 100%;
 }
 
+.checkbox-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.group-legend {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-neutral-900);
+}
+
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -1391,14 +1551,98 @@ const resetForm = () => {
   padding: 0 1rem;
 }
 
-.error-message {
-  color: var(--color-error-600);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.error {
-  border-color: var(--color-error-500);
+/* Make error messages more visible */
+.error-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  display: block;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #d32f2f;
+  border-radius: 4px;
+}
+
+.error-message::before {
+  content: "⚠️ Error: ";
+  font-weight: bold;
+}
+
+/* Target FKUI input elements specifically - using actual FKUI class names */
+.text-field__input.error,
+.select-field__select.error,
+.checkbox-field__input.error {
+  border-color: #d32f2f;
+  border-width: 2px;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.3);
+  background-color: #fef2f2;
+}
+
+/* Target parent containers for better visual feedback */
+.text-field.error,
+.select-field.error,
+.checkbox-field.error {
+  /* Style entire field container when in error state */
+}
+
+/* Focus styles for error fields */
+.text-field__input.error:focus,
+.select-field__select.error:focus,
+.checkbox-field__input.error:focus {
+  outline: 2px solid #d32f2f;
+  outline-offset: 2px;
+  border-color: #d32f2f;
+}
+
+/* Also target wrapper elements for better error visibility */
+.text-field__icon-wrapper:has(.text-field__input.error) {
+  position: relative;
+}
+
+.text-field__icon-wrapper:has(.text-field__input.error)::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #d32f2f;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .error-message {
+    border-width: 2px;
+    background-color: white;
+    color: black;
+  }
+  
+  .text-field__input.error,
+  .select-field__select.error {
+    background-color: white;
+    color: black;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  form {
+    scroll-behavior: auto;
+  }
 }
 </style>
 ```
