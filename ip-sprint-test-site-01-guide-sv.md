@@ -256,11 +256,19 @@ Först, låt oss utforska FKUI-förråd för att förstå deras struktur:
 
 1. **Main Design System**: [https://github.com/Forsakringskassan/designsystem](https://github.com/Forsakringskassan/designsystem)
    - Innehåller kärnkomponenter, stilar och verktyg
+   - Denna webbplats importerar och använder direkt dessa FKUI-komponenter
    - Granska README för att förstå beroenden och krav
 
 2. **User Template**: [https://github.com/Forsakringskassan/designsystem-user-lib](https://github.com/Forsakringskassan/designsystem-user-lib)
-   - Mall för att skapa anpassade applikationer med FKUI
-   - Visar hur man korrekt importerar och använder FKUI-komponenter
+   - Ett valfritt mellanlager som erbjuder ytterligare abstraktioner
+   - **ANVÄNDS INTE i detta projekt** - vi importerar direkt FKUI-komponenter istället
+   - designsystem-user-app är en exempelapplikation som använder designsystem-user-lib
+
+3. **Direkt FKUI-integration (Vår metod)**:
+   - Denna webbplats förbigår designsystem-user-lib-lagret
+   - Importerar direkt FKUI-komponenter från `@fkui/vue`, `@fkui/design`, etc.
+   - Ger mer kontroll över komponentanvändning och anpassning
+   - Minskar beroendelager och potentiellt abstraktionsöverlagring
 
 ⚠️ **Viktigt**: Innan du fortsätter, verifiera komponentnamn och importsökvägar i FKUI-dokumentationen. Komponent-API:er kan ändras mellan versioner.
 

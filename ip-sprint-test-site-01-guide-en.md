@@ -255,12 +255,20 @@ The "theme layer" is a lightweight approach to customizing FKUI without reinvent
 First, let's explore the FKUI repositories to understand their structure:
 
 1. **Main Design System**: [https://github.com/Forsakringskassan/designsystem](https://github.com/Forsakringskassan/designsystem)
-   - Contains core components, styles, and utilities
+   - Contains core FKUI components, styles, and utilities
+   - This site directly imports and uses these FKUI components
    - Review the README to understand dependencies and requirements
 
 2. **User Template**: [https://github.com/Forsakringskassan/designsystem-user-lib](https://github.com/Forsakringskassan/designsystem-user-lib)
-   - Template for creating custom applications with FKUI
-   - Shows how to properly import and use FKUI components
+   - An optional intermediate layer that provides additional abstractions
+   - **NOT used in this project** - we directly import FKUI components instead
+   - The designsystem-user-app is an example application that uses designsystem-user-lib
+
+3. **Direct FKUI Integration (Our Approach)**:
+   - This site bypasses the designsystem-user-lib layer
+   - Directly imports FKUI components from `@fkui/vue`, `@fkui/design`, etc.
+   - Provides more control over component usage and customization
+   - Reduces dependency layers and potential abstraction overhead
 
 ⚠️ **Important**: Before proceeding, verify the component names and import paths in the FKUI documentation. Component APIs may change between versions.
 
