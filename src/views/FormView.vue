@@ -34,17 +34,18 @@ const validateForm = () => {
   
   let isValid = true
   
-  if (!formData.firstName) {
+  
+  if (!formData.firstName.trim()) {
     errors.firstName = 'First name is required'
     isValid = false
   }
   
-  if (!formData.lastName) {
+  if (!formData.lastName.trim()) {
     errors.lastName = 'Last name is required'
     isValid = false
   }
   
-  if (!formData.email) {
+  if (!formData.email.trim()) {
     errors.email = 'Email is required'
     isValid = false
   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -62,13 +63,38 @@ const validateForm = () => {
     isValid = false
   }
   
+  
   return isValid;
 }
 
 const handleSubmit = async (event) => {
   event.preventDefault()
   
-  if (!validateForm()) return
+  console.log('Form submit triggered')
+  
+  if (!validateForm()) {
+    console.log('Validation failed, submission prevented')
+    
+    // Find the first field with an error and focus it
+    const firstErrorField = Object.keys(errors).find(key => errors[key])
+    if (firstErrorField) {
+      const element = document.querySelector(`#${firstErrorField}`)
+      if (element) {
+        // Focus the element
+        element.focus()
+        
+        // Scroll to the element with smooth behavior
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        })
+        
+        console.log(`Focused and scrolled to first error field: ${firstErrorField}`)
+      }
+    }
+    
+    return
+  }
   
   isSubmitting.value = true
   
@@ -123,7 +149,7 @@ const resetForm = () => {
         Please fill out this form to demonstrate FKUI form components.
       </p>
       
-      <form @submit="handleSubmit" class="application-form">
+      <form @submit="handleSubmit" class="application-form" novalidate>
         <!-- Personal Information Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personal Information</legend>
@@ -134,9 +160,10 @@ const resetForm = () => {
               id="firstName"
               v-model="formData.firstName"
               type="text"
+              :class="{ 'error': errors.firstName }"
               required
             />
-            <div v-if="errors.firstName" class="error-message">
+            <div v-if="errors.firstName" class="error-message" role="alert">
               {{ errors.firstName }}
             </div>
           </FFieldset>
@@ -147,9 +174,10 @@ const resetForm = () => {
               id="lastName"
               v-model="formData.lastName"
               type="text"
+              :class="{ 'error': errors.lastName }"
               required
             />
-            <div v-if="errors.lastName" class="error-message">
+            <div v-if="errors.lastName" class="error-message" role="alert">
               {{ errors.lastName }}
             </div>
           </FFieldset>
@@ -160,9 +188,10 @@ const resetForm = () => {
               id="email"
               v-model="formData.email"
               type="email"
+              :class="{ 'error': errors.email }"
               required
             />
-            <div v-if="errors.email" class="error-message">
+            <div v-if="errors.email" class="error-message" role="alert">
               {{ errors.email }}
             </div>
           </FFieldset>
@@ -186,6 +215,7 @@ const resetForm = () => {
             <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
+              :class="{ 'error': errors.contactMethod }"
               required
             >
               <option value="">Please select</option>
@@ -193,7 +223,7 @@ const resetForm = () => {
               <option value="phone">Phone</option>
               <option value="mail">Mail</option>
             </FSelectField>
-            <div v-if="errors.contactMethod" class="error-message">
+            <div v-if="errors.contactMethod" class="error-message" role="alert">
               {{ errors.contactMethod }}
             </div>
           </FFieldset>
@@ -218,10 +248,15 @@ const resetForm = () => {
         <!-- Agreement Section -->
         <fieldset class="form-section">
           <FFieldset>
-            <FCheckboxField v-model="formData.agreedToTerms" value="terms">
+            <FCheckboxField
+              v-model="formData.agreedToTerms"
+              value="terms"
+              :class="{ 'error': errors.agreedToTerms }"
+              required
+            >
               I agree to the terms and conditions *
             </FCheckboxField>
-            <div v-if="errors.agreedToTerms" class="error-message">
+            <div v-if="errors.agreedToTerms" class="error-message" role="alert">
               {{ errors.agreedToTerms }}
             </div>
           </FFieldset>
@@ -308,13 +343,62 @@ const resetForm = () => {
   padding: 0 1rem;
 }
 
+/* Make error messages more visible */
 .error-message {
-  color: var(--color-error-600);
+  color: #d32f2f;
   font-size: 0.875rem;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  display: block;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #d32f2f;
+  border-radius: 4px;
 }
 
-.error {
-  border-color: var(--color-error-500);
+.error-message::before {
+  content: "⚠️ Error: ";
+  font-weight: bold;
+}
+
+/* Target FKUI input elements specifically - using actual FKUI class names */
+.text-field__input.error,
+.select-field__select.error,
+.checkbox-field__input.error {
+  border-color: #d32f2f;
+  border-width: 2px;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.3);
+  background-color: #fef2f2;
+}
+
+/* Target the parent containers for better visual feedback */
+.text-field.error,
+.select-field.error,
+.checkbox-field.error {
+  /* Style the entire field container when in error state */
+}
+
+/* Focus styles for error fields */
+.text-field__input.error:focus,
+.select-field__select.error:focus,
+.checkbox-field__input.error:focus {
+  outline: 2px solid #d32f2f;
+  outline-offset: 2px;
+  border-color: #d32f2f;
+}
+
+/* Also target the wrapper elements for better error visibility */
+.text-field__icon-wrapper:has(.text-field__input.error) {
+  position: relative;
+}
+
+.text-field__icon-wrapper:has(.text-field__input.error)::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #d32f2f;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1;
 }
 </style>

@@ -283,13 +283,13 @@ First, let's explore the FKUI repositories to understand their structure:
    ```bash
    # Navigate to your preferred projects directory
    cd ~/projects  # or wherever you keep your code
-   
+
    # Create the directory if it doesn't exist
    mkdir -p ~/projects
-   
+
    # Clone the repository
    git clone https://gitlab.com/your-username/ip-sprint-test-site-01.git
-   
+
    # Navigate into the project directory
    cd ip-sprint-test-site-01
    ```
@@ -517,7 +517,7 @@ Create type definitions for FKUI components:
 // src/types/fkui.d.ts
 declare module '@fkui/vue' {
   import { DefineComponent } from 'vue'
-  
+
   export const FButton: DefineComponent<any, any, any>
   export const FTextField: DefineComponent<any, any, any>
   export const FCard: DefineComponent<any, any, any>
@@ -555,14 +555,14 @@ export default {
     app.provide('screenReaderContextKey', {
       screenReaderContextKey: Symbol('screenReaderContext')
     })
-    
+
     // Register all FKUI components globally
     Object.entries(FKUI).forEach(([name, component]) => {
       if (name.startsWith('F')) {
         app.component(name, component)
       }
     })
-    
+
     console.log('DEBUG: FKUI plugin installed with components:', Object.keys(FKUI).filter(name => name.startsWith('F')))
   }
 }
@@ -582,31 +582,22 @@ mkdir -p src/styles
 ```scss
 // src/styles/theme.scss
 
-// Import FKUI theme
+// Import FKUI base theme
 @use "@fkui/theme-default";
 
-// Define custom theme variables
-:root {
-  // Override primary colors
-  --fk-primary-color: #3366cc;  // Your brand primary color
-  --fk-secondary-color: #6699ff; // Your brand secondary color
-  
-  // Override typography
-  --fk-font-family-base: "Noto Sans", Arial, sans-serif;
-  
-  // Override spacing (if needed)
-  --fk-spacing-large: 2rem;
-}
+// Import custom theme files
+@use "variables";
+@use "colors";
+@use "typography";
+@use "branding";
 
-// Custom component overrides
-.fk-button {
-  // Custom button styles that extend FKUI
-  border-radius: 6px; // Slightly different from FKUI default
-  
-  &.primary {
-    background-color: var(--fk-primary-color);
-  }
-}
+// Import component overrides
+@use "components/buttons";
+@use "components/forms";
+
+// Import FKUI base styles (must come after @use rules)
+@import "@fkui/design/lib/fkui.css";
+@import "@fkui/design/lib/fonts.css";
 ```
 
 ### Step 6: Environment Configuration
@@ -653,12 +644,12 @@ touch src/styles/_branding.scss
 // src/styles/_variables.scss
 
 // First import FKUI variables
-@use "@fkui/design/src/core/variables" as fkui;
+@use "@fkui/design/src/core" as fkui;
 
 // Then define your overrides
-$primary-color: #3366cc;    // Your brand primary
-$secondary-color: #6699ff;  // Your brand secondary
-$text-color: #333333;       // Your text color
+$primary-color: #3366cc;  // Your brand primary
+$secondary-color: #6699ff; // Your brand secondary
+$text-color: #333333;     // Your text color
 $background-color: #ffffff; // Your background color
 
 // Override FKUI variables with your values
@@ -684,7 +675,9 @@ $colors: (
     100: #b3d9ff,
     500: #3366cc,  // Main primary color
     600: #2952a3,
-    900: #0d1f40
+    700: #1a3d7a,  // Darker blue
+    800: #0d1f40,  // Darkest blue
+    900: #0a1426
   ),
   secondary: (
     50: #f0f4ff,
@@ -768,24 +761,18 @@ Add your brand-specific elements:
   background-color: var(--color-primary-500);
   color: white;
   padding: 1rem 0;
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
 }
 
 .brand-footer {
   background-color: var(--color-neutral-900);
   color: white;
   padding: 2rem 0;
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 ```
 
@@ -796,18 +783,32 @@ Create overrides for specific FKUI components:
 ```scss
 // src/styles/components/_buttons.scss
 
-// Custom button overrides
-.fk-button {
-  // Enhance button appearance
-  transition: all 0.2s ease;
-  
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+// Custom button overrides - only override specific properties
+// This preserves the default FKUI button styling while modifying specific aspects
+
+// Target primary variant buttons with darker background and borders
+// Using actual FKUI class names (button and button--primary)
+.button.button--primary {
+  // Also target large size buttons specifically
+  &.button--large {
+    // Inherit all the above styles but for large buttons
   }
-  
-  &.primary {
-    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+
+  // Override only the specific properties we want to change
+  background-color: var(--color-primary-700);
+  border: 2px solid var(--color-primary-800);
+  color: white;
+
+  // Keep FKUI hover behavior but with our darker colors
+  &:hover {
+    background-color: var(--color-primary-800);
+    border-color: var(--color-primary-900);
+  }
+
+  // Ensure focus states are also properly styled
+  &:focus {
+    border-color: var(--color-primary-800);
+    box-shadow: 0 0 0 3px rgba(13, 31, 64, 0.25);
   }
 }
 ```
@@ -820,7 +821,7 @@ Create overrides for specific FKUI components:
 .fk-select,
 .fk-textarea {
   border-radius: 4px;
-  
+
   &:focus {
     border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px rgba(51, 102, 204, 0.1);
@@ -981,7 +982,7 @@ const navigateToForm = () => {
         <p class="fk-text-large fk-mb-4">
           This is a demonstration site built with Försäkringskassans Designsystem (FKUI).
         </p>
-        <FButton variant="primary" size="large" @click="navigateToForm">
+        <FButton variant="primary" size="large" @click="navigateToForm" class="button button--primary button--medium">
           Get Started
         </FButton>
       </div>
@@ -1021,9 +1022,9 @@ const navigateToForm = () => {
     <section class="cta-section">
       <div class="container">
         <h2 class="fk-heading-2">Ready to try our form?</h2>
-        <FkButton variant="secondary" @click="navigateToForm">
+        <FButton variant="secondary" @click="navigateToForm">
           Try the Form Demo
-        </FkButton>
+        </FButton>
       </div>
     </section>
   </div>
@@ -1042,7 +1043,7 @@ const navigateToForm = () => {
 
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
   gap: 2rem;
 }
 
@@ -1066,12 +1067,6 @@ const navigateToForm = () => {
   background-color: var(--color-neutral-100);
   padding: 3rem 0;
   text-align: center;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
 }
 </style>
 ```
@@ -1119,19 +1114,19 @@ const validateForm = () => {
   Object.keys(errors).forEach(key => {
     errors[key] = ''
   })
-  
+
   let isValid = true
-  
+
   if (!formData.firstName) {
     errors.firstName = 'First name is required'
     isValid = false
   }
-  
+
   if (!formData.lastName) {
     errors.lastName = 'Last name is required'
     isValid = false
   }
-  
+
   if (!formData.email) {
     errors.email = 'Email is required'
     isValid = false
@@ -1139,37 +1134,37 @@ const validateForm = () => {
     errors.email = 'Email is invalid'
     isValid = false
   }
-  
+
   if (!formData.contactMethod) {
     errors.contactMethod = 'Please select a contact method'
     isValid = false
   }
-  
+
   if (!formData.agreedToTerms) {
     errors.agreedToTerms = 'You must agree to the terms'
     isValid = false
   }
-  
-  return isValid
+
+  return isValid;
 }
 
-const handleSubmit = async (event: Event) => {
+const handleSubmit = async (event) => {
   event.preventDefault()
-  
+
   if (!validateForm()) return
-  
+
   isSubmitting.value = true
-  
+
   try {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     // Show success message
     showSuccessMessage.value = true
-    
+
     // Reset form
     resetForm()
-    
+
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
@@ -1190,7 +1185,7 @@ const resetForm = () => {
     comments: '',
     agreedToTerms: false
   })
-  
+
   Object.keys(errors).forEach(key => {
     errors[key] = ''
   })
@@ -1205,59 +1200,56 @@ const resetForm = () => {
         <span class="separator">/</span>
         <span>Form</span>
       </nav>
-      
+
       <h1 class="fk-heading-1 fk-mb-4">Application Form</h1>
       <p class="fk-text-large fk-mb-6">
         Please fill out this form to demonstrate FKUI form components.
       </p>
-      
+
       <form @submit="handleSubmit" class="application-form">
         <!-- Personal Information Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personal Information</legend>
-          
+
           <FFieldset>
             <FLabel for="firstName">First Name *</FLabel>
             <FTextField
               id="firstName"
               v-model="formData.firstName"
               type="text"
-              :class="{ 'error': errors.firstName }"
+              required
             />
-            <!-- FErrorMessage component -->
             <div v-if="errors.firstName" class="error-message">
               {{ errors.firstName }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="lastName">Last Name *</FLabel>
             <FTextField
               id="lastName"
               v-model="formData.lastName"
               type="text"
-              :class="{ 'error': errors.lastName }"
+              required
             />
-            <!-- FErrorMessage component -->
             <div v-if="errors.lastName" class="error-message">
               {{ errors.lastName }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="email">Email Address *</FLabel>
             <FTextField
               id="email"
               v-model="formData.email"
               type="email"
-              :class="{ 'error': errors.email }"
+              required
             />
-            <!-- FErrorMessage component -->
             <div v-if="errors.email" class="error-message">
               {{ errors.email }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="phone">Phone Number</FLabel>
             <FTextField
@@ -1267,36 +1259,35 @@ const resetForm = () => {
             />
           </FFieldset>
         </fieldset>
-        
+
         <!-- Preferences Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferences</legend>
-          
+
           <FFieldset>
             <FLabel for="contactMethod">Preferred Contact Method *</FLabel>
             <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
-              :class="{ 'error': errors.contactMethod }"
+              required
             >
               <option value="">Please select</option>
               <option value="email">Email</option>
               <option value="phone">Phone</option>
               <option value="mail">Mail</option>
             </FSelectField>
-            <!-- FErrorMessage component -->
             <div v-if="errors.contactMethod" class="error-message">
               {{ errors.contactMethod }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel>Notification Preferences</FLabel>
             <FCheckboxField v-model="formData.notifications" value="updates">Product updates</FCheckboxField>
             <FCheckboxField v-model="formData.notifications" value="newsletter">Newsletter</FCheckboxField>
             <FCheckboxField v-model="formData.notifications" value="promotions">Promotions</FCheckboxField>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="comments">Additional Comments</FLabel>
             <FTextareaField
@@ -1306,17 +1297,19 @@ const resetForm = () => {
             />
           </FFieldset>
         </fieldset>
-        
+
         <!-- Agreement Section -->
         <fieldset class="form-section">
           <FFieldset>
-            <FCheckboxField v-model="formData.agreedToTerms">
+            <FCheckboxField v-model="formData.agreedToTerms" value="terms">
               I agree to the terms and conditions *
             </FCheckboxField>
-            <!-- FErrorMessage component -->
+            <div v-if="errors.agreedToTerms" class="error-message">
+              {{ errors.agreedToTerms }}
+            </div>
           </FFieldset>
         </fieldset>
-        
+
         <!-- Form Actions -->
         <div class="form-actions">
           <FButton variant="secondary" type="button" @click="resetForm">
@@ -1327,7 +1320,7 @@ const resetForm = () => {
           </FButton>
         </div>
       </form>
-      
+
       <!-- Success Message -->
       <FMessageBox
         v-if="showSuccessMessage"
@@ -1369,6 +1362,7 @@ const resetForm = () => {
 
 .application-form {
   max-width: 600px;
+  margin: 0 auto;
 }
 
 .form-section {
@@ -1396,6 +1390,16 @@ const resetForm = () => {
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+.error-message {
+  color: var(--color-error-600);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.error {
+  border-color: var(--color-error-500);
+}
 </style>
 ```
 
@@ -1411,341 +1415,386 @@ touch src/views/DashboardView.vue
 ```vue
 <!-- src/views/DashboardView.vue -->
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted } from "vue";
 
 const stats = reactive({
-  applications: 12,
-  pending: 3,
-  approved: 7,
-  needsAction: 2
-})
+	applications: 12,
+	pending: 3,
+	approved: 7,
+	needsAction: 2,
+});
 
 const applications = ref([
-  {
-    id: 'APP-001',
-    name: 'John Doe',
-    type: 'Benefits',
-    date: '2025-11-15',
-    status: 'Approved'
-  },
-  {
-    id: 'APP-002',
-    name: 'Jane Smith',
-    type: 'Healthcare',
-    date: '2025-11-14',
-    status: 'Pending'
-  },
-  {
-    id: 'APP-003',
-    name: 'Bob Johnson',
-    type: 'Benefits',
-    date: '2025-11-13',
-    status: 'Needs Action'
-  },
-  {
-    id: 'APP-004',
-    name: 'Alice Brown',
-    type: 'Pension',
-    date: '2025-11-12',
-    status: 'Approved'
-  }
-])
+	{
+		id: "APP-001",
+		name: "John Doe",
+		type: "Benefits",
+		date: "2025-11-15",
+		status: "Approved",
+	},
+	{
+		id: "APP-002",
+		name: "Jane Smith",
+		type: "Healthcare",
+		date: "2025-11-14",
+		status: "Pending",
+	},
+	{
+		id: "APP-003",
+		name: "Bob Johnson",
+		type: "Benefits",
+		date: "2025-11-13",
+		status: "Needs Action",
+	},
+	{
+		id: "APP-004",
+		name: "Alice Brown",
+		type: "Pension",
+		date: "2025-11-12",
+		status: "Approved",
+	},
+]);
 
 const activities = ref([
-  {
-    id: 1,
-    title: 'Application Approved',
-    description: 'Application APP-001 has been approved.',
-    timestamp: '2025-11-15T14:30:00Z',
-    type: 'success'
-  },
-  {
-    id: 2,
-    title: 'Document Uploaded',
-    description: 'New document uploaded for application APP-002.',
-    timestamp: '2025-11-15T10:15:00Z',
-    type: 'info'
-  },
-  {
-    id: 3,
-    title: 'Action Required',
-    description: 'Additional information needed for application APP-003.',
-    timestamp: '2025-11-14T16:45:00Z',
-    type: 'warning'
-  }
-])
+	{
+		id: 1,
+		title: "Application Approved",
+		description: "Application APP-001 has been approved.",
+		timestamp: "2025-11-15T14:30:00Z",
+		type: "success",
+	},
+	{
+		id: 2,
+		title: "Document Uploaded",
+		description: "New document uploaded for application APP-002.",
+		timestamp: "2025-11-15T10:15:00Z",
+		type: "info",
+	},
+	{
+		id: 3,
+		title: "Action Required",
+		description: "Additional information needed for application APP-003.",
+		timestamp: "2025-11-14T16:45:00Z",
+		type: "warning",
+	},
+]);
 
-const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
-  }
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
+const formatDate = (dateString) => {
+	const options = {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	};
+	return new Date(dateString).toLocaleDateString(undefined, options);
+};
 
-const getStatusVariant = (status: string) => {
-  switch (status) {
-    case 'Approved': return 'success'
-    case 'Pending': return 'info'
-    case 'Needs Action': return 'warning'
-    default: return 'neutral'
-  }
-}
+const getStatusVariant = (status) => {
+	switch (status) {
+		case "Approved":
+			return "success";
+		case "Pending":
+			return "info";
+		case "Needs Action":
+			return "warning";
+		default:
+			return "neutral";
+	}
+};
 
-const viewDetails = (id: string) => {
-  // In a real application, this would navigate to a details page
-  alert(`Viewing details for application ${id}`)
-}
+const viewDetails = (id) => {
+	// In a real application, this would navigate to a details page
+	alert(`Viewing details for application ${id}`);
+};
 
 onMounted(() => {
-  // In a real application, you would fetch data from an API
-  console.log('Dashboard loaded')
-})
+	// In a real application, you would fetch data from an API
+	console.log("Dashboard loaded");
+});
 </script>
 
 <template>
-  <div class="dashboard-view">
-    <div class="container">
-      <nav class="breadcrumb fk-mb-4">
-        <router-link to="/">Home</router-link>
-        <span class="separator">/</span>
-        <span>Dashboard</span>
-      </nav>
-      
-      <h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
-      <p class="fk-text-large fk-mb-6">
-        Overview of your application status and recent activity.
-      </p>
-      
-      <!-- Status Cards -->
-      <div class="stats-grid fk-mb-6">
-        <FCard class="status-card">
-          <div class="status-card-content">
-            <div class="status-icon">📄</div>
-            <h3 class="fk-heading-4">Applications</h3>
-            <p class="fk-text-large">{{ stats.applications }}</p>
-          </div>
-        </FCard>
-        
-        <FCard class="status-card">
-          <div class="status-card-content">
-            <div class="status-icon">🕐</div>
-            <h3 class="fk-heading-4">Pending</h3>
-            <p class="fk-text-large">{{ stats.pending }}</p>
-          </div>
-        </FCard>
-        
-        <FCard class="status-card">
-          <div class="status-card-content">
-            <div class="status-icon">✓</div>
-            <h3 class="fk-heading-4">Approved</h3>
-            <p class="fk-text-large">{{ stats.approved }}</p>
-          </div>
-        </FCard>
-        
-        <FCard class="status-card">
-          <div class="status-card-content">
-            <div class="status-icon">⚠</div>
-            <h3 class="fk-heading-4">Need Action</h3>
-            <p class="fk-text-large">{{ stats.needsAction }}</p>
-          </div>
-        </FCard>
-      </div>
-      
-      <!-- Recent Applications Table -->
-      <FCard class="fk-mb-6">
-        <div class="card-header">
-          <h2 class="fk-heading-2">Recent Applications</h2>
-        </div>
-        
-        <div class="table-wrapper">
-          <table class="applications-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="application in applications" :key="application.id">
-                <td>{{ application.id }}</td>
-                <td>{{ application.name }}</td>
-                <td>{{ application.type }}</td>
-                <td>{{ formatDate(application.date) }}</td>
-                <td>
-                  <span :class="['status-badge', getStatusVariant(application.status)]">
-                    {{ application.status }}
-                  </span>
-                </td>
-                <td>
-                  <FButton
-                    variant="secondary"
-                    size="small"
-                    @click="viewDetails(application.id)"
-                  >
-                    View
-                  </FButton>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </FCard>
-      
-      <!-- Activity Timeline -->
-      <FCard class="fk-mb-6">
-        <div class="card-header">
-          <h2 class="fk-heading-2">Recent Activity</h2>
-        </div>
-        
-        <div class="activity-list">
-          <div
-            v-for="activity in activities"
-            :key="activity.id"
-            class="activity-item"
-          >
-            <div class="activity-icon" :class="`activity-${activity.type}`">
-              {{ activity.type === 'success' ? '✓' : activity.type === 'warning' ? '⚠' : 'ℹ' }}
-            </div>
-            <div class="activity-content">
-              <h4 class="activity-title">{{ activity.title }}</h4>
-              <p class="activity-description">{{ activity.description }}</p>
-              <span class="activity-time">{{ formatDate(activity.timestamp) }}</span>
-            </div>
-          </div>
-        </div>
-      </FCard>
-      
-      <!-- System Notification -->
-      <FMessageBox type="info" variant="info" class="fk-mb-4">
-        <strong>System Update:</strong> Scheduled maintenance will occur this weekend from 2 AM to 6 AM.
-      </FMessageBox>
-    </div>
-  </div>
+	<div class="dashboard-view">
+		<div class="container">
+			<nav class="breadcrumb fk-mb-4">
+				<router-link to="/">Home</router-link>
+				<span class="separator">/</span>
+				<span>Dashboard</span>
+			</nav>
+
+			<h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
+			<p class="fk-text-large fk-mb-6">
+				Overview of your application status and recent activity.
+			</p>
+
+			<!-- Status Cards -->
+			<div class="stats-grid fk-mb-6">
+				<FCard class="status-card">
+					<div class="status-card-content">
+						<div class="status-icon">📄</div>
+						<h3 class="fk-heading-4">Applications</h3>
+						<p class="fk-text-large">{{ stats.applications }}</p>
+					</div>
+				</FCard>
+
+				<FCard class="status-card">
+					<div class="status-card-content">
+						<div class="status-icon">🕐</div>
+						<h3 class="fk-heading-4">Pending</h3>
+						<p class="fk-text-large">{{ stats.pending }}</p>
+					</div>
+				</FCard>
+
+				<FCard class="status-card">
+					<div class="status-card-content">
+						<div class="status-icon">✓</div>
+						<h3 class="fk-heading-4">Approved</h3>
+						<p class="fk-text-large">{{ stats.approved }}</p>
+					</div>
+				</FCard>
+
+				<FCard class="status-card">
+					<div class="status-card-content">
+						<div class="status-icon">⚠</div>
+						<h3 class="fk-heading-4">Need Action</h3>
+						<p class="fk-text-large">{{ stats.needsAction }}</p>
+					</div>
+				</FCard>
+			</div>
+
+			<!-- Recent Applications Table -->
+			<FCard class="fk-mb-6">
+				<div class="card-header">
+					<h2 class="fk-heading-2">Recent Applications</h2>
+				</div>
+
+				<div class="table-wrapper">
+					<!-- DEBUG: Use simple HTML table instead of FDataTable for now -->
+					<table class="applications-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Type</th>
+								<th>Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="item in applications" :key="item.id">
+								<td>{{ item.id }}</td>
+								<td>{{ item.name }}</td>
+								<td>{{ item.type }}</td>
+								<td>{{ formatDate(item.date) }}</td>
+								<td>
+									<FBadge
+										:variant="getStatusVariant(item.status)"
+									>
+										{{ item.status }}
+									</FBadge>
+								</td>
+								<td>
+									<FButton
+										variant="secondary"
+										size="small"
+										@click="viewDetails(item.id)"
+									>
+										View
+									</FButton>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</FCard>
+
+			<!-- Activity Timeline -->
+			<FCard class="fk-mb-6">
+				<div class="card-header">
+					<h2 class="fk-heading-2">Recent Activity</h2>
+				</div>
+
+				<div class="activity-list">
+					<div
+						v-for="activity in activities"
+						:key="activity.id"
+						class="activity-item"
+					>
+						<div
+							class="activity-icon"
+							:class="`activity-${activity.type}`"
+						>
+							{{
+								activity.type === "success"
+									? "✓"
+									: activity.type === "warning"
+										? "⚠"
+										: "ℹ"
+							}}
+						</div>
+						<div class="activity-content">
+							<h4 class="activity-title">{{ activity.title }}</h4>
+							<p class="activity-description">
+								{{ activity.description }}
+							</p>
+							<span class="activity-time">{{
+								formatDate(activity.timestamp)
+							}}</span>
+						</div>
+					</div>
+				</div>
+			</FCard>
+
+			<!-- System Notification -->
+			<!-- DEBUG: Adding type prop to fix missing required prop error -->
+			<FMessageBox type="info" variant="info" class="fk-mb-4">
+				<strong>System Update:</strong> Scheduled maintenance will occur
+				this weekend from 2 AM to 6 AM.
+			</FMessageBox>
+		</div>
+	</div>
 </template>
 
 <style scoped>
 .dashboard-view {
-  padding: 2rem 0;
+	padding: 2rem 0;
 }
 
 .breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-neutral-600);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: var(--color-neutral-600);
 }
 
 .breadcrumb a {
-  color: var(--color-primary-500);
-  text-decoration: none;
+	color: var(--color-primary-500);
+	text-decoration: none;
 }
 
 .breadcrumb a:hover {
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 .separator {
-  color: var(--color-neutral-400);
+	color: var(--color-neutral-400);
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+	display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+	gap: 1.5rem;
 }
 
 .status-card {
-  text-align: center;
+	text-align: center;
 }
 
 .status-card-content {
-  padding: 2rem 1rem;
+	padding: 2rem 1rem;
 }
 
 .status-icon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+	font-size: 3rem;
+	margin-bottom: 0.5rem;
 }
 
 .card-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--color-neutral-200);
+	padding: 1.5rem;
+	border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .table-wrapper {
-  overflow-x: auto;
+	overflow-x: auto;
+}
+
+.applications-table {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.applications-table th,
+.applications-table td {
+	padding: 0.75rem;
+	text-align: left;
+	border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.applications-table th {
+	background-color: var(--color-neutral-50);
+	font-weight: 600;
+	color: var(--color-neutral-700);
+}
+
+.applications-table tbody tr:hover {
+	background-color: var(--color-neutral-50);
 }
 
 .activity-list {
-  padding: 1.5rem;
+	padding: 1.5rem;
 }
 
 .activity-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--color-neutral-100);
+	display: flex;
+	gap: 1rem;
+	padding: 1rem 0;
+	border-bottom: 1px solid var(--color-neutral-100);
 }
 
 .activity-item:last-child {
-  border-bottom: none;
+	border-bottom: none;
 }
 
 .activity-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 1.25rem;
-  flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	font-size: 1.25rem;
+	flex-shrink: 0;
 }
 
 .activity-success {
-  background-color: var(--color-primary-100);
-  color: var(--color-primary-700);
+	background-color: var(--color-primary-100);
+	color: var(--color-primary-700);
 }
 
 .activity-warning {
-  background-color: #fff3cd;
-  color: #856404;
+	background-color: #fff3cd;
+	color: #856404;
 }
 
 .activity-info {
-  background-color: #d1ecf1;
-  color: #0c5460;
+	background-color: #d1ecf1;
+	color: #0c5460;
 }
 
 .activity-content {
-  flex: 1;
+	flex: 1;
 }
 
 .activity-title {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
 }
 
 .activity-description {
-  color: var(--color-neutral-600);
-  margin-bottom: 0.5rem;
+	color: var(--color-neutral-600);
+	margin-bottom: 0.5rem;
 }
 
 .activity-time {
-  font-size: 0.875rem;
-  color: var(--color-neutral-500);
+	font-size: 0.875rem;
+	color: var(--color-neutral-500);
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 1rem;
 }
 </style>
 ```
@@ -1762,6 +1811,7 @@ Update your main App.vue to include navigation:
 import { ref } from 'vue'
 
 const appTitle = import.meta.env.VITE_APP_TITLE || 'IP Sprint Test Site'
+const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0'
 const mobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
@@ -1779,15 +1829,15 @@ const toggleMobileMenu = () => {
               <h1>{{ appTitle }}</h1>
             </router-link>
           </div>
-          
-          <button 
-            class="mobile-menu-toggle" 
+
+          <button
+            class="mobile-menu-toggle"
             @click="toggleMobileMenu"
             aria-label="Toggle navigation menu"
           >
             ☰
           </button>
-          
+
           <ul class="nav-links" :class="{ 'mobile-open': mobileMenuOpen }">
             <li>
               <router-link to="/" class="nav-link" @click="mobileMenuOpen = false">
@@ -1808,7 +1858,7 @@ const toggleMobileMenu = () => {
         </nav>
       </div>
     </header>
-    
+
     <main class="app-main">
       <Suspense>
         <template #default>
@@ -1822,11 +1872,11 @@ const toggleMobileMenu = () => {
         </template>
       </Suspense>
     </main>
-    
+
     <footer class="app-footer">
       <div class="container">
         <p>&copy; 2025 IP Sprint Test Site. Built with Försäkringskassans Designsystem.</p>
-        <p class="version">Version {{ import.meta.env.VITE_APP_VERSION || '1.0.0' }}</p>
+        <p class="version">Version {{ appVersion }}</p>
       </div>
     </footer>
   </div>
@@ -1851,7 +1901,7 @@ const toggleMobileMenu = () => {
 }
 
 .app-header {
-  background-color: var(--color-primary-500);
+  background-color: var(--color-primary-700);
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -1936,7 +1986,7 @@ const toggleMobileMenu = () => {
 }
 
 .app-footer {
-  background-color: var(--color-neutral-900);
+  background-color: var(--color-primary-700);
   color: white;
   padding: 1.5rem 0;
   text-align: center;
@@ -1960,7 +2010,7 @@ const toggleMobileMenu = () => {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .nav-links {
     position: absolute;
     top: 100%;
@@ -1972,11 +2022,11 @@ const toggleMobileMenu = () => {
     padding: 1rem;
     display: none;
   }
-  
+
   .nav-links.mobile-open {
     display: flex;
   }
-  
+
   .nav-link {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -2279,7 +2329,7 @@ const colorPalette = reactive({
   <div class="theme-test-view">
     <div class="container">
       <h1 class="fk-heading-1">Theme Test Page</h1>
-      
+
       <!-- Color Tests -->
       <section class="test-section">
         <h2 class="fk-heading-2">Color System</h2>
@@ -2293,7 +2343,7 @@ const colorPalette = reactive({
           </div>
         </div>
       </section>
-      
+
       <!-- Typography Tests -->
       <section class="test-section">
         <h2 class="fk-heading-2">Typography</h2>
@@ -2304,7 +2354,7 @@ const colorPalette = reactive({
         <h2 class="fk-heading-2">Heading 2</h2>
         <h3 class="fk-heading-3">Heading 3</h3>
       </section>
-      
+
       <!-- Component Tests -->
       <section class="test-section">
         <h2 class="fk-heading-2">Component Variations</h2>
@@ -2314,14 +2364,14 @@ const colorPalette = reactive({
           <FkButton variant="secondary" class="fk-mr-2">Secondary</FkButton>
           <FkButton variant="ghost" class="fk-mr-2">Ghost</FkButton>
         </div>
-        
+
         <div class="component-test-group">
           <h3>Badges</h3>
           <FkBadge variant="success" class="fk-mr-2">Success</FkBadge>
           <FkBadge variant="warning" class="fk-mr-2">Warning</FkBadge>
           <FkBadge variant="error" class="fk-mr-2">Error</FkBadge>
         </div>
-        
+
         <div class="component-test-group">
           <h3>Alerts</h3>
           <FkAlert variant="info" class="fk-mb-2">Info alert</FkAlert>
@@ -2516,7 +2566,7 @@ const cleanHTML = sanitizeHTML(userInput)
    ```bash
    # .env.local (development)
    VITE_API_URL=http://localhost:3000/api
-   
+
    # .env.production (production)
    VITE_API_URL=https://api.production.com
    ```
@@ -2547,10 +2597,10 @@ Add CSP headers to your deployment:
 
 ```html
 <!-- index.html -->
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
-               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-               font-src 'self' https://fonts.gstatic.com; 
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+               font-src 'self' https://fonts.gstatic.com;
                script-src 'self';">
 ```
 
@@ -2639,20 +2689,20 @@ Ensure proper ARIA labels in your components:
 ```vue
 <template>
   <!-- Good: Has aria-label -->
-  <button 
-    class="mobile-menu-toggle" 
+  <button
+    class="mobile-menu-toggle"
     @click="toggleMenu"
     aria-label="Toggle navigation menu"
     aria-expanded="false"
   >
     ☰
   </button>
-  
+
   <!-- Good: Has aria-live for dynamic content -->
   <div aria-live="polite" aria-atomic="true">
     {{ statusMessage }}
   </div>
-  
+
   <!-- Good: Descriptive link text -->
   <a href="/form" aria-label="Go to application form">
     Apply Now
@@ -3347,7 +3397,7 @@ $shadow-large: 0 8px 16px rgba(0, 0, 0, 0.1);
   --border-radius-small: #{$border-radius-small};
   --border-radius-medium: #{$border-radius-medium};
   --border-radius-large: #{$border-radius-large};
-  
+
   --shadow-small: #{$shadow-small};
   --shadow-medium: #{$shadow-medium};
   --shadow-large: #{$shadow-large};
@@ -3398,12 +3448,12 @@ import { ref } from 'vue'
 export const useUserStore = defineStore('user', () => {
   const name = ref('')
   const email = ref('')
-  
+
   function setUser(userData: { name: string; email: string }) {
     name.value = userData.name
     email.value = userData.email
   }
-  
+
   return { name, email, setUser }
 })
 ```
@@ -3669,7 +3719,7 @@ chmod +x setup-dev.sh pre-deploy-check.sh
 
 ---
 
-**Document Version**: 2.0  
-**Last Updated**: November 2025  
-**Author**: Workshop Team  
+**Document Version**: 2.0
+**Last Updated**: November 2025
+**Author**: Workshop Team
 **License**: MIT

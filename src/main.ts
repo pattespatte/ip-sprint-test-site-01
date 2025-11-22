@@ -12,6 +12,5 @@ const app = createApp(App)
 app.use(router)
 app.use(FkuiPlugin)
 
-console.log('DEBUG: FKUI plugins loaded')
 
 app.mount('#app')
