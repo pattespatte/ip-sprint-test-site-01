@@ -283,13 +283,13 @@ Först, låt oss utforska FKUI-förråd för att förstå deras struktur:
    ```bash
    # Navigera till din föredragna projektkatalog
    cd ~/projects  # eller var du håller din kod
-   
+
    # Skapa katalog om den inte finns
    mkdir -p ~/projects
-   
+
    # Klona förrådet
    git clone https://gitlab.com/your-username/ip-sprint-test-site-01.git
-   
+
    # Navigera in i projektkatalogen
    cd ip-sprint-test-site-01
    ```
@@ -518,7 +518,7 @@ Skapa typdefinitioner för FKUI-komponenter:
 // src/types/fkui.d.ts
 declare module '@fkui/vue' {
   import { DefineComponent } from 'vue'
-  
+
   export const FButton: DefineComponent<any, any, any>
   export const FTextField: DefineComponent<any, any, any>
   export const FCard: DefineComponent<any, any, any>
@@ -556,14 +556,14 @@ export default {
     app.provide('screenReaderContextKey', {
       screenReaderContextKey: Symbol('screenReaderContext')
     })
-    
+
     // Registrera alla FKUI-komponenter globalt
     Object.entries(FKUI).forEach(([name, component]) => {
       if (name.startsWith('F')) {
         app.component(name, component)
       }
     })
-    
+
     console.log('DEBUG: FKUI plugin installed with components:', Object.keys(FKUI).filter(name => name.startsWith('F')))
   }
 }
@@ -591,10 +591,10 @@ mkdir -p src/styles
   // Åsidosätt primärfärger
   --fk-primary-color: #3366cc;  // Ditt varumärkes primärfärg
   --fk-secondary-color: #6699ff; // Ditt varumärkes sekundärfärg
-  
+
   // Åsidosätt typsnitt
   --fk-font-family-base: "Noto Sans", Arial, sans-serif;
-  
+
   // Åsidosätt avstånd (vid behov)
   --fk-spacing-large: 2rem;
 }
@@ -603,7 +603,7 @@ mkdir -p src/styles
 .fk-button {
   // Anpassade knappstilar som utökar FKUI
   border-radius: 6px; // Något annorlunda än FKUI-standard
-  
+
   &.primary {
     background-color: var(--fk-primary-color);
   }
@@ -637,11 +637,13 @@ VITE_DEBUG=true
 **Skapa .env.local-fil:**
 
 1. Skapa fil i projektroten:
+
    ```bash
    touch .env.local
    ```
 
 2. Lägg till dina lokala miljövariabler:
+
    ```bash
    # .env.local
    VITE_API_URL=http://localhost:3000/api
@@ -650,6 +652,7 @@ VITE_DEBUG=true
    ```
 
 3. Verifiera att den är i .gitignore:
+
    ```bash
    cat .gitignore | grep .env.local
    # Should output: .env.local
@@ -792,7 +795,7 @@ Lägg till dina varumärkesspecifika element:
   background-color: var(--color-primary-500);
   color: white;
   padding: 1rem 0;
-  
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -804,7 +807,7 @@ Lägg till dina varumärkesspecifika element:
   background-color: var(--color-neutral-900);
   color: white;
   padding: 2rem 0;
-  
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -824,12 +827,12 @@ Skapa åsidosättningar för specifika FKUI-komponenter:
 .fk-button {
   // Förbättra knapputseende
   transition: all 0.2s ease;
-  
+
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
   &.primary {
     background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
   }
@@ -844,7 +847,7 @@ Skapa åsidosättningar för specifika FKUI-komponenter:
 .fk-select,
 .fk-textarea {
   border-radius: 4px;
-  
+
   &:focus {
     border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px rgba(51, 102, 204, 0.1);
@@ -1091,12 +1094,6 @@ const navigateToForm = () => {
   padding: 3rem 0;
   text-align: center;
 }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
 </style>
 ```
 
@@ -1143,19 +1140,19 @@ const validateForm = () => {
   Object.keys(errors).forEach(key => {
     errors[key] = ''
   })
-  
+
   let isValid = true
-  
+
   if (!formData.firstName) {
     errors.firstName = 'Förnamn är obligatoriskt'
     isValid = false
   }
-  
+
   if (!formData.lastName) {
     errors.lastName = 'Efternamn är obligatoriskt'
     isValid = false
   }
-  
+
   if (!formData.email) {
     errors.email = 'E-post är obligatoriskt'
     isValid = false
@@ -1163,37 +1160,86 @@ const validateForm = () => {
     errors.email = 'E-post är ogiltig'
     isValid = false
   }
-  
+
   if (!formData.contactMethod) {
     errors.contactMethod = 'Välj en kontaktmetod'
     isValid = false
   }
-  
+
   if (!formData.agreedToTerms) {
     errors.agreedToTerms = 'Du måste godkänna villkoren'
     isValid = false
   }
-  
-  return isValid
+
+  return isValid;
 }
 
-const handleSubmit = async (event: Event) => {
+const focusFirstErrorField = async () => {
+  // Find first field with an error
+  const firstErrorField = Object.keys(errors).find(key => errors[key])
+
+  if (firstErrorField) {
+    // For checkbox fields, we need to handle differently
+    let element
+    if (firstErrorField === 'agreedToTerms') {
+      // Find the checkbox input within the fieldset
+      element = document.querySelector(`input[name="${firstErrorField}"]`)
+    } else {
+      // Find the input/select element by ID
+      element = document.querySelector(`#${firstErrorField}`)
+    }
+
+    if (element) {
+      // Wait for DOM to update
+      await nextTick()
+
+      // Focus element
+      element.focus()
+
+      // Scroll to element with smooth behavior
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      })
+
+      // Announce error to screen readers
+      const errorElement = document.querySelector(`#${firstErrorField}-error`)
+      if (errorElement) {
+        errorElement.setAttribute('aria-live', 'polite')
+        errorElement.setAttribute('role', 'alert')
+      }
+
+      console.log(`Focused and scrolled to first error field: ${firstErrorField}`)
+    }
+  }
+}
+
+const handleSubmit = async (event) => {
   event.preventDefault()
-  
-  if (!validateForm()) return
-  
+
+  console.log('Form submit triggered')
+
+  if (!validateForm()) {
+    console.log('Validation failed, submission prevented')
+
+    // Focus first error field with enhanced accessibility
+    await focusFirstErrorField()
+
+    return
+  }
+
   isSubmitting.value = true
-  
+
   try {
     // Simulera API-anrop
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     // Visa framgångsmeddelande
     showSuccessMessage.value = true
-    
+
     // Återställ formulär
     resetForm()
-    
+
     // Scrolla till toppen
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
@@ -1214,7 +1260,7 @@ const resetForm = () => {
     comments: '',
     agreedToTerms: false
   })
-  
+
   Object.keys(errors).forEach(key => {
     errors[key] = ''
   })
@@ -1229,137 +1275,208 @@ const resetForm = () => {
         <span class="separator">/</span>
         <span>Formulär</span>
       </nav>
-      
+
       <h1 class="fk-heading-1 fk-mb-4">Ansökningsformulär</h1>
       <p class="fk-text-large fk-mb-6">
         Fyll i detta formulär för att demonstrera FKUI-formulärskomponenter.
       </p>
-      
-      <form @submit="handleSubmit" class="application-form">
-        <!-- Personinformation-sektion -->
+
+      <!-- Form submission status for screen readers -->
+      <div
+        v-if="Object.values(errors).some(error => error)"
+        class="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        Form has validation errors. Please review and correct the highlighted fields.
+      </div>
+
+      <form @submit="handleSubmit" class="application-form" novalidate>
+        <!-- Personal Information Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personinformation</legend>
-          
-          <FFormGroup>
-            <FLabel for="firstName">Förnamn *</FLabel>
+
+          <FFieldset>
+            <FLabel for="firstName">rnamn *</FLabel>
             <FTextField
               id="firstName"
               v-model="formData.firstName"
               type="text"
               :class="{ 'error': errors.firstName }"
+              :aria-invalid="!!errors.firstName"
+              :aria-describedby="errors.firstName ? 'firstName-error' : null"
+              required
+              autocomplete="given-name"
             />
-            <!-- FErrorMessage-komponent -->
-            <FErrorMessage v-if="errors.firstName">
+            <div v-if="errors.firstName" id="firstName-error" class="error-message" role="alert">
               {{ errors.firstName }}
-            </FErrorMessage>
-          </FFormGroup>
-          
-          <FFormGroup>
+            </div>
+          </FFieldset>
+
+          <FFieldset>
             <FLabel for="lastName">Efternamn *</FLabel>
             <FTextField
               id="lastName"
               v-model="formData.lastName"
               type="text"
               :class="{ 'error': errors.lastName }"
+              :aria-invalid="!!errors.lastName"
+              :aria-describedby="errors.lastName ? 'lastName-error' : null"
+              required
+              autocomplete="family-name"
             />
-            <FErrorMessage v-if="errors.lastName">
+            <div v-if="errors.lastName" id="lastName-error" class="error-message" role="alert">
               {{ errors.lastName }}
-            </FErrorMessage>
-          </FFormGroup>
-          
-          <FFormGroup>
+            </div>
+          </FFieldset>
+
+          <FFieldset>
             <FLabel for="email">E-postadress *</FLabel>
             <FTextField
               id="email"
               v-model="formData.email"
               type="email"
               :class="{ 'error': errors.email }"
+              :aria-invalid="!!errors.email"
+              :aria-describedby="errors.email ? 'email-error' : null"
+              required
+              autocomplete="email"
             />
-            <FErrorMessage v-if="errors.email">
+            <div v-if="errors.email" id="email-error" class="error-message" role="alert">
               {{ errors.email }}
-            </FErrorMessage>
-          </FFormGroup>
-          
-          <FFormGroup>
+            </div>
+          </FFieldset>
+
+          <FFieldset>
             <FLabel for="phone">Telefonnummer</FLabel>
             <FTextField
               id="phone"
               v-model="formData.phone"
               type="tel"
+              autocomplete="tel"
             />
-          </FFormGroup>
+          </FFieldset>
         </fieldset>
-        
+
         <!-- Preferenser-sektion -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferenser</legend>
-          
-          <FFormGroup>
+
+          <FFieldset>
             <FLabel for="contactMethod">Önskad kontaktmetod *</FLabel>
             <FSelectField
               id="contactMethod"
               v-model="formData.contactMethod"
               :class="{ 'error': errors.contactMethod }"
+              :aria-invalid="!!errors.contactMethod"
+              :aria-describedby="errors.contactMethod ? 'contactMethod-error' : null"
+              required
             >
               <option value="">Välj</option>
               <option value="email">E-post</option>
               <option value="phone">Telefon</option>
               <option value="mail">Post</option>
             </FSelectField>
-            <FErrorMessage v-if="errors.contactMethod">
+            <div v-if="errors.contactMethod" id="contactMethod-error" class="error-message" role="alert">
               {{ errors.contactMethod }}
-            </FErrorMessage>
-          </FFormGroup>
-          
-          <FFormGroup>
-            <FLabel>Aviseringspreferenser</FLabel>
-            <FCheckboxGroup v-model="formData.notifications">
-              <FCheckbox value="updates">Produktuppdateringar</FCheckbox>
-              <FCheckbox value="newsletter">Nyhetsbrev</FCheckbox>
-              <FCheckbox value="promotions">Erbjudanden</FCheckbox>
-            </FCheckboxGroup>
-          </FFormGroup>
-          
-          <FFormGroup>
+            </div>
+          </FFieldset>
+
+          <FFieldset>
+            <fieldset class="checkbox-group">
+              <legend class="group-legend">Notification Preferences</legend>
+              <FCheckboxField
+                v-model="formData.notifications"
+                value="updates"
+                aria-describedby="notifications-help"
+              >
+                Product updates
+              </FCheckboxField>
+              <FCheckboxField
+                v-model="formData.notifications"
+                value="newsletter"
+                aria-describedby="notifications-help"
+              >
+                Newsletter
+              </FCheckboxField>
+              <FCheckboxField
+                v-model="formData.notifications"
+                value="promotions"
+                aria-describedby="notifications-help"
+              >
+                Promotions
+              </FCheckboxField>
+              <div id="notifications-help" class="sr-only">
+                Select all notification preferences you wish to receive
+              </div>
+            </fieldset>
+          </FFieldset>
+
+          <FFieldset>
             <FLabel for="comments">Ytterligare kommentarer</FLabel>
             <FTextareaField
               id="comments"
               v-model="formData.comments"
               rows="4"
+              aria-describedby="comments-help"
             />
-          </FFormGroup>
+            <div id="comments-help" class="sr-only">
+              Optional field for any additional information you'd like to provide
+            </div>
+          </FFieldset>
         </fieldset>
-        
+
         <!-- Avtalsektion -->
         <fieldset class="form-section">
-          <FFormGroup>
-            <FCheckbox v-model="formData.agreedToTerms">
+          <FFieldset>
+            <FCheckboxField
+              v-model="formData.agreedToTerms"
+              value="terms"
+              name="agreedToTerms"
+              :class="{ 'error': errors.agreedToTerms }"
+              :aria-invalid="!!errors.agreedToTerms"
+              :aria-describedby="errors.agreedToTerms ? 'agreedToTerms-error' : 'terms-help'"
+              required
+            >
               Jag godkänner villkoren och bestämmelserna *
-            </FCheckbox>
-            <FErrorMessage v-if="errors.agreedToTerms">
+            </FCheckboxField>
+            <div v-if="errors.agreedToTerms" id="agreedToTerms-error" class="error-message" role="alert">
               {{ errors.agreedToTerms }}
-            </FErrorMessage>
-          </FFormGroup>
+            </div>
+            <div id="terms-help" class="sr-only">
+              You must agree to the terms and conditions to submit this form
+            </div>
+          </FFieldset>
         </fieldset>
-        
-        <!-- Formuläråtgärder -->
-        <div class="form-actions">
+
+        <!-- Form Actions -->
+        <div class="form-actions" role="group" aria-label="Form actions">
           <FButton variant="secondary" type="button" @click="resetForm">
             Återställ
           </FButton>
-          <FButton variant="primary" type="submit" :disabled="isSubmitting">
+          <FButton
+            variant="primary"
+            type="submit"
+            :disabled="isSubmitting"
+            aria-describedby="isSubmitting ? 'submit-status' : null"
+          >
             {{ isSubmitting ? 'Skickar...' : 'Skicka ansökan' }}
           </FButton>
+          <div v-if="isSubmitting" id="submit-status" class="sr-only" role="status" aria-live="polite">
+            Form submission in progress, please wait
+          </div>
         </div>
       </form>
-      
+
       <!-- Framgångsmeddelande -->
       <FMessageBox
         v-if="showSuccessMessage"
         variant="success"
-        type="success"
-        class="fk-mb-6"
+        class="fk-mt-6"
         dismissible
+        role="alert"
+        aria-live="polite"
         @close="showSuccessMessage = false"
       >
         <strong>Lyckades!</strong> Din ansökan har skickats framgångsrikt.
@@ -1395,6 +1512,7 @@ const resetForm = () => {
 
 .application-form {
   max-width: 600px;
+  margin: 0 auto;
 }
 
 .form-section {
@@ -1410,6 +1528,19 @@ const resetForm = () => {
   width: 100%;
 }
 
+.checkbox-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.group-legend {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-neutral-900);
+}
+
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -1421,6 +1552,100 @@ const resetForm = () => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Make error messages more visible */
+.error-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  display: block;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #d32f2f;
+  border-radius: 4px;
+}
+
+.error-message::before {
+  content: "⚠️ Fel: ";
+  font-weight: bold;
+}
+
+/* Target FKUI input elements specifically - using actual FKUI class names */
+.text-field__input.error,
+.select-field__select.error,
+.checkbox-field__input.error {
+  border-color: #d32f2f;
+  border-width: 2px;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.3);
+  background-color: #fef2f2;
+}
+
+/* Target parent containers for better visual feedback */
+.text-field.error,
+.select-field.error,
+.checkbox-field.error {
+  /* Style entire field container when in error state */
+}
+
+/* Focus styles for error fields */
+.text-field__input.error:focus,
+.select-field__select.error:focus,
+.checkbox-field__input.error:focus {
+  outline: 2px solid #d32f2f;
+  outline-offset: 2px;
+  border-color: #d32f2f;
+}
+
+/* Also target wrapper elements for better error visibility */
+.text-field__icon-wrapper:has(.text-field__input.error) {
+  position: relative;
+}
+
+.text-field__icon-wrapper:has(.text-field__input.error)::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #d32f2f;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .error-message {
+    border-width: 2px;
+    background-color: white;
+    color: black;
+  }
+
+  .text-field__input.error,
+  .select-field__select.error {
+    background-color: white;
+    color: black;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  form {
+    scroll-behavior: auto;
+  }
 }
 </style>
 ```
@@ -1437,45 +1662,45 @@ touch src/views/DashboardView.vue
 ```vue
 <!-- src/views/DashboardView.vue -->
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted } from "vue";
 
 const stats = reactive({
-  applications: 12,
-  pending: 3,
-  approved: 7,
-  needsAction: 2
-})
+ applications: 12,
+ pending: 3,
+ approved: 7,
+ needsAction: 2,
+});
 
 const applications = ref([
-  {
-    id: 'APP-001',
-    name: 'John Doe',
-    type: 'Benefits',
-    date: '2025-11-15',
-    status: 'Approved'
-  },
-  {
-    id: 'APP-002',
-    name: 'Jane Smith',
-    type: 'Healthcare',
-    date: '2025-11-14',
-    status: 'Pending'
-  },
-  {
-    id: 'APP-003',
-    name: 'Bob Johnson',
-    type: 'Benefits',
-    date: '2025-11-13',
-    status: 'Needs Action'
-  },
-  {
-    id: 'APP-004',
-    name: 'Alice Brown',
-    type: 'Pension',
-    date: '2025-11-12',
-    status: 'Approved'
-  }
-])
+ {
+  id: "APP-001",
+  name: "John Doe",
+  type: "Benefits",
+  date: "2025-11-15",
+  status: "Approved",
+ },
+ {
+  id: "APP-002",
+  name: "Jane Smith",
+  type: "Healthcare",
+  date: "2025-11-14",
+  status: "Pending",
+ },
+ {
+  id: "APP-003",
+  name: "Bob Johnson",
+  type: "Benefits",
+  date: "2025-11-13",
+  status: "Needs Action",
+ },
+ {
+  id: "APP-004",
+  name: "Alice Brown",
+  type: "Pension",
+  date: "2025-11-12",
+  status: "Approved",
+ },
+]);
 
 const activities = ref([
   {
@@ -1502,22 +1727,26 @@ const activities = ref([
 ])
 
 const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
   }
   return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
-const getStatusVariant = (status: string) => {
-  switch (status) {
-    case 'Approved': return 'success'
-    case 'Pending': return 'info'
-    case 'Needs Action': return 'warning'
-    default: return 'neutral'
-  }
-}
+const getStatusVariant = (status) => {
+ switch (status) {
+  case "Approved":
+   return "success";
+  case "Pending":
+   return "info";
+  case "Needs Action":
+   return "warning";
+  default:
+   return "neutral";
+ }
+};
 
 const viewDetails = (id: string) => {
   // I en riktig applikation skulle detta navigera till en detaljsida
@@ -1538,12 +1767,12 @@ onMounted(() => {
         <span class="separator">/</span>
         <span>Dashboard</span>
       </nav>
-      
+
       <h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
       <p class="fk-text-large fk-mb-6">
         Översikt av din ansökningsstatus och senaste aktivitet.
       </p>
-      
+
       <!-- Statuskort -->
       <div class="stats-grid fk-mb-6">
         <FCard class="status-card">
@@ -1553,7 +1782,7 @@ onMounted(() => {
             <p class="fk-text-large">{{ stats.applications }}</p>
           </div>
         </FCard>
-        
+
         <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">🕐</div>
@@ -1561,7 +1790,7 @@ onMounted(() => {
             <p class="fk-text-large">{{ stats.pending }}</p>
           </div>
         </FCard>
-        
+
         <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">✓</div>
@@ -1569,7 +1798,7 @@ onMounted(() => {
             <p class="fk-text-large">{{ stats.approved }}</p>
           </div>
         </FCard>
-        
+
         <FCard class="status-card">
           <div class="status-card-content">
             <div class="status-icon">⚠</div>
@@ -1578,52 +1807,52 @@ onMounted(() => {
           </div>
         </FCard>
       </div>
-      
+
       <!-- Senaste ansökningstabell -->
       <FCard class="fk-mb-6">
         <div class="card-header">
           <h2 class="fk-heading-2">Senaste ansökningar</h2>
         </div>
-        
-				<!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
-				<FDataTable :rows="applications">
-					<template #caption>Senaste ansökningar</template>
-					<template #default="{ row }">
-						<FTableColumn title="ID" type="text">
-							{{ row.id }}
-						</FTableColumn>
-						<FTableColumn title="Namn" type="text">
-							{{ row.name }}
-						</FTableColumn>
-						<FTableColumn title="Typ" type="text">
-							{{ row.type }}
-						</FTableColumn>
-						<FTableColumn title="Datum" type="date">
-							{{ formatDate(row.date) }}
-						</FTableColumn>
-						<FTableColumn title="Status" type="text">
-							<FBadge :variant="getStatusVariant(row.status)">
-								{{ row.status }}
-							</FBadge>
-						</FTableColumn>
-						<!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
-						<FTableColumn title="Åtgärder">
-							<FTableButton @click="viewDetails(row.id)">
-								Visa
-							</FTableButton>
-						</FTableColumn>
-					</template>
-				</FDataTable>
-			</FCard>
+
+    <!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
+    <FDataTable :rows="applications">
+     <template #caption>Senaste ansökningar</template>
+     <template #default="{ row }">
+      <FTableColumn title="ID" type="text">
+       {{ row.id }}
+      </FTableColumn>
+      <FTableColumn title="Namn" type="text">
+       {{ row.name }}
+      </FTableColumn>
+      <FTableColumn title="Typ" type="text">
+       {{ row.type }}
+      </FTableColumn>
+      <FTableColumn title="Datum" type="date">
+       {{ formatDate(row.date) }}
+      </FTableColumn>
+      <FTableColumn title="Status" type="text">
+       <FBadge :variant="getStatusVariant(row.status)">
+        {{ row.status }}
+       </FBadge>
+      </FTableColumn>
+      <!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
+      <FTableColumn title="Åtgärder">
+       <FTableButton @click="viewDetails(row.id)">
+        Visa
+       </FTableButton>
+      </FTableColumn>
+     </template>
+    </FDataTable>
+   </FCard>
 
       </FCard>
-      
+
       <!-- Aktivitetstidslinje -->
       <FCard class="fk-mb-6">
         <div class="card-header">
           <h2 class="fk-heading-2">Senaste aktivitet</h2>
         </div>
-        
+
         <div class="activity-list">
           <div
             v-for="activity in activities"
@@ -1641,7 +1870,7 @@ onMounted(() => {
           </div>
         </div>
       </FCard>
-      
+
       <!-- Systemavisering -->
       <FMessageBox variant="info" type="info" class="fk-mb-4">
         <strong>Systemuppdatering:</strong> Planerat underhåll kommer att ske denna helg från 02:00 till 06:00.
@@ -1652,121 +1881,144 @@ onMounted(() => {
 
 <style scoped>
 .dashboard-view {
-  padding: 2rem 0;
+ padding: 2rem 0;
 }
 
 .breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-neutral-600);
+ display: flex;
+ align-items: center;
+ gap: 0.5rem;
+ color: var(--color-neutral-600);
 }
 
 .breadcrumb a {
-  color: var(--color-primary-500);
-  text-decoration: none;
+ color: var(--color-primary-500);
+ text-decoration: none;
 }
 
 .breadcrumb a:hover {
-  text-decoration: underline;
+ text-decoration: underline;
 }
 
 .separator {
-  color: var(--color-neutral-400);
+ color: var(--color-neutral-400);
 }
 
 .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+ display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+ gap: 1.5rem;
 }
 
 .status-card {
-  text-align: center;
+ text-align: center;
 }
 
 .status-card-content {
-  padding: 2rem 1rem;
+ padding: 2rem 1rem;
 }
 
 .status-icon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+ font-size: 3rem;
+ margin-bottom: 0.5rem;
 }
 
 .card-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--color-neutral-200);
+ padding: 1.5rem;
+ border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .table-wrapper {
-  overflow-x: auto;
+ overflow-x: auto;
+}
+
+.applications-table {
+ width: 100%;
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+
+.applications-table th,
+.applications-table td {
+ padding: 0.75rem;
+ text-align: left;
+ border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.applications-table th {
+ background-color: var(--color-neutral-50);
+ font-weight: 600;
+ color: var(--color-neutral-700);
+}
+
+.applications-table tbody tr:hover {
+ background-color: var(--color-neutral-50);
 }
 
 .activity-list {
-  padding: 1.5rem;
+ padding: 1.5rem;
 }
 
 .activity-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--color-neutral-100);
+ display: flex;
+ gap: 1rem;
+ padding: 1rem 0;
+ border-bottom: 1px solid var(--color-neutral-100);
 }
 
 .activity-item:last-child {
-  border-bottom: none;
+ border-bottom: none;
 }
 
 .activity-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 1.25rem;
-  flex-shrink: 0;
+ width: 40px;
+ height: 40px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border-radius: 50%;
+ font-size: 1.25rem;
+ flex-shrink: 0;
 }
 
 .activity-success {
-  background-color: var(--color-primary-100);
-  color: var(--color-primary-700);
+ background-color: var(--color-primary-100);
+ color: var(--color-primary-700);
 }
 
 .activity-warning {
-  background-color: #fff3cd;
-  color: #856404;
+ background-color: #fff3cd;
+ color: #856404;
 }
 
 .activity-info {
-  background-color: #d1ecf1;
-  color: #0c5460;
+ background-color: #d1ecf1;
+ color: #0c5460;
 }
 
 .activity-content {
-  flex: 1;
+ flex: 1;
 }
 
 .activity-title {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+ font-weight: 600;
+ margin-bottom: 0.25rem;
 }
 
 .activity-description {
-  color: var(--color-neutral-600);
-  margin-bottom: 0.5rem;
+ color: var(--color-neutral-600);
+ margin-bottom: 0.5rem;
 }
 
 .activity-time {
-  font-size: 0.875rem;
-  color: var(--color-neutral-500);
+ font-size: 0.875rem;
+ color: var(--color-neutral-500);
 }
 
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 1rem;
 }
 </style>
 ```
@@ -1800,15 +2052,15 @@ const toggleMobileMenu = () => {
               <h1>{{ appTitle }}</h1>
             </router-link>
           </div>
-          
-          <button 
-            class="mobile-menu-toggle" 
+
+          <button
+            class="mobile-menu-toggle"
             @click="toggleMobileMenu"
             aria-label="Växla navigeringsmeny"
           >
             ☰
           </button>
-          
+
           <ul class="nav-links" :class="{ 'mobile-open': mobileMenuOpen }">
             <li>
               <router-link to="/" class="nav-link" @click="mobileMenuOpen = false">
@@ -1829,7 +2081,7 @@ const toggleMobileMenu = () => {
         </nav>
       </div>
     </header>
-    
+
     <main class="app-main">
       <Suspense>
         <template #default>
@@ -1843,7 +2095,7 @@ const toggleMobileMenu = () => {
         </template>
       </Suspense>
     </main>
-    
+
     <footer class="app-footer">
       <div class="container">
         <p>&copy; 2025 IP Sprint Test Site. Byggd med Försäkringskassans Designsystem.</p>
@@ -1981,7 +2233,7 @@ const toggleMobileMenu = () => {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .nav-links {
     position: absolute;
     top: 100%;
@@ -1993,11 +2245,11 @@ const toggleMobileMenu = () => {
     padding: 1rem;
     display: none;
   }
-  
+
   .nav-links.mobile-open {
     display: flex;
   }
-  
+
   .nav-link {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -2300,7 +2552,7 @@ const colorPalette = reactive({
   <div class="theme-test-view">
     <div class="container">
       <h1 class="fk-heading-1">Tematestsida</h1>
-      
+
       <!-- Färgtester -->
       <section class="test-section">
         <h2 class="fk-heading-2">Färgsystem</h2>
@@ -2314,7 +2566,7 @@ const colorPalette = reactive({
           </div>
         </div>
       </section>
-      
+
       <!-- Typsnittstester -->
       <section class="test-section">
         <h2 class="fk-heading-2">Typsnitt</h2>
@@ -2325,7 +2577,7 @@ const colorPalette = reactive({
         <h2 class="fk-heading-2">Rubrik 2</h2>
         <h3 class="fk-heading-3">Rubrik 3</h3>
       </section>
-      
+
       <!-- Komponenttester -->
       <section class="test-section">
         <h2 class="fk-heading-2">Komponentvariationer</h2>
@@ -2335,14 +2587,14 @@ const colorPalette = reactive({
           <FButton variant="secondary" class="fk-mr-2">Sekundär</FButton>
           <FButton variant="tertiary" class="fk-mr-2">Tertiär</FButton>
         </div>
-        
+
         <div class="component-test-group">
           <h3>Badges</h3>
           <FBadge variant="success" class="fk-mr-2">Framgång</FBadge>
           <FBadge variant="warning" class="fk-mr-2">Varning</FBadge>
           <FBadge variant="error" class="fk-mr-2">Fel</FBadge>
         </div>
-        
+
         <div class="component-test-group">
           <h3>Aviseringar</h3>
           <FMessageBox variant="info" type="info" class="fk-mb-2">Infoavisering</FMessageBox>
@@ -2537,7 +2789,7 @@ const cleanHTML = sanitizeHTML(userInput)
    ```bash
    # .env.local (utveckling)
    VITE_API_URL=http://localhost:3000/api
-   
+
    # .env.production (produktion)
    VITE_API_URL=https://api.production.com
    ```
@@ -2568,10 +2820,10 @@ Lägg till CSP-rubriker i din driftsättning:
 
 ```html
 <!-- index.html -->
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; 
-               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-               font-src 'self' https://fonts.gstatic.com; 
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self';
+               style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+               font-src 'self' https://fonts.gstatic.com;
                script-src 'self';">
 ```
 
@@ -2660,20 +2912,20 @@ Säkerställ korrekta ARIA-etiketter i dina komponenter:
 ```vue
 <template>
   <!-- Bra: Har aria-label -->
-  <button 
-    class="mobile-menu-toggle" 
+  <button
+    class="mobile-menu-toggle"
     @click="toggleMenu"
     aria-label="Växla navigeringsmeny"
     aria-expanded="false"
   >
     ☰
   </button>
-  
+
   <!-- Bra: Har aria-live för dynamiskt innehåll -->
   <div aria-live="polite" aria-atomic="true">
     {{ statusMessage }}
   </div>
-  
+
   <!-- Bra: Beskrivande länktext -->
   <a href="/form" aria-label="Gå till ansökningsformulär">
     Ansök nu
@@ -3368,7 +3620,7 @@ $shadow-large: 0 8px 16px rgba(0, 0, 0, 0.1);
   --border-radius-small: #{$border-radius-small};
   --border-radius-medium: #{$border-radius-medium};
   --border-radius-large: #{$border-radius-large};
-  
+
   --shadow-small: #{$shadow-small};
   --shadow-medium: #{$shadow-medium};
   --shadow-large: #{$shadow-large};
@@ -3419,12 +3671,12 @@ import { ref } from 'vue'
 export const useUserStore = defineStore('user', () => {
   const name = ref('')
   const email = ref('')
-  
+
   function setUser(userData: { name: string; email: string }) {
     name.value = userData.name
     email.value = userData.email
   }
-  
+
   return { name, email, setUser }
 })
 ```
@@ -3690,7 +3942,7 @@ chmod +x setup-dev.sh pre-deploy-check.sh
 
 ---
 
-**Dokumentversion**: 2.0  
-**Senast uppdaterad**: November 2025  
-**Författare**: Workshop-team  
+**Dokumentversion**: 2.0
+**Senast uppdaterad**: November 2025
+**Författare**: Workshop-team
 **Licens**: MIT

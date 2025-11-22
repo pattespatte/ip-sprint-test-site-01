@@ -628,11 +628,13 @@ VITE_DEBUG=true
 **Creating the .env.local file:**
 
 1. Create the file in your project root:
+
    ```bash
    touch .env.local
    ```
 
 2. Add your local environment variables:
+
    ```bash
    # .env.local
    VITE_API_URL=http://localhost:3000/api
@@ -641,6 +643,7 @@ VITE_DEBUG=true
    ```
 
 3. Verify it's in .gitignore:
+
    ```bash
    cat .gitignore | grep .env.local
    # Should output: .env.local
@@ -1138,19 +1141,19 @@ const validateForm = () => {
   Object.keys(errors).forEach(key => {
     errors[key] = ''
   })
-  
+
   let isValid = true
-  
+
   if (!formData.firstName.trim()) {
     errors.firstName = 'First name is required'
     isValid = false
   }
-  
+
   if (!formData.lastName.trim()) {
     errors.lastName = 'Last name is required'
     isValid = false
   }
-  
+
   if (!formData.email.trim()) {
     errors.email = 'Email is required'
     isValid = false
@@ -1158,24 +1161,24 @@ const validateForm = () => {
     errors.email = 'Email is invalid'
     isValid = false
   }
-  
+
   if (!formData.contactMethod) {
     errors.contactMethod = 'Please select a contact method'
     isValid = false
   }
-  
+
   if (!formData.agreedToTerms) {
     errors.agreedToTerms = 'You must agree to terms'
     isValid = false
   }
-  
+
   return isValid;
 }
 
 const focusFirstErrorField = async () => {
   // Find first field with an error
   const firstErrorField = Object.keys(errors).find(key => errors[key])
-  
+
   if (firstErrorField) {
     // For checkbox fields, we need to handle differently
     let element
@@ -1186,27 +1189,27 @@ const focusFirstErrorField = async () => {
       // Find the input/select element by ID
       element = document.querySelector(`#${firstErrorField}`)
     }
-    
+
     if (element) {
       // Wait for DOM to update
       await nextTick()
-      
+
       // Focus element
       element.focus()
-      
+
       // Scroll to element with smooth behavior
       element.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       })
-      
+
       // Announce error to screen readers
       const errorElement = document.querySelector(`#${firstErrorField}-error`)
       if (errorElement) {
         errorElement.setAttribute('aria-live', 'polite')
         errorElement.setAttribute('role', 'alert')
       }
-      
+
       console.log(`Focused and scrolled to first error field: ${firstErrorField}`)
     }
   }
@@ -1214,30 +1217,30 @@ const focusFirstErrorField = async () => {
 
 const handleSubmit = async (event) => {
   event.preventDefault()
-  
+
   console.log('Form submit triggered')
-  
+
   if (!validateForm()) {
     console.log('Validation failed, submission prevented')
-    
+
     // Focus first error field with enhanced accessibility
     await focusFirstErrorField()
-    
+
     return
   }
-  
+
   isSubmitting.value = true
-  
+
   try {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500))
-    
+
     // Show success message
     showSuccessMessage.value = true
-    
+
     // Reset form
     resetForm()
-    
+
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (error) {
@@ -1294,7 +1297,7 @@ const resetForm = () => {
         <!-- Personal Information Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Personal Information</legend>
-          
+
           <FFieldset>
             <FLabel for="firstName">First Name *</FLabel>
             <FTextField
@@ -1311,7 +1314,7 @@ const resetForm = () => {
               {{ errors.firstName }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="lastName">Last Name *</FLabel>
             <FTextField
@@ -1328,7 +1331,7 @@ const resetForm = () => {
               {{ errors.lastName }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="email">Email Address *</FLabel>
             <FTextField
@@ -1345,7 +1348,7 @@ const resetForm = () => {
               {{ errors.email }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="phone">Phone Number</FLabel>
             <FTextField
@@ -1356,11 +1359,11 @@ const resetForm = () => {
             />
           </FFieldset>
         </fieldset>
-        
+
         <!-- Preferences Section -->
         <fieldset class="form-section">
           <legend class="fk-heading-2">Preferences</legend>
-          
+
           <FFieldset>
             <FLabel for="contactMethod">Preferred Contact Method *</FLabel>
             <FSelectField
@@ -1380,7 +1383,7 @@ const resetForm = () => {
               {{ errors.contactMethod }}
             </div>
           </FFieldset>
-          
+
           <FFieldset>
             <fieldset class="checkbox-group">
               <legend class="group-legend">Notification Preferences</legend>
@@ -1410,7 +1413,7 @@ const resetForm = () => {
               </div>
             </fieldset>
           </FFieldset>
-          
+
           <FFieldset>
             <FLabel for="comments">Additional Comments</FLabel>
             <FTextareaField
@@ -1424,7 +1427,7 @@ const resetForm = () => {
             </div>
           </FFieldset>
         </fieldset>
-        
+
         <!-- Agreement Section -->
         <fieldset class="form-section">
           <FFieldset>
@@ -1631,7 +1634,7 @@ const resetForm = () => {
     background-color: white;
     color: black;
   }
-  
+
   .text-field__input.error,
   .select-field__select.error {
     background-color: white;
@@ -1663,373 +1666,373 @@ touch src/views/DashboardView.vue
 import { reactive, ref, onMounted } from "vue";
 
 const stats = reactive({
-	applications: 12,
-	pending: 3,
-	approved: 7,
-	needsAction: 2,
+ applications: 12,
+ pending: 3,
+ approved: 7,
+ needsAction: 2,
 });
 
 const applications = ref([
-	{
-		id: "APP-001",
-		name: "John Doe",
-		type: "Benefits",
-		date: "2025-11-15",
-		status: "Approved",
-	},
-	{
-		id: "APP-002",
-		name: "Jane Smith",
-		type: "Healthcare",
-		date: "2025-11-14",
-		status: "Pending",
-	},
-	{
-		id: "APP-003",
-		name: "Bob Johnson",
-		type: "Benefits",
-		date: "2025-11-13",
-		status: "Needs Action",
-	},
-	{
-		id: "APP-004",
-		name: "Alice Brown",
-		type: "Pension",
-		date: "2025-11-12",
-		status: "Approved",
-	},
+ {
+  id: "APP-001",
+  name: "John Doe",
+  type: "Benefits",
+  date: "2025-11-15",
+  status: "Approved",
+ },
+ {
+  id: "APP-002",
+  name: "Jane Smith",
+  type: "Healthcare",
+  date: "2025-11-14",
+  status: "Pending",
+ },
+ {
+  id: "APP-003",
+  name: "Bob Johnson",
+  type: "Benefits",
+  date: "2025-11-13",
+  status: "Needs Action",
+ },
+ {
+  id: "APP-004",
+  name: "Alice Brown",
+  type: "Pension",
+  date: "2025-11-12",
+  status: "Approved",
+ },
 ]);
 
 const activities = ref([
-	{
-		id: 1,
-		title: "Application Approved",
-		description: "Application APP-001 has been approved.",
-		timestamp: "2025-11-15T14:30:00Z",
-		type: "success",
-	},
-	{
-		id: 2,
-		title: "Document Uploaded",
-		description: "New document uploaded for application APP-002.",
-		timestamp: "2025-11-15T10:15:00Z",
-		type: "info",
-	},
-	{
-		id: 3,
-		title: "Action Required",
-		description: "Additional information needed for application APP-003.",
-		timestamp: "2025-11-14T16:45:00Z",
-		type: "warning",
-	},
+ {
+  id: 1,
+  title: "Application Approved",
+  description: "Application APP-001 has been approved.",
+  timestamp: "2025-11-15T14:30:00Z",
+  type: "success",
+ },
+ {
+  id: 2,
+  title: "Document Uploaded",
+  description: "New document uploaded for application APP-002.",
+  timestamp: "2025-11-15T10:15:00Z",
+  type: "info",
+ },
+ {
+  id: 3,
+  title: "Action Required",
+  description: "Additional information needed for application APP-003.",
+  timestamp: "2025-11-14T16:45:00Z",
+  type: "warning",
+ },
 ]);
 
 const formatDate = (dateString) => {
-	const options = {
-		year: "numeric",
-		month: "short",
-		day: "numeric",
-	};
-	return new Date(dateString).toLocaleDateString(undefined, options);
+ const options = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+ };
+ return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 const getStatusVariant = (status) => {
-	switch (status) {
-		case "Approved":
-			return "success";
-		case "Pending":
-			return "info";
-		case "Needs Action":
-			return "warning";
-		default:
-			return "neutral";
-	}
+ switch (status) {
+  case "Approved":
+   return "success";
+  case "Pending":
+   return "info";
+  case "Needs Action":
+   return "warning";
+  default:
+   return "neutral";
+ }
 };
 
 const viewDetails = (id) => {
-	// In a real application, this would navigate to a details page
-	alert(`Viewing details for application ${id}`);
+ // In a real application, this would navigate to a details page
+ alert(`Viewing details for application ${id}`);
 };
 
 onMounted(() => {
-	// In a real application, you would fetch data from an API
-	console.log("Dashboard loaded");
+ // In a real application, you would fetch data from an API
+ console.log("Dashboard loaded");
 });
 </script>
 
 <template>
-	<div class="dashboard-view">
-		<div class="container">
-			<nav class="breadcrumb fk-mb-4">
-				<router-link to="/">Home</router-link>
-				<span class="separator">/</span>
-				<span>Dashboard</span>
-			</nav>
+ <div class="dashboard-view">
+  <div class="container">
+   <nav class="breadcrumb fk-mb-4">
+    <router-link to="/">Home</router-link>
+    <span class="separator">/</span>
+    <span>Dashboard</span>
+   </nav>
 
-			<h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
-			<p class="fk-text-large fk-mb-6">
-				Overview of your application status and recent activity.
-			</p>
+   <h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
+   <p class="fk-text-large fk-mb-6">
+    Overview of your application status and recent activity.
+   </p>
 
-			<!-- Status Cards -->
-			<div class="stats-grid fk-mb-6">
-				<FCard class="status-card">
-					<div class="status-card-content">
-						<div class="status-icon">📄</div>
-						<h3 class="fk-heading-4">Applications</h3>
-						<p class="fk-text-large">{{ stats.applications }}</p>
-					</div>
-				</FCard>
+   <!-- Status Cards -->
+   <div class="stats-grid fk-mb-6">
+    <FCard class="status-card">
+     <div class="status-card-content">
+      <div class="status-icon">📄</div>
+      <h3 class="fk-heading-4">Applications</h3>
+      <p class="fk-text-large">{{ stats.applications }}</p>
+     </div>
+    </FCard>
 
-				<FCard class="status-card">
-					<div class="status-card-content">
-						<div class="status-icon">🕐</div>
-						<h3 class="fk-heading-4">Pending</h3>
-						<p class="fk-text-large">{{ stats.pending }}</p>
-					</div>
-				</FCard>
+    <FCard class="status-card">
+     <div class="status-card-content">
+      <div class="status-icon">🕐</div>
+      <h3 class="fk-heading-4">Pending</h3>
+      <p class="fk-text-large">{{ stats.pending }}</p>
+     </div>
+    </FCard>
 
-				<FCard class="status-card">
-					<div class="status-card-content">
-						<div class="status-icon">✓</div>
-						<h3 class="fk-heading-4">Approved</h3>
-						<p class="fk-text-large">{{ stats.approved }}</p>
-					</div>
-				</FCard>
+    <FCard class="status-card">
+     <div class="status-card-content">
+      <div class="status-icon">✓</div>
+      <h3 class="fk-heading-4">Approved</h3>
+      <p class="fk-text-large">{{ stats.approved }}</p>
+     </div>
+    </FCard>
 
-				<FCard class="status-card">
-					<div class="status-card-content">
-						<div class="status-icon">⚠</div>
-						<h3 class="fk-heading-4">Need Action</h3>
-						<p class="fk-text-large">{{ stats.needsAction }}</p>
-					</div>
-				</FCard>
-			</div>
+    <FCard class="status-card">
+     <div class="status-card-content">
+      <div class="status-icon">⚠</div>
+      <h3 class="fk-heading-4">Need Action</h3>
+      <p class="fk-text-large">{{ stats.needsAction }}</p>
+     </div>
+    </FCard>
+   </div>
 
-			<!-- Recent Applications Table -->
-			<FCard class="fk-mb-6">
-				<div class="card-header">
-					<h2 class="fk-heading-2">Recent Applications</h2>
-				</div>
+   <!-- Recent Applications Table -->
+   <FCard class="fk-mb-6">
+    <div class="card-header">
+     <h2 class="fk-heading-2">Recent Applications</h2>
+    </div>
 
-				<!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
-				<FDataTable :rows="applications">
-					<template #caption>Lates applications</template>
-					<template #default="{ row }">
-						<FTableColumn title="ID" type="text">
-							{{ row.id }}
-						</FTableColumn>
-						<FTableColumn title="Name" type="text">
-							{{ row.name }}
-						</FTableColumn>
-						<FTableColumn title="Type" type="text">
-							{{ row.type }}
-						</FTableColumn>
-						<FTableColumn title="Date" type="date">
-							{{ formatDate(row.date) }}
-						</FTableColumn>
-						<FTableColumn title="Status" type="text">
-							<FBadge :variant="getStatusVariant(row.status)">
-								{{ row.status }}
-							</FBadge>
-						</FTableColumn>
-						<!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
-						<FTableColumn title="Actions">
-							<FTableButton @click="viewDetails(row.id)">
-								Visa
-							</FTableButton>
-						</FTableColumn>
-					</template>
-				</FDataTable>
-			</FCard>
+    <!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
+    <FDataTable :rows="applications">
+     <template #caption>Lates applications</template>
+     <template #default="{ row }">
+      <FTableColumn title="ID" type="text">
+       {{ row.id }}
+      </FTableColumn>
+      <FTableColumn title="Name" type="text">
+       {{ row.name }}
+      </FTableColumn>
+      <FTableColumn title="Type" type="text">
+       {{ row.type }}
+      </FTableColumn>
+      <FTableColumn title="Date" type="date">
+       {{ formatDate(row.date) }}
+      </FTableColumn>
+      <FTableColumn title="Status" type="text">
+       <FBadge :variant="getStatusVariant(row.status)">
+        {{ row.status }}
+       </FBadge>
+      </FTableColumn>
+      <!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
+      <FTableColumn title="Actions">
+       <FTableButton @click="viewDetails(row.id)">
+        Visa
+       </FTableButton>
+      </FTableColumn>
+     </template>
+    </FDataTable>
+   </FCard>
 
-			<!-- Activity Timeline -->
-			<FCard class="fk-mb-6">
-				<div class="card-header">
-					<h2 class="fk-heading-2">Recent Activity</h2>
-				</div>
+   <!-- Activity Timeline -->
+   <FCard class="fk-mb-6">
+    <div class="card-header">
+     <h2 class="fk-heading-2">Recent Activity</h2>
+    </div>
 
-				<div class="activity-list">
-					<div
-						v-for="activity in activities"
-						:key="activity.id"
-						class="activity-item"
-					>
-						<div
-							class="activity-icon"
-							:class="`activity-${activity.type}`"
-						>
-							{{
-								activity.type === "success"
-									? "✓"
-									: activity.type === "warning"
-										? "⚠"
-										: "ℹ"
-							}}
-						</div>
-						<div class="activity-content">
-							<h4 class="activity-title">{{ activity.title }}</h4>
-							<p class="activity-description">
-								{{ activity.description }}
-							</p>
-							<span class="activity-time">{{
-								formatDate(activity.timestamp)
-							}}</span>
-						</div>
-					</div>
-				</div>
-			</FCard>
+    <div class="activity-list">
+     <div
+      v-for="activity in activities"
+      :key="activity.id"
+      class="activity-item"
+     >
+      <div
+       class="activity-icon"
+       :class="`activity-${activity.type}`"
+      >
+       {{
+        activity.type === "success"
+         ? "✓"
+         : activity.type === "warning"
+          ? "⚠"
+          : "ℹ"
+       }}
+      </div>
+      <div class="activity-content">
+       <h4 class="activity-title">{{ activity.title }}</h4>
+       <p class="activity-description">
+        {{ activity.description }}
+       </p>
+       <span class="activity-time">{{
+        formatDate(activity.timestamp)
+       }}</span>
+      </div>
+     </div>
+    </div>
+   </FCard>
 
-			<!-- System Notification -->
-			<!-- DEBUG: Adding type prop to fix missing required prop error -->
-			<FMessageBox type="info" variant="info" class="fk-mb-4">
-				<strong>System Update:</strong> Scheduled maintenance will occur
-				this weekend from 2 AM to 6 AM.
-			</FMessageBox>
-		</div>
-	</div>
+   <!-- System Notification -->
+   <!-- DEBUG: Adding type prop to fix missing required prop error -->
+   <FMessageBox type="info" variant="info" class="fk-mb-4">
+    <strong>System Update:</strong> Scheduled maintenance will occur
+    this weekend from 2 AM to 6 AM.
+   </FMessageBox>
+  </div>
+ </div>
 </template>
 
 <style scoped>
 .dashboard-view {
-	padding: 2rem 0;
+ padding: 2rem 0;
 }
 
 .breadcrumb {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	color: var(--color-neutral-600);
+ display: flex;
+ align-items: center;
+ gap: 0.5rem;
+ color: var(--color-neutral-600);
 }
 
 .breadcrumb a {
-	color: var(--color-primary-500);
-	text-decoration: none;
+ color: var(--color-primary-500);
+ text-decoration: none;
 }
 
 .breadcrumb a:hover {
-	text-decoration: underline;
+ text-decoration: underline;
 }
 
 .separator {
-	color: var(--color-neutral-400);
+ color: var(--color-neutral-400);
 }
 
 .stats-grid {
-	display: grid;
+ display: grid;
     grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
-	gap: 1.5rem;
+ gap: 1.5rem;
 }
 
 .status-card {
-	text-align: center;
+ text-align: center;
 }
 
 .status-card-content {
-	padding: 2rem 1rem;
+ padding: 2rem 1rem;
 }
 
 .status-icon {
-	font-size: 3rem;
-	margin-bottom: 0.5rem;
+ font-size: 3rem;
+ margin-bottom: 0.5rem;
 }
 
 .card-header {
-	padding: 1.5rem;
-	border-bottom: 1px solid var(--color-neutral-200);
+ padding: 1.5rem;
+ border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .table-wrapper {
-	overflow-x: auto;
+ overflow-x: auto;
 }
 
 .applications-table {
-	width: 100%;
-	border-collapse: collapse;
-	border-spacing: 0;
+ width: 100%;
+ border-collapse: collapse;
+ border-spacing: 0;
 }
 
 .applications-table th,
 .applications-table td {
-	padding: 0.75rem;
-	text-align: left;
-	border-bottom: 1px solid var(--color-neutral-200);
+ padding: 0.75rem;
+ text-align: left;
+ border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .applications-table th {
-	background-color: var(--color-neutral-50);
-	font-weight: 600;
-	color: var(--color-neutral-700);
+ background-color: var(--color-neutral-50);
+ font-weight: 600;
+ color: var(--color-neutral-700);
 }
 
 .applications-table tbody tr:hover {
-	background-color: var(--color-neutral-50);
+ background-color: var(--color-neutral-50);
 }
 
 .activity-list {
-	padding: 1.5rem;
+ padding: 1.5rem;
 }
 
 .activity-item {
-	display: flex;
-	gap: 1rem;
-	padding: 1rem 0;
-	border-bottom: 1px solid var(--color-neutral-100);
+ display: flex;
+ gap: 1rem;
+ padding: 1rem 0;
+ border-bottom: 1px solid var(--color-neutral-100);
 }
 
 .activity-item:last-child {
-	border-bottom: none;
+ border-bottom: none;
 }
 
 .activity-icon {
-	width: 40px;
-	height: 40px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 50%;
-	font-size: 1.25rem;
-	flex-shrink: 0;
+ width: 40px;
+ height: 40px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border-radius: 50%;
+ font-size: 1.25rem;
+ flex-shrink: 0;
 }
 
 .activity-success {
-	background-color: var(--color-primary-100);
-	color: var(--color-primary-700);
+ background-color: var(--color-primary-100);
+ color: var(--color-primary-700);
 }
 
 .activity-warning {
-	background-color: #fff3cd;
-	color: #856404;
+ background-color: #fff3cd;
+ color: #856404;
 }
 
 .activity-info {
-	background-color: #d1ecf1;
-	color: #0c5460;
+ background-color: #d1ecf1;
+ color: #0c5460;
 }
 
 .activity-content {
-	flex: 1;
+ flex: 1;
 }
 
 .activity-title {
-	font-weight: 600;
-	margin-bottom: 0.25rem;
+ font-weight: 600;
+ margin-bottom: 0.25rem;
 }
 
 .activity-description {
-	color: var(--color-neutral-600);
-	margin-bottom: 0.5rem;
+ color: var(--color-neutral-600);
+ margin-bottom: 0.5rem;
 }
 
 .activity-time {
-	font-size: 0.875rem;
-	color: var(--color-neutral-500);
+ font-size: 0.875rem;
+ color: var(--color-neutral-500);
 }
 
 .container {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 0 1rem;
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 1rem;
 }
 </style>
 ```
