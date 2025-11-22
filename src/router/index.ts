@@ -18,6 +18,11 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/DashboardView.vue')
+    },
+    // Add catch-all route for SPA
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/'
     }
   ]
 })

@@ -357,7 +357,7 @@ const resetForm = () => {
 }
 
 .error-message::before {
-  content: "⚠️ Error: ";
+  content: "⚠️ Fel: ";
   font-weight: bold;
 }
 
