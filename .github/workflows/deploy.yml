@@ -46,7 +46,10 @@ jobs:
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
-      
+      with:
+        # Configure base path for GitHub Pages
+        base: '/ip-sprint-test-site-01/'
+        
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
@@ -66,3 +69,5 @@ jobs:
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
+      with:
+        base: '/ip-sprint-test-site-01/'
