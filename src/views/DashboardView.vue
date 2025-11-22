@@ -94,6 +94,21 @@ const viewDetails = (id) => {
 onMounted(() => {
 	// In a real application, you would fetch data from an API
 	console.log("Dashboard loaded");
+	
+	// DEBUG: Let's examine the FDataTable component
+	console.log("DEBUG: FDataTable component:", window.FDataTable || "Not available globally");
+	
+	// DEBUG: Check if we can access the FKUI components
+	const fkuiComponents = Object.keys(window.__VUE_DEVTOOLS_GLOBAL_HOOK__?.__VUE__ || {});
+	console.log("DEBUG: Available Vue components:", fkuiComponents);
+	
+	// DEBUG: Let's check what FDataTable properties are available
+	console.log("DEBUG: Checking FDataTable implementation...");
+	
+	// DEBUG: Let's try to understand the error better
+	setTimeout(() => {
+		console.log("DEBUG: Dashboard fully mounted, checking for any errors...");
+	}, 1000);
 });
 </script>
 
@@ -152,45 +167,35 @@ onMounted(() => {
 					<h2 class="fk-heading-2">Senaste ansökningar</h2>
 				</div>
 
-				<div class="table-wrapper">
-					<!-- DEBUG: Use simple HTML table instead of FDataTable for now -->
-					<table class="applications-table">
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>Namn</th>
-								<th>Typ</th>
-								<th>Datum</th>
-								<th>Status</th>
-								<th>Åtgärder</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="item in applications" :key="item.id">
-								<td>{{ item.id }}</td>
-								<td>{{ item.name }}</td>
-								<td>{{ item.type }}</td>
-								<td>{{ formatDate(item.date) }}</td>
-								<td>
-									<FBadge
-										:variant="getStatusVariant(item.status)"
-									>
-										{{ item.status }}
-									</FBadge>
-								</td>
-								<td>
-									<FButton
-										variant="secondary"
-										size="small"
-										@click="viewDetails(item.id)"
-									>
-										Visa
-									</FButton>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
+				<FDataTable :rows="applications">
+					<template #caption>Senaste ansökningar</template>
+					<template #default="{ row }">
+						<FTableColumn title="ID" type="text">
+							{{ row.id }}
+						</FTableColumn>
+						<FTableColumn title="Namn" type="text">
+							{{ row.name }}
+						</FTableColumn>
+						<FTableColumn title="Typ" type="text">
+							{{ row.type }}
+						</FTableColumn>
+						<FTableColumn title="Datum" type="date">
+							{{ formatDate(row.date) }}
+						</FTableColumn>
+						<FTableColumn title="Status" type="text">
+							<FBadge :variant="getStatusVariant(row.status)">
+								{{ row.status }}
+							</FBadge>
+						</FTableColumn>
+						<!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
+						<FTableColumn title="Åtgärder">
+							<FTableButton @click="viewDetails(row.id)">
+								Visa
+							</FTableButton>
+						</FTableColumn>
+					</template>
+				</FDataTable>
 			</FCard>
 
 			<!-- Activity Timeline -->

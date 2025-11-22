@@ -1585,42 +1585,37 @@ onMounted(() => {
           <h2 class="fk-heading-2">Senaste ansökningar</h2>
         </div>
         
-        <div class="table-wrapper">
-          <table class="simple-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Namn</th>
-                <th>Typ</th>
-                <th>Datum</th>
-                <th>Status</th>
-                <th>Åtgärder</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="application in applications" :key="application.id">
-                <td>{{ application.id }}</td>
-                <td>{{ application.name }}</td>
-                <td>{{ application.type }}</td>
-                <td>{{ formatDate(application.date) }}</td>
-                <td>
-                  <FBadge :variant="getStatusVariant(application.status)">
-                    {{ application.status }}
-                  </FBadge>
-                </td>
-                <td>
-                  <FButton
-                    variant="secondary"
-                    size="small"
-                    @click="viewDetails(application.id)"
-                  >
-                    Visa
-                  </FButton>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+				<!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
+				<FDataTable :rows="applications">
+					<template #caption>Senaste ansökningar</template>
+					<template #default="{ row }">
+						<FTableColumn title="ID" type="text">
+							{{ row.id }}
+						</FTableColumn>
+						<FTableColumn title="Namn" type="text">
+							{{ row.name }}
+						</FTableColumn>
+						<FTableColumn title="Typ" type="text">
+							{{ row.type }}
+						</FTableColumn>
+						<FTableColumn title="Datum" type="date">
+							{{ formatDate(row.date) }}
+						</FTableColumn>
+						<FTableColumn title="Status" type="text">
+							<FBadge :variant="getStatusVariant(row.status)">
+								{{ row.status }}
+							</FBadge>
+						</FTableColumn>
+						<!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
+						<FTableColumn title="Åtgärder">
+							<FTableButton @click="viewDetails(row.id)">
+								Visa
+							</FTableButton>
+						</FTableColumn>
+					</template>
+				</FDataTable>
+			</FCard>
+
       </FCard>
       
       <!-- Aktivitetstidslinje -->

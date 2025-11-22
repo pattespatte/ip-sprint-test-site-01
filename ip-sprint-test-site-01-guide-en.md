@@ -1812,45 +1812,35 @@ onMounted(() => {
 					<h2 class="fk-heading-2">Recent Applications</h2>
 				</div>
 
-				<div class="table-wrapper">
-					<!-- DEBUG: Use simple HTML table instead of FDataTable for now -->
-					<table class="applications-table">
-						<thead>
-							<tr>
-								<th>ID</th>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Date</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr v-for="item in applications" :key="item.id">
-								<td>{{ item.id }}</td>
-								<td>{{ item.name }}</td>
-								<td>{{ item.type }}</td>
-								<td>{{ formatDate(item.date) }}</td>
-								<td>
-									<FBadge
-										:variant="getStatusVariant(item.status)"
-									>
-										{{ item.status }}
-									</FBadge>
-								</td>
-								<td>
-									<FButton
-										variant="secondary"
-										size="small"
-										@click="viewDetails(item.id)"
-									>
-										View
-									</FButton>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
+				<!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
+				<FDataTable :rows="applications">
+					<template #caption>Lates applications</template>
+					<template #default="{ row }">
+						<FTableColumn title="ID" type="text">
+							{{ row.id }}
+						</FTableColumn>
+						<FTableColumn title="Name" type="text">
+							{{ row.name }}
+						</FTableColumn>
+						<FTableColumn title="Type" type="text">
+							{{ row.type }}
+						</FTableColumn>
+						<FTableColumn title="Date" type="date">
+							{{ formatDate(row.date) }}
+						</FTableColumn>
+						<FTableColumn title="Status" type="text">
+							<FBadge :variant="getStatusVariant(row.status)">
+								{{ row.status }}
+							</FBadge>
+						</FTableColumn>
+						<!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
+						<FTableColumn title="Actions">
+							<FTableButton @click="viewDetails(row.id)">
+								Visa
+							</FTableButton>
+						</FTableColumn>
+					</template>
+				</FDataTable>
 			</FCard>
 
 			<!-- Activity Timeline -->
