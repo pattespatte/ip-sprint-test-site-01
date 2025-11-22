@@ -586,28 +586,19 @@ mkdir -p src/styles
 // Importera FKUI-tema
 @use "@fkui/theme-default";
 
-// Definera anpassade temavariabler
-:root {
-  // Åsidosätt primärfärger
-  --fk-primary-color: #3366cc;  // Ditt varumärkes primärfärg
-  --fk-secondary-color: #6699ff; // Ditt varumärkes sekundärfärg
-
-  // Åsidosätt typsnitt
-  --fk-font-family-base: "Noto Sans", Arial, sans-serif;
-
-  // Åsidosätt avstånd (vid behov)
-  --fk-spacing-large: 2rem;
-}
+// Definera anpassade temavfiler
+@use "variables";
+@use "colors";
+@use "typography";
+@use "branding";
 
 // Anpassade komponentåsidosättningar
-.fk-button {
-  // Anpassade knappstilar som utökar FKUI
-  border-radius: 6px; // Något annorlunda än FKUI-standard
+@use "components/buttons";
+@use "components/forms";
 
-  &.primary {
-    background-color: var(--fk-primary-color);
-  }
-}
+// Importera FKUI grundstiler (måste komma efter @use)
+@import "@fkui/design/lib/fkui.css";
+@import "@fkui/design/lib/fonts.css";
 ```
 
 ### Steg 6: Miljökonfiguration
@@ -795,12 +786,6 @@ Lägg till dina varumärkesspecifika element:
   background-color: var(--color-primary-500);
   color: white;
   padding: 1rem 0;
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
 }
 
 .brand-footer {
@@ -808,11 +793,10 @@ Lägg till dina varumärkesspecifika element:
   color: white;
   padding: 2rem 0;
 
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 ```
 
@@ -824,17 +808,31 @@ Skapa åsidosättningar för specifika FKUI-komponenter:
 // src/styles/components/_buttons.scss
 
 // Anpassade knappåsidosättningar
-.fk-button {
-  // Förbättra knapputseende
-  transition: all 0.2s ease;
+// This preserves the default FKUI button styling while modifying specific aspects
 
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+// Target primary variant buttons with darker background and borders
+// Using actual FKUI class names (button and button--primary)
+.button.button--primary {
+  // Also target large size buttons specifically
+  &.button--large {
+    // Inherit all the above styles but for large buttons
   }
 
-  &.primary {
-    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  // Override only the specific properties we want to change
+  background-color: var(--color-primary-700);
+  border: 2px solid var(--color-primary-800);
+  color: white;
+
+  // Keep FKUI hover behavior but with our darker colors
+  &:hover {
+    background-color: var(--color-primary-800);
+    border-color: var(--color-primary-900);
+  }
+
+  // Ensure focus states are also properly styled
+  &:focus {
+    border-color: var(--color-primary-800);
+    box-shadow: 0 0 0 3px rgba(13, 31, 64, 0.25);
   }
 }
 ```
@@ -2099,7 +2097,7 @@ const toggleMobileMenu = () => {
     <footer class="app-footer">
       <div class="container">
         <p>&copy; 2025 IP Sprint Test Site. Byggd med Försäkringskassans Designsystem.</p>
-        <p class="version">Version {{ import.meta.env.VITE_APP_VERSION || '1.0.0' }}</p>
+        <p class="version">Version {{ appVersion }}</p>
       </div>
     </footer>
   </div>
