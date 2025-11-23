@@ -976,7 +976,7 @@ console.log('DEBUG: FKUI-plugins har laddats')
 app.mount('#app-container')
 ```
 
-💡 **Viktigt**: Notera att vi använder `#app-container` som mount-point istället för `#app` för att undvika dubbla ID-fel.
+💡 **Viktigt**: Notera att vi använder `#app-container` som mount-point istället för `#app` för att undvika dubbla ID-fel. Detta säkerställer korrekt montering av Vue-applikationen och eliminerar W3C-valideringsfel.
 
 ### Steg 2: Skapa landningssida
 
@@ -2019,7 +2019,7 @@ onMounted(() => {
 
 ⏱️ **Beräknad tid: 15 minuter**
 
-Uppdatera din huvud-App.vue för att inkludera navigering:
+Uppdatera din huvud-App.vue för att inkludera navigering med den nya CSS-arkitekturen:
 
 ```vue
 <!-- src/App.vue -->
@@ -2116,13 +2116,29 @@ const toggleMobileMenu = () => {
   padding: 0;
 }
 
-/* Lager 1: Huvudapp-behållare */
+/* Lager 1: Huvudapp-behållare (Vue monteringspunkt) */
+#app {
+  display: flex;
+  justify-content: center; /* Centrerar hela appen horisontellt */
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Lager 2: App-behållare (App.vue root) */
 #app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
+  min-height: 100vh;
   font-family: var(--fk-font-family-base, 'Noto Sans', sans-serif);
+}
+
+/* Lager 3: Innehållsomslag */
+.content-container {
+  max-width: 1200px; /* Konsekvent max-bredd över alla sidor */
+  width: 100%;
+  margin: 0 auto; /* Horisontell centrering */
+  padding: 2rem 1rem;
 }
 
 .app-header {
@@ -2220,15 +2236,7 @@ const toggleMobileMenu = () => {
   margin-top: 0.5rem;
 }
 
-/* Lager 2: Innehållsomslag */
-.content-container {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
-
-/* Lager 3: Responsiva justeringar */
+/* Lager 4: Responsiva justeringar */
 @media (max-width: 768px) {
   .content-container {
     padding: 1rem 0.5rem;
@@ -2264,6 +2272,13 @@ const toggleMobileMenu = () => {
 }
 </style>
 ```
+
+**Viktiga förbättringar i denna version:**
+
+1. **Trelagers CSS-hierarki**: Implementerat tydlig ansvarsfördelning mellan olika lager
+2. **Centraliserad layoutkontroll**: All centrering och behållarhantering i App.vue
+3. **Konsekvent max-bredd**: 1200px över alla sidor via `.content-container`
+4. **W3C-validering**: Använt `#app-container` istället för `#app` för att undvika dubbla ID
 
 ---
 
@@ -3208,32 +3223,176 @@ deploy_production:
 
 ### HTML-struktur och CSS-problem
 
-#### 1. Dubbla ID-fel
+#### 1. W3C HTML-valideringsfel: Dubbla ID:n
 
-**Problem**: "Duplicate ID 'app' hittades i dokument"-fel i webbläsarkonsolen
+**Problem**: "Duplicate ID 'app' hittades i dokument"-fel i webbläsarkonsolen vid W3C HTML-validering
 
-**Solution**: Dubbla ID-fel uppstår när både HTML-mall och CSS refererar till samma ID. Vi fixade detta genom att ändra huvudbehållarens ID från "app" till "app-container".
+**Solution**: Dubbla ID-fel uppstår när både HTML-mall (index.html) och Vue-komponent (App.vue) använder samma ID="app". Vi löste detta genom att ändra ID i App.vue från "app" till "app-container" och uppdatera motsvarande CSS-selektor.
 
 **Vad som ändrades:**
 
-- HTML: Ändrade `<div id="app">` till `<div id="app-container">`
-- CSS: Uppdaterade selektorer från `#app` till `#app-container`
-- JavaScript: Uppdaterade mount-point i `src/main.ts` från `app.mount('#app')` till `app.mount('#app-container')`
+- **App.vue**: Ändrade root-element ID från `id="app"` till `id="app-container"`
+- **CSS**: Uppdaterade selektorer från `#app` till `#app-container` i App.vue
+- **main.ts**: Uppdaterade mount-point från `app.mount('#app')` till `app.mount('#app-container')`
+- **index.html**: Behöll det ursprungliga `id="app"` för Vue-monteringspunkten
+
+**Resultat**: W3C-valideringsfelet eliminerades helt
 
 **Varför detta är viktigt:**
 
-- HTML-ID:n måste vara unika inom ett dokument
-- Dubbla ID:n kan orsaka JavaScript-fel och CSS-selektorkonflikter
-- Sökmotorer och tillgänglighetsverktyg kan misslyckas med dubbla ID:n
+- HTML-ID:n måste vara unika inom ett dokument enligt W3C-standarden
+- Dubbla ID:n orsakar JavaScript-fel och CSS-selektorkonflikter
+- W3C-validering är viktig för webbstandarder och tillgänglighet
 
 #### 2. Innehållscentreringsproblem
 
-**Problem**: Innehåll centreras inte korrekt eller responsiv layout är trasig
+**Problem**: Huvudinnehåll var vänsterjusterat istället för centrerat på desktop-skärmar
 
 **Solution**: Implementera en trelagers CSS-hierarki för korrekt innehållscentrering:
 
+**Lager 1: `#app` (Vue monteringspunkt) → Centrerar hela appen horisontellt**
+
+- Etablerar grundläggande layoutstruktur
+- Hanterar global horisontell centrering
+
+**Lager 2: `#app-container` (App.vue root) → Tar full bredd med flex-layout**
+
+- Fungerar som flex-behållare för hela applikationen
+- Tillhandahåller full bredd för innehållsutbredning
+
+**Lager 3: `.content-container` (Huvudinnehållsomslag) → Begränsar bredd (1200px max) och centrerar innehåll**
+
+- Säkerställer konsekvent max-bredd över alla sidor
+- Centrerar innehåll horisontellt med margin: 0 auto
+
+**Implementeringsexempel:**
+
 ```css
 /* Lager 1: Huvudapp-behållare */
+#app {
+  display: flex;
+  justify-content: center; /* Centrerar hela appen */
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Lager 2: App-behållare */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Lager 3: Innehållsomslag */
+.content-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto; /* Horisontell centrering */
+  padding: 2rem 1rem;
+}
+```
+
+**CSS-hierarkiförklaring:**
+
+1. **#app**: Vue-monteringspunkt som centrerar hela applikationen
+2. **#app-container**: App.vue rot-element som hanterar full bredd och flex-layout
+3. **.content-container**: Innehållsomslag som begränsar bredd och centrerar innehåll
+4. **Responsiva brytpunkter**: Mobile-first-approach med konsekvent padding
+
+**Fördelar med denna struktur:**
+
+- Konsekvent centrering över alla sidor
+- Bättre underhållbarhet med centraliserad layoutkontroll
+- Förbättrad responsiv design med tydliga ansvarsområden
+
+#### 3. FormView.vue Layout- och avståndsförbättringar
+
+**Problem**: Formuläret hade dåligt utnyttjande av utrymme och dubbletter av etiketter
+
+**Solution**: Implementerade responsiv 2-kolumnslayout på desktop och fixade dubblett-etikettproblem genom att använda FKUI-komponenternas inbyggda etiketter.
+
+**Layoutförbättringar:**
+
+1. **Responsiv 2-kolumnslayout på desktop:**
+   - Bättre utnyttjande av skärmutrymme på större skärmar
+   - Formulärfält arrangerade i två kolumner för bättre visuell balans
+   - Mobilanpassning med en kolumn på mindre skärmar
+
+2. **Fixat dubblett-etikettproblem:**
+   - **Problem**: Manuella FLabel-komponenter skapade dubbletter av etiketter
+   - **Lösning**: Använde FKUI-komponenternas inbyggda etiketter genom korrekt slot-struktur
+   - **Resultat**: Endast en etikett per formulärfält med korrekt avstånd
+
+**Implementeringsexempel:**
+
+```vue
+<!-- Före (problematiskt) -->
+<FFieldset>
+  <FLabel for="firstName">Förnamn *</FLabel>  <!-- Manuell etikett -->
+  <FTextField id="firstName" v-model="formData.firstName" />
+  <!-- FKUI skapar automatiskt en etikett, vilket resulterar i dubbletter -->
+</FFieldset>
+
+<!-- Efter (korrekt) -->
+<FFieldset>
+  <FTextField
+    id="firstName"
+    v-model="formData.firstName"
+    label="Förnamn *"  <!-- Använd inbyggd etikett -->
+    required
+  />
+  <!-- Inget behov av manuell FLabel - FKUI hanterar detta automatiskt -->
+</FFieldset>
+```
+
+**CSS-arkitekturförbättringar:**
+
+1. **Centraliserad layoutkontroll i App.vue:**
+   - All centrering och behållarhantering flyttad till App.vue
+   - Konsekvent max-bredd (1200px) över alla sidor
+   - Enkel responsiv brytpunktshantering
+
+2. **Borttagen redundanta behållare:**
+   - Tog bort `.container`-definitioner från individuella vykomponenter
+   - Använder endast `.content-container` från App.vue
+   - Minskad CSS-komplexitet och specificitetskonflikter
+
+**Fördelar:**
+
+- Endast en etikett per formulärfält
+- Bättre utnyttjande av skärmutrymme
+- Konsekvent layout över alla sidor
+- Enklare underhåll med centraliserad CSS
+- Förbättrad användarupplevelse på både desktop och mobil
+
+#### 4. CSS-arkitekturförbättringar
+
+**Problem**: Spridd layoutkontroll och inkonsekvententa CSS-mönster över olika komponenter
+
+**Solution**: Centraliserade layoutkontroll i App.vue och skapade en enhetlig CSS-arkitektur med tydliga ansvarsområden.
+
+**CSS-arkitekturförbättringar:**
+
+1. **Centraliserad layoutkontroll i App.vue:**
+   - All centrering och behållarhantering flyttad till App.vue
+   - `.content-container` hanterar max-bredd (1200px) och horisontell centrering
+   - Konsekvent padding och marginaler över alla sidor
+
+2. **Borttagen redundanta behållardefinitioner:**
+   - Tog bort `.container`-klasser från individuella vykomponenter
+   - Endast en central behållare för att undvika konflikter
+   - Minskad CSS-komplexitet
+
+3. **Konsekvent innehållsbredd:**
+   - Alla sidor använder samma max-bredd (1200px)
+   - Enhetlig responsiv brytpunktshantering
+   - Förutsägbart beteende över hela applikationen
+
+**Implementeringsexempel:**
+
+```css
+/* App.vue - Centraliserad layout */
 #app-container {
   display: flex;
   flex-direction: column;
@@ -3241,62 +3400,292 @@ deploy_production:
   width: 100%;
 }
 
-/* Lager 2: Innehållsomslag */
+.content-container {
+  max-width: 1200px; /* Konsekvent max-bredd */
+  width: 100%;
+  margin: 0 auto; /* Horisontell centrering */
+  padding: 2rem 1rem; /* Konsekvent padding */
+}
+
+/* Enhentlig responsiv brytpunkt */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem; /* Mobilanpassning */
+  }
+}
+```
+
+**Fördelar med denna arkitektur:**
+
+- **Enkel underhåll**: All layoutlogik på ett ställe
+- **Konsekvens**: Samma beteende på alla sidor
+- **Prestanda**: Mindre CSS och färre konflikter
+- **Skalbarhet**: Lätt att utöka med nya regler
+- **Responsivitet**: Enhetlig hantering av alla skärmstorlekar
+
+#### 5. Responsiv design med konsekventa brytpunkter
+
+**Problem**: Inkonsekvent responsivt beteende mellan olika sidor och komponenter
+
+**Solution**: Implementera en enhetlig responsiv designstrategi med konsekventa brytpunkter och mobile-first-approach.
+
+**Responsiv designstrategi:**
+
+```css
+/* Brytpunktsdefinitioner */
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1200px;
+
+/* Mobile-first-approach */
+.content-container {
+  padding: 1rem 0.5rem; /* Mobilstandard */
+  max-width: 100%;
+}
+
+/* Tablet och uppåt */
+@media (min-width: $breakpoint-mobile) {
+  .content-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Desktop och uppåt */
+@media (min-width: $breakpoint-tablet) {
+  .content-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+  }
+}
+
+/* Stora skärmar */
+@media (min-width: $breakpoint-desktop) {
+  .content-container {
+    margin: 0 auto; /* Centrera på stora skärmar */
+  }
+}
+```
+
+**Varför detta är viktigt:**
+
+- **Konsekvent användarupplevelse** över alla enheter
+- **Enklare underhåll** med enhetliga brytpunkter
+- **Bättre prestanda** med mobile-first-approach
+- **Förbättrad tillgänglighet** med responsiv design
+
+**Implementering i komponenter:**
+
+```vue
+<!-- Använd responsiva klasser istället för inline-stilar -->
+<template>
+  <div class="component-container">
+    <div class="component-grid">
+      <!-- Innehåll -->
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.component-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobil: en kolumn */
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .component-grid {
+    grid-template-columns: repeat(2, 1fr); /* Tablet: två kolumner */
+  }
+}
+
+@media (min-width: 1024px) {
+  .component-grid {
+    grid-template-columns: repeat(3, 1fr); /* Desktop: tre kolumner */
+  }
+}
+</style>
+```
+
+#### 2. Innehållscentreringsproblem
+
+**Problem**: Huvudinnehåll var vänsterjusterat istället för centrerat på desktop-skärmar
+
+**Solution**: Implementera en trelagers CSS-hierarki för korrekt innehållscentrering:
+
+**Lager 1: `#app` (Vue monteringspunkt) → Centrerar hela appen horisontellt**
+
+- Etablerar grundläggande layoutstruktur
+- Hanterar global horisontell centrering
+
+**Lager 2: `#app-container` (App.vue root) → Tar full bredd med flex-layout**
+
+- Fungerar som flex-behållare för hela applikationen
+- Tillhandahåller full bredd för innehållsutbredning
+
+**Lager 3: `.content-container` (Huvudinnehållsomslag) → Begränsar bredd (1200px max) och centrerar innehåll**
+
+- Säkerställer konsekvent max-bredd över alla sidor
+- Centrerar innehåll horisontellt med margin: 0 auto
+
+**Implementeringsexempel:**
+
+```css
+/* Lager 1: Huvudapp-behållare */
+#app {
+  display: flex;
+  justify-content: center; /* Centrerar hela appen */
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Lager 2: App-behållare */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Lager 3: Innehållsomslag */
 .content-container {
   max-width: 1200px;
   width: 100%;
-  margin: 0 auto;
+  margin: 0 auto; /* Horisontell centrering */
   padding: 2rem 1rem;
-}
-
-/* Lager 3: Responsiva justeringar */
-@media (max-width: 768px) {
-  .content-container {
-    padding: 1rem 0.5rem;
-  }
 }
 ```
 
 **CSS-hierarkiförklaring:**
 
-1. **#app-container**: Rot-layoutbehållare som etablerar flex-struktur
-2. **#app-container → .content-container**: Direkt barn för konsekvent max-bredd och centrering
-3. **Responsiva brytpunkter**: Mobile-first-approach med konsekvent padding
+1. **#app**: Vue-monteringspunkt som centrerar hela applikationen
+2. **#app-container**: App.vue rot-element som hanterar full bredd och flex-layout
+3. **.content-container**: Innehållsomslag som begränsar bredd och centrerar innehåll
+4. **Responsiva brytpunkter**: Mobile-first-approach med konsekvent padding
 
-#### 3. Ta bort redundanta behållardefinitioner
+**Fördelar med denna struktur:**
 
-**Problem**: Flera behållardefinitioner orsakar layoutkonflikter
+- Konsekvent centrering över alla sidor
+- Bättre underhållbarhet med centraliserad layoutkontroll
+- Förbättrad responsiv design med tydliga ansvarsområden
 
-**Solution**: Ta bort redundanta `.container`-klasser från individuella vykomponenter och använd den centraliserade `.content-container` från App.vue istället.
+#### 3. FormView.vue Layout- och avståndsförbättringar
 
-**Före (problematiskt):**
+**Problem**: Formuläret hade dåligt utnyttjande av utrymme och dubbletter av etiketter
+
+**Solution**: Implementerade responsiv 2-kolumnslayout på desktop och fixade dubblett-etikettproblem genom att använda FKUI-komponenternas inbyggda etiketter.
+
+**Layoutförbättringar:**
+
+1. **Responsiv 2-kolumnslayout på desktop:**
+   - Bättre utnyttjande av skärmutrymme på större skärmar
+   - Formulärfält arrangerade i två kolumner för bättre visuell balans
+   - Mobilanpassning med en kolumn på mindre skärmar
+
+2. **Fixat dubblett-etikettproblem:**
+   - **Problem**: Manuella FLabel-komponenter skapade dubbletter av etiketter
+   - **Lösning**: Använde FKUI-komponenternas inbyggda etiketter genom korrekt slot-struktur
+   - **Resultat**: Endast en etikett per formulärfält med korrekt avstånd
+
+**Implementeringsexempel:**
 
 ```vue
-<!-- I varje vykomponent -->
-<div class="view-container">
-  <div class="container">  <!-- Redundant! -->
-    <!-- Innehåll -->
-  </div>
-</div>
+<!-- Före (problematiskt) -->
+<FFieldset>
+  <FLabel for="firstName">Förnamn *</FLabel>  <!-- Manuell etikett -->
+  <FTextField id="firstName" v-model="formData.firstName" />
+  <!-- FKUI skapar automatiskt en etikett, vilket resulterar i dubbletter -->
+</FFieldset>
+
+<!-- Efter (korrekt) -->
+<FFieldset>
+  <FTextField
+    id="firstName"
+    v-model="formData.firstName"
+    label="Förnamn *"  <!-- Använd inbyggd etikett -->
+    required
+  />
+  <!-- Inget behov av manuell FLabel - FKUI hanterar detta automatiskt -->
+</FFieldset>
 ```
 
-**Efter (korrekt):**
+**CSS-arkitekturförbättringar:**
 
-```vue
-<!-- I varje vykomponent -->
-<div class="view-container">
-  <!-- Innehåll direkt, ingen extra behållare -->
-</div>
-```
+1. **Centraliserad layoutkontroll i App.vue:**
+   - All centrering och behållarhantering flyttad till App.vue
+   - Konsekvent max-bredd (1200px) över alla sidor
+   - Enkel responsiv brytpunktshantering
+
+2. **Borttagen redundanta behållare:**
+   - Tog bort `.container`-definitioner från individuella vykomponenter
+   - Använder endast `.content-container` från App.vue
+   - Minskad CSS-komplexitet och specificitetskonflikter
 
 **Fördelar:**
 
+- Endast en etikett per formulärfält
+- Bättre utnyttjande av skärmutrymme
 - Konsekvent layout över alla sidor
-- Minskade CSS-specificitetskonflikter
-- Bättre underhållbarhet
-- Förbättrad responsiv designkonsekvens
+- Enklare underhåll med centraliserad CSS
+- Förbättrad användarupplevelse på både desktop och mobil
 
-#### 4. Responsiv design med konsekventa brytpunkter
+#### 4. CSS-arkitekturförbättringar
+
+**Problem**: Spridd layoutkontroll och inkonsekvententa CSS-mönster över olika komponenter
+
+**Solution**: Centraliserade layoutkontroll i App.vue och skapade en enhetlig CSS-arkitektur med tydliga ansvarsområden.
+
+**CSS-arkitekturförbättringar:**
+
+1. **Centraliserad layoutkontroll i App.vue:**
+   - All centrering och behållarhantering flyttad till App.vue
+   - `.content-container` hanterar max-bredd (1200px) och horisontell centrering
+   - Konsekvent padding och marginaler över alla sidor
+
+2. **Borttagen redundanta behållardefinitioner:**
+   - Tog bort `.container`-klasser från individuella vykomponenter
+   - Endast en central behållare för att undvika konflikter
+   - Minskad CSS-komplexitet
+
+3. **Konsekvent innehållsbredd:**
+   - Alla sidor använder samma max-bredd (1200px)
+   - Enhetlig responsiv brytpunktshantering
+   - Förutsägbart beteende över hela applikationen
+
+**Implementeringsexempel:**
+
+```css
+/* App.vue - Centraliserad layout */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.content-container {
+  max-width: 1200px; /* Konsekvent max-bredd */
+  width: 100%;
+  margin: 0 auto; /* Horisontell centrering */
+  padding: 2rem 1rem; /* Konsekvent padding */
+}
+
+/* Enhentlig responsiv brytpunkt */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem; /* Mobilanpassning */
+  }
+}
+```
+
+**Fördelar med denna arkitektur:**
+
+- **Enkel underhåll**: All layoutlogik på ett ställe
+- **Konsekvens**: Samma beteende på alla sidor
+- **Prestanda**: Mindre CSS och färre konflikter
+- **Skalbarhet**: Lätt att utöka med nya regler
+- **Responsivitet**: Enhetlig hantering av alla skärmstorlekar
+
+#### 5. Responsiv design med konsekventa brytpunkter
 
 **Problem**: Inkonsekvent responsivt beteende mellan olika sidor och komponenter
 

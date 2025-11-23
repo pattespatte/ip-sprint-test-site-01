@@ -280,7 +280,7 @@ First, let's explore the FKUI repositories to understand their structure:
 2. Initialize it with a README.md (you can use the default)
 3. Clone the repository to your Ubuntu VM:
 
-   ```bash
+```bash
    # Navigate to your preferred projects directory
    cd ~/projects  # or wherever you keep your code
 
@@ -292,7 +292,7 @@ First, let's explore the FKUI repositories to understand their structure:
 
    # Navigate into the project directory
    cd ip-sprint-test-site-01
-   ```
+```
 
 💡 **Tip**: Use SSH instead of HTTPS for Git operations to avoid entering credentials repeatedly.
 
@@ -629,25 +629,25 @@ VITE_DEBUG=true
 
 1. Create the file in your project root:
 
-   ```bash
+```bash
    touch .env.local
-   ```
+```
 
 2. Add your local environment variables:
 
-   ```bash
+```bash
    # .env.local
    VITE_API_URL=http://localhost:3000/api
    VITE_DEBUG=true
    VITE_APP_ENV=development
-   ```
+```
 
 3. Verify it's in .gitignore:
 
-   ```bash
+```bash
    cat .gitignore | grep .env.local
    # Should output: .env.local
-   ```
+```
 
 ---
 
@@ -1672,365 +1672,365 @@ const stats = reactive({
 
 const applications = ref([
  {
-  id: "APP-001",
-  name: "John Doe",
-  type: "Benefits",
-  date: "2025-11-15",
-  status: "Approved",
+   id: "APP-001",
+   name: "John Doe",
+   type: "Benefits",
+   date: "2025-11-15",
+   status: "Approved",
  },
  {
-  id: "APP-002",
-  name: "Jane Smith",
-  type: "Healthcare",
-  date: "2025-11-14",
-  status: "Pending",
+   id: "APP-002",
+   name: "Jane Smith",
+   type: "Healthcare",
+   date: "2025-11-14",
+   status: "Pending",
  },
  {
-  id: "APP-003",
-  name: "Bob Johnson",
-  type: "Benefits",
-  date: "2025-11-13",
-  status: "Needs Action",
+   id: "APP-003",
+   name: "Bob Johnson",
+   type: "Benefits",
+   date: "2025-11-13",
+   status: "Needs Action",
  },
  {
-  id: "APP-004",
-  name: "Alice Brown",
-  type: "Pension",
-  date: "2025-11-12",
-  status: "Approved",
+   id: "APP-004",
+   name: "Alice Brown",
+   type: "Pension",
+   date: "2025-11-12",
+   status: "Approved",
  },
 ]);
 
 const activities = ref([
  {
-  id: 1,
-  title: "Application Approved",
-  description: "Application APP-001 has been approved.",
-  timestamp: "2025-11-15T14:30:00Z",
-  type: "success",
+   id: 1,
+   title: "Application Approved",
+   description: "Application APP-001 has been approved.",
+   timestamp: "2025-11-15T14:30:00Z",
+   type: "success",
  },
  {
-  id: 2,
-  title: "Document Uploaded",
-  description: "New document uploaded for application APP-002.",
-  timestamp: "2025-11-15T10:15:00Z",
-  type: "info",
+   id: 2,
+   title: "Document Uploaded",
+   description: "New document uploaded for application APP-002.",
+   timestamp: "2025-11-15T10:15:00Z",
+   type: "info",
  },
  {
-  id: 3,
-  title: "Action Required",
-  description: "Additional information needed for application APP-003.",
-  timestamp: "2025-11-14T16:45:00Z",
-  type: "warning",
+   id: 3,
+   title: "Action Required",
+   description: "Additional information needed for application APP-003.",
+   timestamp: "2025-11-14T16:45:00Z",
+   type: "warning",
  },
 ]);
 
 const formatDate = (dateString) => {
- const options = {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
- };
- return new Date(dateString).toLocaleDateString(undefined, options);
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+  return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 const getStatusVariant = (status) => {
- switch (status) {
-  case "Approved":
-   return "success";
-  case "Pending":
-   return "info";
-  case "Needs Action":
-   return "warning";
-  default:
-   return "neutral";
- }
+  switch (status) {
+    case "Approved":
+     return "success";
+    case "Pending":
+     return "info";
+    case "Needs Action":
+     return "warning";
+    default:
+     return "neutral";
+  }
 };
 
 const viewDetails = (id) => {
- // In a real application, this would navigate to a details page
- alert(`Viewing details for application ${id}`);
+  // In a real application, this would navigate to a details page
+  alert(`Viewing details for application ${id}`);
 };
 
 onMounted(() => {
- // In a real application, you would fetch data from an API
- console.log("Dashboard loaded");
+  // In a real application, you would fetch data from an API
+  console.log("Dashboard loaded");
 });
 </script>
 
 <template>
- <div class="dashboard-view">
-  <div class="content-container">
-   <nav class="breadcrumb fk-mb-4">
-    <router-link to="/">Home</router-link>
-    <span class="separator">/</span>
-    <span>Dashboard</span>
-   </nav>
+  <div class="dashboard-view">
+    <div class="content-container">
+     <nav class="breadcrumb fk-mb-4">
+      <router-link to="/">Home</router-link>
+      <span class="separator">/</span>
+      <span>Dashboard</span>
+     </nav>
 
-   <h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
-   <p class="fk-text-large fk-mb-6">
-    Overview of your application status and recent activity.
-   </p>
+     <h1 class="fk-heading-1 fk-mb-4">Dashboard</h1>
+     <p class="fk-text-large fk-mb-6">
+       Overview of your application status and recent activity.
+     </p>
 
-   <!-- Status Cards -->
-   <div class="stats-grid fk-mb-6">
-    <FCard class="status-card">
-     <div class="status-card-content">
-      <div class="status-icon">📄</div>
-      <h3 class="fk-heading-4">Applications</h3>
-      <p class="fk-text-large">{{ stats.applications }}</p>
-     </div>
-    </FCard>
+     <!-- Status Cards -->
+     <div class="stats-grid fk-mb-6">
+      <FCard class="status-card">
+       <div class="status-card-content">
+        <div class="status-icon">📄</div>
+        <h3 class="fk-heading-4">Applications</h3>
+        <p class="fk-text-large">{{ stats.applications }}</p>
+       </div>
+     </FCard>
 
-    <FCard class="status-card">
-     <div class="status-card-content">
-      <div class="status-icon">🕐</div>
-      <h3 class="fk-heading-4">Pending</h3>
-      <p class="fk-text-large">{{ stats.pending }}</p>
-     </div>
-    </FCard>
+     <FCard class="status-card">
+       <div class="status-card-content">
+        <div class="status-icon">🕐</div>
+        <h3 class="fk-heading-4">Pending</h3>
+        <p class="fk-text-large">{{ stats.pending }}</p>
+       </div>
+     </FCard>
 
-    <FCard class="status-card">
-     <div class="status-card-content">
-      <div class="status-icon">✓</div>
-      <h3 class="fk-heading-4">Approved</h3>
-      <p class="fk-text-large">{{ stats.approved }}</p>
-     </div>
-    </FCard>
+     <FCard class="status-card">
+       <div class="status-card-content">
+        <div class="status-icon">✓</div>
+        <h3 class="fk-heading-4">Approved</h3>
+        <p class="fk-text-large">{{ stats.approved }}</p>
+       </div>
+     </FCard>
 
-    <FCard class="status-card">
-     <div class="status-card-content">
-      <div class="status-icon">⚠</div>
-      <h3 class="fk-heading-4">Need Action</h3>
-      <p class="fk-text-large">{{ stats.needsAction }}</p>
-     </div>
-    </FCard>
-   </div>
-
-   <!-- Recent Applications Table -->
-   <FCard class="fk-mb-6">
-    <div class="card-header">
-     <h2 class="fk-heading-2">Recent Applications</h2>
+     <FCard class="status-card">
+       <div class="status-card-content">
+        <div class="status-icon">⚠</div>
+        <h3 class="fk-heading-4">Need Action</h3>
+        <p class="fk-text-large">{{ stats.needsAction }}</p>
+       </div>
+     </FCard>
     </div>
 
-    <!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
-    <FDataTable :rows="applications">
-     <template #caption>Lates applications</template>
-     <template #default="{ row }">
-      <FTableColumn title="ID" type="text">
-       {{ row.id }}
-      </FTableColumn>
-      <FTableColumn title="Name" type="text">
-       {{ row.name }}
-      </FTableColumn>
-      <FTableColumn title="Type" type="text">
-       {{ row.type }}
-      </FTableColumn>
-      <FTableColumn title="Date" type="date">
-       {{ formatDate(row.date) }}
-      </FTableColumn>
-      <FTableColumn title="Status" type="text">
-       <FBadge :variant="getStatusVariant(row.status)">
-        {{ row.status }}
-       </FBadge>
-      </FTableColumn>
-      <!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
-      <FTableColumn title="Actions">
-       <FTableButton @click="viewDetails(row.id)">
-        Visa
-       </FTableButton>
-      </FTableColumn>
-     </template>
-    </FDataTable>
-   </FCard>
+    <!-- Recent Applications Table -->
+    <FCard class="fk-mb-6">
+     <div class="card-header">
+      <h2 class="fk-heading-2">Recent Applications</h2>
+     </div>
 
-   <!-- Activity Timeline -->
-   <FCard class="fk-mb-6">
-    <div class="card-header">
-     <h2 class="fk-heading-2">Recent Activity</h2>
-    </div>
+     <!-- DEBUG: Try implementing FDataTable correctly according to FKUI documentation -->
+     <FDataTable :rows="applications">
+      <template #caption>Lates applications</template>
+      <template #default="{ row }">
+       <FTableColumn title="ID" type="text">
+        {{ row.id }}
+       </FTableColumn>
+       <FTableColumn title="Name" type="text">
+        {{ row.name }}
+       </FTableColumn>
+       <FTableColumn title="Type" type="text">
+        {{ row.type }}
+       </FTableColumn>
+       <FTableColumn title="Date" type="date">
+        {{ formatDate(row.date) }}
+       </FTableColumn>
+       <FTableColumn title="Status" type="text">
+        <FBadge :variant="getStatusVariant(row.status)">
+         {{ row.status }}
+        </FBadge>
+       </FTableColumn>
+       <!-- DEBUG: Try using FTableButton for action column instead of type="action" -->
+       <FTableColumn title="Actions">
+        <FTableButton @click="viewDetails(row.id)">
+         Visa
+        </FTableButton>
+       </FTableColumn>
+      </template>
+     </FDataTable>
+    </FCard>
 
-    <div class="activity-list">
-     <div
-      v-for="activity in activities"
-      :key="activity.id"
-      class="activity-item"
-     >
+    <!-- Activity Timeline -->
+    <FCard class="fk-mb-6">
+     <div class="card-header">
+      <h2 class="fk-heading-2">Recent Activity</h2>
+     </div>
+
+     <div class="activity-list">
       <div
-       class="activity-icon"
-       :class="`activity-${activity.type}`"
+       v-for="activity in activities"
+       :key="activity.id"
+       class="activity-item"
       >
-       {{
-        activity.type === "success"
-         ? "✓"
-         : activity.type === "warning"
-          ? "⚠"
-          : "ℹ"
-       }}
-      </div>
-      <div class="activity-content">
-       <h4 class="activity-title">{{ activity.title }}</h4>
-       <p class="activity-description">
-        {{ activity.description }}
-       </p>
-       <span class="activity-time">{{
-        formatDate(activity.timestamp)
-       }}</span>
+       <div
+        class="activity-icon"
+        :class="`activity-${activity.type}`"
+       >
+        {{
+         activity.type === "success"
+          ? "✓"
+          : activity.type === "warning"
+           ? "⚠"
+           : "ℹ"
+        }}
+       </div>
+       <div class="activity-content">
+        <h4 class="activity-title">{{ activity.title }}</h4>
+        <p class="activity-description">
+         {{ activity.description }}
+        </p>
+        <span class="activity-time">{{
+         formatDate(activity.timestamp)
+        }}</span>
+       </div>
       </div>
      </div>
-    </div>
-   </FCard>
+    </FCard>
 
-   <!-- System Notification -->
-   <!-- DEBUG: Adding type prop to fix missing required prop error -->
-   <FMessageBox type="info" variant="info" class="fk-mb-4">
-    <strong>System Update:</strong> Scheduled maintenance will occur
-    this weekend from 2 AM to 6 AM.
-   </FMessageBox>
+    <!-- System Notification -->
+    <!-- DEBUG: Adding type prop to fix missing required prop error -->
+    <FMessageBox type="info" variant="info" class="fk-mb-4">
+     <strong>System Update:</strong> Scheduled maintenance will occur
+     this weekend from 2 AM to 6 AM.
+    </FMessageBox>
+   </div>
   </div>
- </div>
 </template>
 
 <style scoped>
 .dashboard-view {
- padding: 2rem 0;
+  padding: 2rem 0;
 }
 
 .breadcrumb {
- display: flex;
- align-items: center;
- gap: 0.5rem;
- color: var(--color-neutral-600);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-neutral-600);
 }
 
 .breadcrumb a {
- color: var(--color-primary-500);
- text-decoration: none;
+  color: var(--color-primary-500);
+  text-decoration: none;
 }
 
 .breadcrumb a:hover {
- text-decoration: underline;
+  text-decoration: underline;
 }
 
 .separator {
- color: var(--color-neutral-400);
+  color: var(--color-neutral-400);
 }
 
 .stats-grid {
- display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
- gap: 1.5rem;
+  display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  gap: 1.5rem;
 }
 
 .status-card {
- text-align: center;
+  text-align: center;
 }
 
 .status-card-content {
- padding: 2rem 1rem;
+  padding: 2rem 1rem;
 }
 
 .status-icon {
- font-size: 3rem;
- margin-bottom: 0.5rem;
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
 }
 
 .card-header {
- padding: 1.5rem;
- border-bottom: 1px solid var(--color-neutral-200);
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .table-wrapper {
- overflow-x: auto;
+  overflow-x: auto;
 }
 
 .applications-table {
- width: 100%;
- border-collapse: collapse;
- border-spacing: 0;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 .applications-table th,
 .applications-table td {
- padding: 0.75rem;
- text-align: left;
- border-bottom: 1px solid var(--color-neutral-200);
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-neutral-200);
 }
 
 .applications-table th {
- background-color: var(--color-neutral-50);
- font-weight: 600;
- color: var(--color-neutral-700);
+  background-color: var(--color-neutral-50);
+  font-weight: 600;
+  color: var(--color-neutral-700);
 }
 
 .applications-table tbody tr:hover {
- background-color: var(--color-neutral-50);
+  background-color: var(--color-neutral-50);
 }
 
 .activity-list {
- padding: 1.5rem;
+  padding: 1.5rem;
 }
 
 .activity-item {
- display: flex;
- gap: 1rem;
- padding: 1rem 0;
- border-bottom: 1px solid var(--color-neutral-100);
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-neutral-100);
 }
 
 .activity-item:last-child {
- border-bottom: none;
+  border-bottom: none;
 }
 
 .activity-icon {
- width: 40px;
- height: 40px;
- display: flex;
- align-items: center;
- justify-content: center;
- border-radius: 50%;
- font-size: 1.25rem;
- flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
 .activity-success {
- background-color: var(--color-primary-100);
- color: var(--color-primary-700);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
 }
 
 .activity-warning {
- background-color: #fff3cd;
- color: #856404;
+  background-color: #fff3cd;
+  color: #856404;
 }
 
 .activity-info {
- background-color: #d1ecf1;
- color: #0c5460;
+  background-color: #d1ecf1;
+  color: #0c5460;
 }
 
 .activity-content {
- flex: 1;
+  flex: 1;
 }
 
 .activity-title {
- font-weight: 600;
- margin-bottom: 0.25rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
 .activity-description {
- color: var(--color-neutral-600);
- margin-bottom: 0.5rem;
+  color: var(--color-neutral-600);
+  margin-bottom: 0.5rem;
 }
 
 .activity-time {
- font-size: 0.875rem;
- color: var(--color-neutral-500);
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
 }
 
 .container {
- max-width: 1200px;
- margin: 0 auto;
- padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 </style>
 ```
@@ -2344,7 +2344,7 @@ touch docs/COMPONENT_GUIDE.md
 # Theme Customization Guide
 
 ## Overview
-This guide explains how to customize the theme layer for ip-sprint-test-site-01.
+This guide explains how to customize theme layer for ip-sprint-test-site-01.
 
 ## Color System
 Colors are defined in `src/styles/_colors.scss` using a structured approach:
@@ -2365,10 +2365,11 @@ Component-specific overrides are in `src/styles/components/`:
 - Avoid modifying FKUI core styles directly
 
 ## Adding New Customizations
-1. Identify if the customization should be global or component-specific
-2. Add variables to the appropriate file
+1. Identify if customization should be global or component-specific
+2. Add variables to appropriate file
 3. Create CSS custom properties for dynamic values
-4. Document the purpose and usage of the customization
+4. Document the purpose and usage of customization
+
 ```
 
 ### How to Check if Something Should Be Overridden or Inherited
@@ -2442,7 +2443,7 @@ app.component('FkButton', FkButton)
 
 ⏱️ **Estimated time: 5 minutes**
 
-Start the development server:
+Start development server:
 
 ```bash
 # Make sure you're in the project directory
@@ -2526,7 +2527,7 @@ pkill -f "vite"
    - Verify that FKUI styles are being applied
 
 2. **Verify Theme Overrides**:
-   - Use the browser's computed styles panel to check your customizations
+   - Use browser's computed styles panel to check your customizations
    - Ensure CSS custom properties are being applied correctly
    - Test responsive behavior at different screen sizes
 
@@ -2540,7 +2541,7 @@ pkill -f "vite"
 Create a dedicated test page to verify your theme:
 
 ```bash
-# Create the ThemeTestView component
+# Create ThemeTestView component
 touch src/views/ThemeTestView.vue
 ```
 
@@ -2801,20 +2802,20 @@ const cleanHTML = sanitizeHTML(userInput)
 
 1. **Never commit `.env.local`**
 
-   ```bash
+```bash
    # Verify .env.local is in .gitignore
    cat .gitignore | grep .env.local
-   ```
+```
 
 2. **Use different credentials for dev/prod**
 
-   ```bash
+```bash
    # .env.local (development)
    VITE_API_URL=http://localhost:3000/api
 
    # .env.production (production)
    VITE_API_URL=https://api.production.com
-   ```
+```
 
 3. **Rotate API keys regularly**
    - Change API keys every 90 days
@@ -2969,11 +2970,11 @@ Build your project for production:
 # Build for production
 npm run build
 
-# Preview the production build locally
+# Preview production build locally
 npm run preview
 ```
 
-The build command creates optimized assets in the `dist` directory.
+The build command creates optimized assets in `dist` directory.
 
 **Check build output:**
 
@@ -3005,6 +3006,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 pnpm-debug.log*
 
 # Build outputs
@@ -3137,8 +3139,8 @@ cache:
     files:
       - package-lock.json
   paths:
-    - node_modules/
-    - .npm/
+      - node_modules/
+      - .npm/
 
 # Install dependencies
 .install_deps: &install_deps
@@ -3227,23 +3229,26 @@ deploy_production:
 
 ### HTML Structure and CSS Issues
 
-#### 1. Duplicate ID Errors
+#### 1. W3C HTML Validation Error: Duplicate IDs
 
-**Problem**: "Duplicate ID 'app' found in the document" error in browser console
+**Problem**: "Duplicate ID 'app' found in document" error in browser console
 
 **Solution**: The duplicate ID error occurs when both the HTML template and CSS reference the same ID. We fixed this by changing the main container ID from "app" to "app-container".
 
 **What was changed:**
 
-- HTML: Changed `<div id="app">` to `<div id="app-container">`
-- CSS: Updated selectors from `#app` to `#app-container`
-- JavaScript: Updated the mount point in `src/main.ts` from `app.mount('#app')` to `app.mount('#app-container')`
+- **App.vue**: Changed root element ID from `id="app"` to `id="app-container"`
+- **CSS**: Updated selectors from `#app` to `#app-container` in App.vue
+- **JavaScript**: Updated the mount point in `src/main.ts` from `app.mount('#app')` to `app.mount('#app-container')`
+- **index.html**: Kept original `id="app"` for Vue mount point
 
-**Why this matters:**
+**Result**: W3C validation error completely eliminated
 
-- HTML IDs must be unique within a document
-- Duplicate IDs can cause JavaScript errors and CSS selector conflicts
-- Search engines and accessibility tools may fail with duplicate IDs
+**Why this is important:**
+
+- HTML IDs must be unique within a document according to W3C standards
+- Duplicate IDs cause JavaScript errors and CSS selector conflicts
+- W3C validation is important for web standards and accessibility
 
 #### 2. Content Centering Issues
 
@@ -3282,93 +3287,205 @@ deploy_production:
 2. **#app-container → .content-container**: Direct child for consistent max-width and centering
 3. **Responsive breakpoints**: Mobile-first approach with consistent padding
 
-#### 3. Removing Redundant Container Definitions
+#### 3. FormView.vue Layout and Spacing Improvements
 
-**Problem**: Multiple container definitions causing layout conflicts
+**Problem**: Form had poor space utilization and duplicate labels
 
-**Solution**: Remove redundant `.container` classes from individual view components and use the centralized `.content-container` from App.vue instead.
+**Solution**: Implemented responsive 2-column layout on desktop and fixed duplicate label issue by using FKUI component internal labeling.
 
-**Before (problematic):**
+**Layout improvements:**
+
+1. **Responsive 2-column layout on desktop:**
+   - Better space utilization on larger screens
+   - Form fields arranged in two columns for better visual balance
+   - Mobile adaptation with single column on smaller screens
+
+2. **Fixed duplicate label issue:**
+   - **Problem**: Manual FLabel components created duplicate labels
+   - **Solution**: Used FKUI component internal labeling through proper slot structure
+   - **Result**: Only one label per form field with correct spacing
+
+**Implementation example:**
 
 ```vue
-<!-- In each view component -->
-<div class="view-container">
-  <!-- Content directly, no extra container -->
-</div>
+<!-- Before (problematic) -->
+<FFieldset>
+  <FLabel for="firstName">First Name *</FLabel>  <!-- Manual label -->
+  <FTextField id="firstName" v-model="formData.firstName" />
+  <!-- FKUI creates automatic label, resulting in duplicates -->
+</FFieldset>
+
+<!-- After (correct) -->
+<FFieldset>
+  <FTextField
+    id="firstName"
+    v-model="formData.firstName"
+    label="First Name *"  <!-- Use built-in label -->
+    required
+  />
+  <!-- No need for manual FLabel - FKUI handles this automatically -->
+</FFieldset>
 ```
 
-**After (correct):**
+**CSS architecture improvements:**
 
-```vue
-<!-- In each view component -->
-<div class="view-container">
-  <!-- Content directly, no extra container -->
-</div>
-```
+1. **Centralized layout control in App.vue:**
+   - All centering and container handling moved to App.vue
+   - Consistent max-width (1200px) across all pages
+   - Simple responsive breakpoint handling
+
+2. **Removed redundant container definitions:**
+   - Removed `.container` definitions from individual view components
+   - Use only `.content-container` from App.vue
+   - Reduced CSS complexity and specificity conflicts
 
 **Benefits:**
 
+- Only one label per form field
+- Better space utilization
 - Consistent layout across all pages
-- Reduced CSS specificity conflicts
-- Better maintainability
-- Improved responsive design consistency
+- Simpler maintenance with centralized CSS
+- Improved user experience on both desktop and mobile
 
-#### 4. Improved Responsive Design with Consistent Breakpoints
+#### 4. CSS Architecture Improvements
 
-**Problem**: Inconsistent responsive behavior across different screen sizes
+**Problem**: Scattered layout control and inconsistent CSS patterns across different components
 
-**Solution**: Implement a unified breakpoint system with consistent mobile-first approach:
+**Solution**: Centralized layout control in App.vue and created a unified CSS architecture with clear responsibilities.
+
+**CSS architecture improvements:**
+
+1. **Centralized layout control in App.vue:**
+   - All centering and container handling moved to App.vue
+   - `.content-container` handles max-width (1200px) and horizontal centering
+   - Consistent padding and margins across all pages
+
+2. **Removed redundant container definitions:**
+   - Removed `.container` classes from individual view components
+   - Only one central container to avoid conflicts
+   - Reduced CSS complexity
+
+3. **Consistent content width:**
+   - All pages use same max-width (1200px)
+   - Unified responsive breakpoint handling
+   - Predictable behavior across entire application
+
+**Implementation example:**
 
 ```css
-/* Base responsive breakpoints */
-/* Mobile-first approach with consistent scaling */
+/* App.vue - Centralized layout */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.content-container {
+  max-width: 1200px; /* Consistent max-width */
+  width: 100%;
+  margin: 0 auto; /* Horizontal centering */
+  padding: 2rem 1rem; /* Consistent padding */
+}
+
+/* Unified responsive breakpoint */
 @media (max-width: 768px) {
   .content-container {
-    padding: 1rem 0.5rem;
+    padding: 1rem 0.5rem; /* Mobile adaptation */
   }
-  
-  .mobile-menu-toggle {
-    display: block;
-  }
-  
-  .nav-links {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: var(--color-primary-600);
-    flex-direction: column;
-    gap: 0;
-    padding: 1rem;
-    display: none;
-  }
-  
-  .nav-links.mobile-open {
-    display: flex;
-  }
-  
-  .nav-link {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+```
+
+**Benefits of this architecture:**
+
+- **Simple maintenance**: All layout logic in one place
+- **Consistency**: Same behavior on all pages
+- **Performance**: Less CSS and fewer conflicts
+- **Scalability**: Easy to extend with new rules
+- **Responsiveness**: Unified handling of all screen sizes
+
+#### 5. Responsive Design with Consistent Breakpoints
+
+**Problem**: Inconsistent responsive behavior between different pages and components
+
+**Solution**: Implement a unified responsive design strategy with consistent breakpoints and mobile-first approach.
+
+**Responsive design strategy:**
+
+```css
+/* Breakpoint definitions */
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1200px;
+
+/* Mobile-first approach */
+.content-container {
+  padding: 1rem 0.5rem; /* Mobile default */
+  max-width: 100%;
+}
+
+/* Tablet and up */
+@media (min-width: $breakpoint-mobile) {
+  .content-container {
+    padding: 1.5rem 1rem;
   }
 }
 
-/* Tablet and desktop styles inherit from base */
-/* No need for additional breakpoints unless specifically required */
+/* Desktop and up */
+@media (min-width: $breakpoint-tablet) {
+  .content-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+  }
+}
+
+/* Large screens */
+@media (min-width: $breakpoint-desktop) {
+  .content-container {
+    margin: 0 auto; /* Center on large screens */
+  }
+}
 ```
 
-**Key Improvements:**
+**Why this is important:**
 
-1. **Single breakpoint system**: Uses 768px as the primary mobile/desktop boundary
-2. **Consistent padding**: Mobile padding (1rem 0.5rem) vs desktop (2rem 1rem)
-3. **Unified navigation**: Mobile menu behavior consistent across all pages
-4. **Predictable scaling**: Content scales smoothly between breakpoints
+- **Consistent user experience** across all devices
+- **Easier maintenance** with unified breakpoints
+- **Better performance** with mobile-first approach
+- **Improved accessibility** with responsive design
 
-**Implementation Notes:**
+**Implementation in components:**
 
-- The `.content-container` class handles all responsive padding
-- Navigation menu transforms from horizontal (desktop) to vertical (mobile)
-- No conflicting media queries - single, clear breakpoint system
+```vue
+<!-- Use responsive classes instead of inline styles -->
+<template>
+  <div class="component-container">
+    <div class="component-grid">
+      <!-- Content -->
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.component-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: one column */
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .component-grid {
+    grid-template-columns: repeat(2, 1fr); /* Tablet: two columns */
+  }
+}
+
+@media (min-width: 1024px) {
+  .component-grid {
+    grid-template-columns: repeat(3, 1fr); /* Desktop: three columns */
+  }
+}
+</style>
+```
 
 ### Ubuntu-Specific Issues
 
@@ -3399,19 +3516,19 @@ npm install -g yarn
 
 **Problem**: `Error: listen EADDRINUSE: address already in use :::5173`
 
-**Solution**: Find and kill the process using the port
+**Solution**: Find and kill process using the port
 
 ```bash
 # Find process using port 5173
 sudo lsof -i :5173
 
-# Kill the process
+# Kill process
 kill -9 <PID>
 
 # Or use fuser
 sudo fuser -k 5173/tcp
 
-# Or change the port in vite.config.ts
+# Or change port in vite.config.ts
 server: {
   port: 3000, // Use a different port
 }
@@ -3421,7 +3538,7 @@ server: {
 
 **Problem**: `ENOSPC: System limit for number of file watchers reached`
 
-**Solution**: Increase the file watcher limit
+**Solution**: Increase file watcher limit
 
 ```bash
 # Check current limit
@@ -3455,7 +3572,7 @@ git clone https://gitlab.com/your-username/ip-sprint-test-site-01.git
 
 **Problem**: Import paths are incorrect
 
-**Solution**: Check that file paths are correct and use the `@` alias for src directory
+**Solution**: Check that file paths are correct and use `@` alias for src directory
 
 ```typescript
 // Bad
@@ -3559,7 +3676,7 @@ npm install
 
 **Problem**: Using a variant that doesn't exist in the current FKUI version
 
-**Solution**: Check the FKUI documentation for available variants
+**Solution**: Check FKUI documentation for available variants
 
 ```bash
 # Check FKUI documentation
@@ -3666,7 +3783,7 @@ npm install @fkui/vue@6.26.0 @fkui/design@6.26.0 @fkui/date@6.26.0 @fkui/logic@6
 
 **Cause**: Missing type definitions
 
-**Solution**: Use the type definitions file we created
+**Solution**: Use type definitions file we created
 
 ```typescript
 // Verify src/types/fkui.d.ts exists
@@ -3709,15 +3826,19 @@ npm install @fkui/vue@6.26.0 @fkui/design@6.26.0 @fkui/date@6.26.0 @fkui/logic@6
 ```bash
 # Create new page component
 touch src/views/AboutView.vue
+```
 
-# Add route in src/router/index.ts
+```typescript
+// src/router/index.ts
 {
   path: '/about',
   name: 'about',
   component: () => import('../views/AboutView.vue')
 }
+```
 
-# Add navigation link in App.vue
+```vue
+<!-- Add navigation link in App.vue -->
 <router-link to="/about" class="nav-link">About</router-link>
 ```
 
@@ -3806,20 +3927,14 @@ $shadow-large: 0 8px 16px rgba(0, 0, 0, 0.1);
    - [User Template](https://github.com/Forsakringskassan/designsystem-user-lib)
    - [Issue Tracker](https://github.com/Forsakringskassan/designsystem/issues)
 
-### Vue.js Learning Resources
-
-1. **Official Documentation**
-   - [Vue.js Guide](https://vuejs.org/guide/introduction.html)
+3. **Vue.js Learning Resources**
+   - [Vue.js Official Documentation](https://vuejs.org/guide/introduction.html)
    - [Vue.js API Reference](https://vuejs.org/api/)
    - [Vue.js Style Guide](https://vuejs.org/style-guide/)
-
-2. **Community Resources**
    - [Vue.js News](https://news.vuejs.org/)
    - [Awesome Vue](https://github.com/vuejs/awesome-vue)
    - [Vue School](https://vueschool.io/) (Paid courses)
-
-3. **YouTube Channels**
-   - [Vue Mastery](https://www.youtube.com/@VueMastery)
+   - [YouTube Channels](https://www.youtube.com/@VueMastery)
    - [Program With Erik](https://www.youtube.com/@ProgramWithErik)
 
 ### Advanced Topics to Explore
@@ -3879,10 +3994,6 @@ npm install vue-i18n@9
 ```bash
 # Install Axios for API calls
 npm install axios
-
-# Create API service
-mkdir src/services
-touch src/services/api.ts
 ```
 
 ```typescript
@@ -3921,6 +4032,7 @@ alias gl="git log --oneline --graph --decorate"
 # Navigation
 alias projects="cd ~/projects"
 alias ip-sprint="cd ~/projects/ip-sprint-test-site-01"
+
 EOF
 
 # Reload bashrc
@@ -3952,7 +4064,7 @@ This guide provides a comprehensive foundation for building a Vue.js application
 2. **Document your customizations** - Make it easy for future developers to understand your changes
 3. **Test thoroughly** - Ensure your customizations work across different browsers and devices
 4. **Stay updated** - Keep FKUI dependencies current to benefit from improvements and security updates
-5. **Use Ubuntu best practices** - Take advantage of the Linux environment for efficient development
+5. **Use Ubuntu best practices** - Take advantage of Linux environment for efficient development
 6. **Prioritize accessibility** - Ensure your application is usable by everyone
 7. **Security first** - Always sanitize inputs and follow security best practices
 
@@ -3965,6 +4077,8 @@ npm run dev                    # Start development server
 npm run build                  # Build for production
 npm run preview                # Preview production build
 npm run lint                   # Run linter
+npm run audit                   # Check for vulnerabilities
+npm audit fix                  # Fix vulnerabilities
 
 # Git workflow
 git status                     # Check status
@@ -3996,8 +4110,8 @@ ip-sprint-test-site-01/
 │   ├── router/                # Vue Router configuration
 │   ├── styles/                # Theme and custom styles
 │   │   ├── theme.scss         # Main theme file
-│   │   ├── _variables.scss    # Variable overrides
-│   │   ├── _colors.scss       # Color system
+│   │   ├── _variables.scss      # Variable overrides
+│   │   ├── _colors.scss         # Color system
 │   │   ├── _typography.scss   # Typography
 │   │   └── components/        # Component overrides
 │   ├── types/                 # TypeScript definitions
@@ -4019,7 +4133,7 @@ ip-sprint-test-site-01/
 
 If you encounter issues:
 
-1. Check the [Troubleshooting Section](#troubleshooting-section)
+1. Check [Troubleshooting Section](#troubleshooting-section)
 2. Review FKUI documentation
 3. Search for similar issues on Stack Overflow
 4. Create an issue in your GitLab repository
@@ -4027,7 +4141,7 @@ If you encounter issues:
 
 ### Next Workshop Steps
 
-- [ ] Complete the three-page site
+- [ ] Complete three-page site
 - [ ] Customize the theme to match your branding
 - [ ] Add form validation and error handling
 - [ ] Implement accessibility best practices
@@ -4037,7 +4151,6 @@ If you encounter issues:
 - [ ] Deploy to production
 
 **Happy FKUI coding! 🚀**
-
 ---
 
 ## Appendix: Useful Bash Scripts
@@ -4047,7 +4160,6 @@ If you encounter issues:
 ```bash
 #!/bin/bash
 # setup-dev.sh - Quick development environment setup
-
 echo "Setting up IP Sprint Test Site development environment..."
 
 # Check Node.js version
@@ -4064,6 +4176,7 @@ if [ ! -f .env.local ]; then
     cat > .env.local << EOF
 VITE_API_URL=http://localhost:3000/api
 VITE_DEBUG=true
+VITE_APP_ENV=development
 EOF
 fi
 
@@ -4079,7 +4192,6 @@ echo "Setup complete! Run 'npm run dev' to start development server."
 ```bash
 #!/bin/bash
 # pre-deploy-check.sh - Run checks before deployment
-
 echo "Running pre-deployment checks..."
 
 # Run linter
@@ -4090,7 +4202,7 @@ npm run lint
 echo "Checking for security vulnerabilities..."
 npm audit
 
-# Build the project
+# Build project
 echo "Building project..."
 npm run build
 
