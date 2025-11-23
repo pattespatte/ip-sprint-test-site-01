@@ -399,7 +399,7 @@ ip-sprint-test-site-01/
 ├── .env                   # Environment variables
 ├── .env.local             # Local environment variables (not committed)
 ├── .gitignore             # Git ignore file
-├── index.html             # HTML template
+├── index.html             # HTML template with app-container ID
 ├── package.json           # Project dependencies and scripts
 ├── tsconfig.json          # TypeScript configuration
 ├── tsconfig.app.json      # App-specific TypeScript config
@@ -976,7 +976,9 @@ app.use(FkuiPlugin)
 
 console.log('DEBUG: FKUI plugins loaded')
 
-app.mount('#app')
+app.mount('#app-container')
+
+💡 **Important**: Note that we use `#app-container` as mount-point instead of `#app` to avoid duplicate ID errors.
 ```
 
 ### Step 2: Creating the Landing Page
@@ -1004,7 +1006,7 @@ const navigateToForm = () => {
   <div class="home-view">
     <!-- Hero Section -->
     <section class="hero-section">
-      <div class="container">
+      <div class="content-container">
         <h1 class="fk-heading-1">Welcome to IP Sprint Test Site</h1>
         <p class="fk-text-large fk-mb-4">
           This is a demonstration site built with Försäkringskassans Designsystem (FKUI).
@@ -1017,7 +1019,7 @@ const navigateToForm = () => {
 
     <!-- Features Section -->
     <section class="features-section">
-      <div class="container">
+      <div class="content-container">
         <h2 class="fk-heading-2 fk-mb-4">Features</h2>
         <div class="feature-grid">
           <FCard class="feature-card">
@@ -1047,7 +1049,7 @@ const navigateToForm = () => {
 
     <!-- CTA Section -->
     <section class="cta-section">
-      <div class="container">
+      <div class="content-container">
         <h2 class="fk-heading-2">Ready to try our form?</h2>
         <FButton variant="secondary" @click="navigateToForm">
           Try the Form Demo
@@ -1270,7 +1272,7 @@ const resetForm = () => {
 
 <template>
   <div class="form-view">
-    <div class="container">
+    <div class="content-container">
       <nav class="breadcrumb fk-mb-4" aria-label="Breadcrumb navigation">
         <router-link to="/">Home</router-link>
         <span class="separator" aria-hidden="true">/</span>
@@ -1549,11 +1551,7 @@ const resetForm = () => {
   margin-top: 2rem;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
+/* Container styles are now handled by .content-container in App.vue */
 
 /* Screen reader only content */
 .sr-only {
@@ -1762,7 +1760,7 @@ onMounted(() => {
 
 <template>
  <div class="dashboard-view">
-  <div class="container">
+  <div class="content-container">
    <nav class="breadcrumb fk-mb-4">
     <router-link to="/">Home</router-link>
     <span class="separator">/</span>
@@ -2058,16 +2056,16 @@ const toggleMobileMenu = () => {
 </script>
 
 <template>
-  <div id="app">
+  <div id="app-container">
     <header class="app-header">
-      <div class="container">
+      <div class="content-container">
         <nav class="app-nav">
           <div class="app-logo">
             <router-link to="/">
               <h1>{{ appTitle }}</h1>
             </router-link>
           </div>
-
+          
           <button
             class="mobile-menu-toggle"
             @click="toggleMobileMenu"
@@ -2075,7 +2073,7 @@ const toggleMobileMenu = () => {
           >
             ☰
           </button>
-
+          
           <ul class="nav-links" :class="{ 'mobile-open': mobileMenuOpen }">
             <li>
               <router-link to="/" class="nav-link" @click="mobileMenuOpen = false">
@@ -2096,23 +2094,25 @@ const toggleMobileMenu = () => {
         </nav>
       </div>
     </header>
-
+    
     <main class="app-main">
-      <Suspense>
-        <template #default>
-          <router-view />
-        </template>
-        <template #fallback>
-          <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Loading...</p>
-          </div>
-        </template>
-      </Suspense>
+      <div class="content-container">
+        <Suspense>
+          <template #default>
+            <router-view />
+          </template>
+          <template #fallback>
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p>Loading...</p>
+            </div>
+          </template>
+        </Suspense>
+      </div>
     </main>
-
+    
     <footer class="app-footer">
-      <div class="container">
+      <div class="content-container">
         <p>&copy; 2025 IP Sprint Test Site. Built with Försäkringskassans Designsystem.</p>
         <p class="version">Version {{ appVersion }}</p>
       </div>
@@ -2131,10 +2131,16 @@ const toggleMobileMenu = () => {
   box-sizing: border-box;
 }
 
-#app {
+.app-main {
+  flex: 1;
+  padding: 0;
+}
+
+#app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
   font-family: var(--fk-font-family-base, 'Noto Sans', sans-serif);
 }
 
@@ -2198,10 +2204,6 @@ const toggleMobileMenu = () => {
   border-bottom-color: white;
 }
 
-.app-main {
-  flex: 1;
-}
-
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -2237,18 +2239,27 @@ const toggleMobileMenu = () => {
   margin-top: 0.5rem;
 }
 
-.container {
+/* Layer 2: Content wrapper */
+.content-container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
+}
+
+/* Layer 3: Responsive adjustments */
+@media (max-width:768px) {
+  .content-container {
+    padding: 1rem 0.5rem;
+  }
 }
 
 /* Mobile Responsive */
-@media (max-width: 768px) {
+@media (max-width:768px) {
   .mobile-menu-toggle {
     display: block;
   }
-
+  
   .nav-links {
     position: absolute;
     top: 100%;
@@ -2260,11 +2271,11 @@ const toggleMobileMenu = () => {
     padding: 1rem;
     display: none;
   }
-
+  
   .nav-links.mobile-open {
     display: flex;
   }
-
+  
   .nav-link {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -2565,7 +2576,7 @@ const colorPalette = reactive({
 
 <template>
   <div class="theme-test-view">
-    <div class="container">
+    <div class="content-container">
       <h1 class="fk-heading-1">Theme Test Page</h1>
 
       <!-- Color Tests -->
@@ -2660,11 +2671,7 @@ const colorPalette = reactive({
   margin-bottom: 1.5rem;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
+/* Container styles are now handled by .content-container in App.vue */
 </style>
 ```
 
@@ -3217,6 +3224,151 @@ deploy_production:
 ---
 
 ## Troubleshooting Section
+
+### HTML Structure and CSS Issues
+
+#### 1. Duplicate ID Errors
+
+**Problem**: "Duplicate ID 'app' found in the document" error in browser console
+
+**Solution**: The duplicate ID error occurs when both the HTML template and CSS reference the same ID. We fixed this by changing the main container ID from "app" to "app-container".
+
+**What was changed:**
+
+- HTML: Changed `<div id="app">` to `<div id="app-container">`
+- CSS: Updated selectors from `#app` to `#app-container`
+- JavaScript: Updated the mount point in `src/main.ts` from `app.mount('#app')` to `app.mount('#app-container')`
+
+**Why this matters:**
+
+- HTML IDs must be unique within a document
+- Duplicate IDs can cause JavaScript errors and CSS selector conflicts
+- Search engines and accessibility tools may fail with duplicate IDs
+
+#### 2. Content Centering Issues
+
+**Problem**: Content not properly centered or responsive layout broken
+
+**Solution**: Implement a three-layer CSS hierarchy for proper content centering:
+
+```css
+/* Layer 1: Main app container */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Layer 2: Content wrapper */
+.content-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Layer 3: Responsive adjustments */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem;
+  }
+}
+```
+
+**CSS Hierarchy Explanation:**
+
+1. **#app-container**: The root layout container that establishes the flex structure
+2. **#app-container → .content-container**: Direct child for consistent max-width and centering
+3. **Responsive breakpoints**: Mobile-first approach with consistent padding
+
+#### 3. Removing Redundant Container Definitions
+
+**Problem**: Multiple container definitions causing layout conflicts
+
+**Solution**: Remove redundant `.container` classes from individual view components and use the centralized `.content-container` from App.vue instead.
+
+**Before (problematic):**
+
+```vue
+<!-- In each view component -->
+<div class="view-container">
+  <!-- Content directly, no extra container -->
+</div>
+```
+
+**After (correct):**
+
+```vue
+<!-- In each view component -->
+<div class="view-container">
+  <!-- Content directly, no extra container -->
+</div>
+```
+
+**Benefits:**
+
+- Consistent layout across all pages
+- Reduced CSS specificity conflicts
+- Better maintainability
+- Improved responsive design consistency
+
+#### 4. Improved Responsive Design with Consistent Breakpoints
+
+**Problem**: Inconsistent responsive behavior across different screen sizes
+
+**Solution**: Implement a unified breakpoint system with consistent mobile-first approach:
+
+```css
+/* Base responsive breakpoints */
+/* Mobile-first approach with consistent scaling */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--color-primary-600);
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem;
+    display: none;
+  }
+  
+  .nav-links.mobile-open {
+    display: flex;
+  }
+  
+  .nav-link {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Tablet and desktop styles inherit from base */
+/* No need for additional breakpoints unless specifically required */
+```
+
+**Key Improvements:**
+
+1. **Single breakpoint system**: Uses 768px as the primary mobile/desktop boundary
+2. **Consistent padding**: Mobile padding (1rem 0.5rem) vs desktop (2rem 1rem)
+3. **Unified navigation**: Mobile menu behavior consistent across all pages
+4. **Predictable scaling**: Content scales smoothly between breakpoints
+
+**Implementation Notes:**
+
+- The `.content-container` class handles all responsive padding
+- Navigation menu transforms from horizontal (desktop) to vertical (mobile)
+- No conflicting media queries - single, clear breakpoint system
 
 ### Ubuntu-Specific Issues
 

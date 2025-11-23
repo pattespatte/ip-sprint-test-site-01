@@ -399,7 +399,7 @@ ip-sprint-test-site-01/
 ├── .env                   # Miljövariabler
 ├── .env.local             # Lokala miljövariabler (inte commitad)
 ├── .gitignore             # Git ignore-fil
-├── index.html             # HTML-mall
+├── index.html             # HTML-mall med app-container ID
 ├── package.json           # Projektberoenden och skript
 ├── tsconfig.json          # TypeScript-konfiguration
 ├── tsconfig.app.json      # App-specifik TypeScript-konfig
@@ -973,8 +973,10 @@ app.use(FkuiPlugin)
 
 console.log('DEBUG: FKUI-plugins har laddats')
 
-app.mount('#app')
+app.mount('#app-container')
 ```
+
+💡 **Viktigt**: Notera att vi använder `#app-container` som mount-point istället för `#app` för att undvika dubbla ID-fel.
 
 ### Steg 2: Skapa landningssida
 
@@ -1001,7 +1003,7 @@ const navigateToForm = () => {
   <div class="home-view">
     <!-- Hero-sektion -->
     <section class="hero-section">
-      <div class="container">
+      <div class="content-container">
         <h1 class="fk-heading-1">Välkommen till IP Sprint Test Site</h1>
         <p class="fk-text-large fk-mb-4">
           Detta är en demonstrationswebbplats byggd med Försäkringskassans Designsystem (FKUI).
@@ -1014,7 +1016,7 @@ const navigateToForm = () => {
 
     <!-- Funktionssektion -->
     <section class="features-section">
-      <div class="container">
+      <div class="content-container">
         <h2 class="fk-heading-2 fk-mb-4">Funktioner</h2>
         <div class="feature-grid">
           <FCard class="feature-card">
@@ -1044,7 +1046,7 @@ const navigateToForm = () => {
 
     <!-- CTA-sektion -->
     <section class="cta-section">
-      <div class="container">
+      <div class="content-container">
         <h2 class="fk-heading-2">Redo att prova vårt formulär?</h2>
         <FButton variant="secondary" @click="navigateToForm">
           Prova formulärdemo
@@ -1267,7 +1269,7 @@ const resetForm = () => {
 
 <template>
   <div class="form-view">
-    <div class="container">
+    <div class="content-container">
       <nav class="breadcrumb fk-mb-4">
         <router-link to="/">Hem</router-link>
         <span class="separator">/</span>
@@ -1546,11 +1548,7 @@ const resetForm = () => {
   margin-top: 2rem;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
+/* Container-stilar hanteras nu av .content-container i App.vue */
 
 /* Screen reader only content */
 .sr-only {
@@ -1759,7 +1757,7 @@ onMounted(() => {
 
 <template>
   <div class="dashboard-view">
-    <div class="container">
+    <div class="content-container">
       <nav class="breadcrumb fk-mb-4">
         <router-link to="/">Hem</router-link>
         <span class="separator">/</span>
@@ -2013,11 +2011,7 @@ onMounted(() => {
  color: var(--color-neutral-500);
 }
 
-.container {
- max-width: 1200px;
- margin: 0 auto;
- padding: 0 1rem;
-}
+/* Container-stilar hanteras nu av .content-container i App.vue */
 </style>
 ```
 
@@ -2033,6 +2027,7 @@ Uppdatera din huvud-App.vue för att inkludera navigering:
 import { ref } from 'vue'
 
 const appTitle = import.meta.env.VITE_APP_TITLE || 'IP Sprint Test Site'
+const appVersion = import.meta.env.VITE_APP_VERSION || '1.0.0'
 const mobileMenuOpen = ref(false)
 
 const toggleMobileMenu = () => {
@@ -2041,16 +2036,16 @@ const toggleMobileMenu = () => {
 </script>
 
 <template>
-  <div id="app">
+  <div id="app-container">
     <header class="app-header">
-      <div class="container">
+      <div class="content-container">
         <nav class="app-nav">
           <div class="app-logo">
             <router-link to="/">
               <h1>{{ appTitle }}</h1>
             </router-link>
           </div>
-
+          
           <button
             class="mobile-menu-toggle"
             @click="toggleMobileMenu"
@@ -2058,7 +2053,7 @@ const toggleMobileMenu = () => {
           >
             ☰
           </button>
-
+          
           <ul class="nav-links" :class="{ 'mobile-open': mobileMenuOpen }">
             <li>
               <router-link to="/" class="nav-link" @click="mobileMenuOpen = false">
@@ -2079,23 +2074,25 @@ const toggleMobileMenu = () => {
         </nav>
       </div>
     </header>
-
+    
     <main class="app-main">
-      <Suspense>
-        <template #default>
-          <router-view />
-        </template>
-        <template #fallback>
-          <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Laddar...</p>
-          </div>
-        </template>
-      </Suspense>
+      <div class="content-container">
+        <Suspense>
+          <template #default>
+            <router-view />
+          </template>
+          <template #fallback>
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p>Laddar...</p>
+            </div>
+          </template>
+        </Suspense>
+      </div>
     </main>
-
+    
     <footer class="app-footer">
-      <div class="container">
+      <div class="content-container">
         <p>&copy; 2025 IP Sprint Test Site. Byggd med Försäkringskassans Designsystem.</p>
         <p class="version">Version {{ appVersion }}</p>
       </div>
@@ -2114,15 +2111,22 @@ const toggleMobileMenu = () => {
   box-sizing: border-box;
 }
 
-#app {
+.app-main {
+  flex: 1;
+  padding: 0;
+}
+
+/* Lager 1: Huvudapp-behållare */
+#app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
   font-family: var(--fk-font-family-base, 'Noto Sans', sans-serif);
 }
 
 .app-header {
-  background-color: var(--color-primary-500);
+  background-color: var(--color-primary-700);
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -2181,10 +2185,6 @@ const toggleMobileMenu = () => {
   border-bottom-color: white;
 }
 
-.app-main {
-  flex: 1;
-}
-
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -2207,7 +2207,7 @@ const toggleMobileMenu = () => {
 }
 
 .app-footer {
-  background-color: var(--color-neutral-900);
+  background-color: var(--color-primary-700);
   color: white;
   padding: 1.5rem 0;
   text-align: center;
@@ -2220,10 +2220,19 @@ const toggleMobileMenu = () => {
   margin-top: 0.5rem;
 }
 
-.container {
+/* Lager 2: Innehållsomslag */
+.content-container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
+}
+
+/* Lager 3: Responsiva justeringar */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem;
+  }
 }
 
 /* Mobilresponsiv */
@@ -2231,7 +2240,7 @@ const toggleMobileMenu = () => {
   .mobile-menu-toggle {
     display: block;
   }
-
+  
   .nav-links {
     position: absolute;
     top: 100%;
@@ -2243,11 +2252,11 @@ const toggleMobileMenu = () => {
     padding: 1rem;
     display: none;
   }
-
+  
   .nav-links.mobile-open {
     display: flex;
   }
-
+  
   .nav-link {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -2548,7 +2557,7 @@ const colorPalette = reactive({
 
 <template>
   <div class="theme-test-view">
-    <div class="container">
+    <div class="content-container">
       <h1 class="fk-heading-1">Tematestsida</h1>
 
       <!-- Färgtester -->
@@ -2643,11 +2652,7 @@ const colorPalette = reactive({
   margin-bottom: 1.5rem;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
+/* Container-stilar hanteras nu av .content-container i App.vue */
 </style>
 ```
 
@@ -3200,6 +3205,179 @@ deploy_production:
 ---
 
 ## Felsökningssektion
+
+### HTML-struktur och CSS-problem
+
+#### 1. Dubbla ID-fel
+
+**Problem**: "Duplicate ID 'app' hittades i dokument"-fel i webbläsarkonsolen
+
+**Solution**: Dubbla ID-fel uppstår när både HTML-mall och CSS refererar till samma ID. Vi fixade detta genom att ändra huvudbehållarens ID från "app" till "app-container".
+
+**Vad som ändrades:**
+
+- HTML: Ändrade `<div id="app">` till `<div id="app-container">`
+- CSS: Uppdaterade selektorer från `#app` till `#app-container`
+- JavaScript: Uppdaterade mount-point i `src/main.ts` från `app.mount('#app')` till `app.mount('#app-container')`
+
+**Varför detta är viktigt:**
+
+- HTML-ID:n måste vara unika inom ett dokument
+- Dubbla ID:n kan orsaka JavaScript-fel och CSS-selektorkonflikter
+- Sökmotorer och tillgänglighetsverktyg kan misslyckas med dubbla ID:n
+
+#### 2. Innehållscentreringsproblem
+
+**Problem**: Innehåll centreras inte korrekt eller responsiv layout är trasig
+
+**Solution**: Implementera en trelagers CSS-hierarki för korrekt innehållscentrering:
+
+```css
+/* Lager 1: Huvudapp-behållare */
+#app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Lager 2: Innehållsomslag */
+.content-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Lager 3: Responsiva justeringar */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem;
+  }
+}
+```
+
+**CSS-hierarkiförklaring:**
+
+1. **#app-container**: Rot-layoutbehållare som etablerar flex-struktur
+2. **#app-container → .content-container**: Direkt barn för konsekvent max-bredd och centrering
+3. **Responsiva brytpunkter**: Mobile-first-approach med konsekvent padding
+
+#### 3. Ta bort redundanta behållardefinitioner
+
+**Problem**: Flera behållardefinitioner orsakar layoutkonflikter
+
+**Solution**: Ta bort redundanta `.container`-klasser från individuella vykomponenter och använd den centraliserade `.content-container` från App.vue istället.
+
+**Före (problematiskt):**
+
+```vue
+<!-- I varje vykomponent -->
+<div class="view-container">
+  <div class="container">  <!-- Redundant! -->
+    <!-- Innehåll -->
+  </div>
+</div>
+```
+
+**Efter (korrekt):**
+
+```vue
+<!-- I varje vykomponent -->
+<div class="view-container">
+  <!-- Innehåll direkt, ingen extra behållare -->
+</div>
+```
+
+**Fördelar:**
+
+- Konsekvent layout över alla sidor
+- Minskade CSS-specificitetskonflikter
+- Bättre underhållbarhet
+- Förbättrad responsiv designkonsekvens
+
+#### 4. Responsiv design med konsekventa brytpunkter
+
+**Problem**: Inkonsekvent responsivt beteende mellan olika sidor och komponenter
+
+**Solution**: Implementera en enhetlig responsiv designstrategi med konsekventa brytpunkter och mobile-first-approach.
+
+**Responsiv designstrategi:**
+
+```css
+/* Brytpunktsdefinitioner */
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1200px;
+
+/* Mobile-first-approach */
+.content-container {
+  padding: 1rem 0.5rem; /* Mobilstandard */
+  max-width: 100%;
+}
+
+/* Tablet och uppåt */
+@media (min-width: $breakpoint-mobile) {
+  .content-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Desktop och uppåt */
+@media (min-width: $breakpoint-tablet) {
+  .content-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+  }
+}
+
+/* Stora skärmar */
+@media (min-width: $breakpoint-desktop) {
+  .content-container {
+    margin: 0 auto; /* Centrera på stora skärmar */
+  }
+}
+```
+
+**Varför detta är viktigt:**
+
+- **Konsekvent användarupplevelse** över alla enheter
+- **Enklare underhåll** med enhetliga brytpunkter
+- **Bättre prestanda** med mobile-first-approach
+- **Förbättrad tillgänglighet** med responsiv design
+
+**Implementering i komponenter:**
+
+```vue
+<!-- Använd responsiva klasser istället för inline-stilar -->
+<template>
+  <div class="component-container">
+    <div class="component-grid">
+      <!-- Innehåll -->
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.component-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobil: en kolumn */
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .component-grid {
+    grid-template-columns: repeat(2, 1fr); /* Tablet: två kolumner */
+  }
+}
+
+@media (min-width: 1024px) {
+  .component-grid {
+    grid-template-columns: repeat(3, 1fr); /* Desktop: tre kolumner */
+  }
+}
+</style>
+```
 
 ### Ubuntu-specifika problem
 

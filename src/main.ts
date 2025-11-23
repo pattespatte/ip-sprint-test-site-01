@@ -14,4 +14,4 @@ app.use(FkuiPlugin)
 
 console.log('DEBUG: FKUI plugins loaded')
 
-app.mount('#app')
+app.mount('#app-container')
