@@ -12,9 +12,9 @@ const toggleMobileMenu = () => {
 </script>
 
 <template>
-  <div id="app">
+  <div id="app-container">
     <header class="app-header">
-      <div class="container">
+      <div class="content-container">
         <nav class="app-nav">
           <div class="app-logo">
             <router-link to="/">
@@ -52,21 +52,23 @@ const toggleMobileMenu = () => {
     </header>
     
     <main class="app-main">
-      <Suspense>
-        <template #default>
-          <router-view />
-        </template>
-        <template #fallback>
-          <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Laddar...</p>
-          </div>
-        </template>
-      </Suspense>
+      <div class="content-container">
+        <Suspense>
+          <template #default>
+            <router-view />
+          </template>
+          <template #fallback>
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p>Laddar...</p>
+            </div>
+          </template>
+        </Suspense>
+      </div>
     </main>
     
     <footer class="app-footer">
-      <div class="container">
+      <div class="content-container">
         <p>&copy; 2025 IP Sprint Test Site. Byggd med Försäkringskassans Designsystem.</p>
         <p class="version">Version {{ appVersion }}</p>
       </div>
@@ -85,10 +87,17 @@ const toggleMobileMenu = () => {
   box-sizing: border-box;
 }
 
-#app {
+
+.app-main {
+  flex: 1;
+  padding: 0;
+}
+
+#app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
   font-family: var(--fk-font-family-base, 'Noto Sans', sans-serif);
 }
 
@@ -152,10 +161,6 @@ const toggleMobileMenu = () => {
   border-bottom-color: white;
 }
 
-.app-main {
-  flex: 1;
-}
-
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -191,10 +196,18 @@ const toggleMobileMenu = () => {
   margin-top: 0.5rem;
 }
 
-.container {
+.content-container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 2rem 1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem 0.5rem;
+  }
 }
 
 /* Mobile Responsive */

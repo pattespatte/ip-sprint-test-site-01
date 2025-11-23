@@ -58,12 +58,13 @@ button:focus-visible {
 	padding: 2em;
 }
 
+/* Note: This styles the Vue mount point in index.html */
+/* The actual app container is styled in App.vue with #app-container */
 #app {
-	max-width: 100%;
-	min-width: 60rem;
-	margin: 0 auto;
-	padding: 2rem;
-	text-align: center;
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
 }
 
 @media (prefers-color-scheme: light) {

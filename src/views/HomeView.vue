@@ -13,21 +13,18 @@ const navigateToForm = () => {
   <div class="home-view">
     <!-- Hero Section -->
     <section class="hero-section">
-      <div class="container">
-        <h1 class="fk-heading-1">Välkommen till IP Sprint Test Site</h1>
+      <h1 class="fk-heading-1">Välkommen till IP Sprint Test Site</h1>
         <p class="fk-text-large fk-mb-4">
           Detta är en demonstrationswebbplats byggd med Försäkringskassans Designsystem (FKUI).
         </p>
         <FButton variant="primary" size="large" @click="navigateToForm" class="button button--primary button--medium">
           Kom igång
         </FButton>
-      </div>
     </section>
 
     <!-- Features Section -->
     <section class="features-section">
-      <div class="container">
-        <h2 class="fk-heading-2 fk-mb-4">Funktioner</h2>
+      <h2 class="fk-heading-2 fk-mb-4">Funktioner</h2>
         <div class="feature-grid">
           <FCard class="feature-card">
             <div class="feature-content">
@@ -51,17 +48,14 @@ const navigateToForm = () => {
             </div>
           </FCard>
         </div>
-      </div>
     </section>
 
     <!-- CTA Section -->
     <section class="cta-section">
-      <div class="container">
-        <h2 class="fk-heading-2">Redo att prova vårt formulär?</h2>
+      <h2 class="fk-heading-2">Redo att prova vårt formulär?</h2>
         <FButton variant="secondary" @click="navigateToForm">
           Prova formulärdemo
         </FButton>
-      </div>
     </section>
   </div>
 </template>
@@ -79,7 +73,7 @@ const navigateToForm = () => {
 
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
 }
 
@@ -103,5 +97,19 @@ const navigateToForm = () => {
   background-color: var(--color-neutral-100);
   padding: 3rem 0;
   text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .hero-section,
+  .features-section,
+  .cta-section {
+    padding: 2rem 1rem;
+  }
 }
 </style>

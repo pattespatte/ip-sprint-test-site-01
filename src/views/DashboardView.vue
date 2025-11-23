@@ -114,8 +114,7 @@ onMounted(() => {
 
 <template>
 	<div class="dashboard-view">
-		<div class="container">
-			<nav class="breadcrumb fk-mb-4">
+		<nav class="breadcrumb fk-mb-4">
 				<router-link to="/">Hem</router-link>
 				<span class="separator">/</span>
 				<span>Dashboard</span>
@@ -241,7 +240,6 @@ onMounted(() => {
 				<strong>Systemuppdatering:</strong> Planerat underhåll kommer att ske
 				denna helg från 02:00 till 06:00.
 			</FMessageBox>
-		</div>
 	</div>
 </template>
 
@@ -272,7 +270,7 @@ onMounted(() => {
 
 .stats-grid {
 	display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	gap: 1.5rem;
 }
 
@@ -381,9 +379,21 @@ onMounted(() => {
 	color: var(--color-neutral-500);
 }
 
-.container {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 0 1rem;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.stats-grid {
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 1rem;
+	}
+	
+	.status-card-content {
+		padding: 1rem 0.5rem;
+	}
+	
+	.activity-item {
+		flex-direction: column;
+		gap: 0.5rem;
+	}
 }
+
 </style>

@@ -137,8 +137,7 @@ const resetForm = () => {
 
 <template>
   <div class="form-view">
-    <div class="container">
-      <nav class="breadcrumb fk-mb-4">
+    <nav class="breadcrumb fk-mb-4">
         <router-link to="/">Hem</router-link>
         <span class="separator">/</span>
         <span>Formulär</span>
@@ -283,7 +282,6 @@ const resetForm = () => {
       >
         <strong>Lyckades!</strong> Din ansökan har skickats framgångsrikt.
       </FMessageBox>
-    </div>
   </div>
 </template>
 
@@ -337,11 +335,6 @@ const resetForm = () => {
   margin-top: 2rem;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
 
 /* Make error messages more visible */
 .error-message {
@@ -400,5 +393,25 @@ const resetForm = () => {
   border-radius: 4px;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-view {
+    padding: 1rem 0;
+  }
+  
+  .application-form {
+    max-width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
 }
 </style>
