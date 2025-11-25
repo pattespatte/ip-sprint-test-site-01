@@ -196,6 +196,11 @@ const toggleMobileMenu = () => {
   margin-top: 0.5rem;
 }
 
+.container {
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 .content-container {
   max-width: 1200px;
   width: 100%;

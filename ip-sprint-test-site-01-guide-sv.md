@@ -2045,7 +2045,7 @@ const toggleMobileMenu = () => {
               <h1>{{ appTitle }}</h1>
             </router-link>
           </div>
-          
+
           <button
             class="mobile-menu-toggle"
             @click="toggleMobileMenu"
@@ -2053,7 +2053,7 @@ const toggleMobileMenu = () => {
           >
             ☰
           </button>
-          
+
           <ul class="nav-links" :class="{ 'mobile-open': mobileMenuOpen }">
             <li>
               <router-link to="/" class="nav-link" @click="mobileMenuOpen = false">
@@ -2074,7 +2074,7 @@ const toggleMobileMenu = () => {
         </nav>
       </div>
     </header>
-    
+
     <main class="app-main">
       <div class="content-container">
         <Suspense>
@@ -2090,7 +2090,7 @@ const toggleMobileMenu = () => {
         </Suspense>
       </div>
     </main>
-    
+
     <footer class="app-footer">
       <div class="content-container">
         <p>&copy; 2025 IP Sprint Test Site. Byggd med Försäkringskassans Designsystem.</p>
@@ -2248,7 +2248,7 @@ const toggleMobileMenu = () => {
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .nav-links {
     position: absolute;
     top: 100%;
@@ -2260,11 +2260,11 @@ const toggleMobileMenu = () => {
     padding: 1rem;
     display: none;
   }
-  
+
   .nav-links.mobile-open {
     display: flex;
   }
-  
+
   .nav-link {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
