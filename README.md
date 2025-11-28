@@ -162,6 +162,28 @@ The build is optimized for production with:
 - Asset optimization
 - CSS minification
 
+### CSS Optimization with PurgeCSS
+
+The project uses PurgeCSS for CSS optimization, which performs CSS treeshaking to remove unused CSS from the final bundle. This results in significantly smaller CSS files and improved page load times.
+
+PurgeCSS is configured in [`postcss.config.cjs`](postcss.config.cjs:1) with the following settings:
+
+- **Production-only**: PurgeCSS only runs during production builds (`NODE_ENV === 'production'`)
+- **Content sources**: Analyzes HTML, Vue, JavaScript, and TypeScript files in the project
+- **FKUI compatibility**: Includes all FKUI component files in the analysis to preserve necessary styles
+- **Safelist**: Configured to preserve:
+  - All FKUI classes (prefixed with `fk-`)
+  - Common utility classes (buttons, forms, colors, font sizes)
+  - CSS custom properties (CSS variables)
+  - Essential layout classes (rows, columns, containers)
+
+The benefits of this optimization include:
+
+- Reduced CSS bundle size by removing unused styles
+- Faster page load times
+- Better performance on mobile devices
+- Maintained functionality with all necessary FKUI styles preserved
+
 ## Development Workflow
 
 1. Start development server with `npm run dev`
@@ -215,3 +237,5 @@ The application supports all modern browsers that support:
 - ESLint 9.39.1
 - Prettier 3.0.0
 - Sass-embedded 1.93.3
+- PurgeCSS 7.0.2
+- @fullhuman/postcss-purgecss 7.0.2

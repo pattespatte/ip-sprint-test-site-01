@@ -6,7 +6,9 @@ import vue from '@vitejs/plugin-vue'
 const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] || 'ip-sprint-test-site-01'
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue()
+  ],
   base: process.env.NODE_ENV === 'production' ? `/${repoName}/` : '/',
   resolve: {
     alias: {
